@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alta Via 2 Inspired: чернетка 6-денного маршруту</title>
+  <meta name="description" content="Чернеткова 6-денна лінія маршруту за мотивами Alta Via 2: Passo Pordoi, Padon, Marmolada, Ombretta, Pale di San Martino і San Martino di Castrozza.">
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #5d675f;
+      --paper: #f6f1e8;
+      --paper-strong: #fffaf0;
+      --line: rgba(23, 32, 28, .14);
+      --forest: #22372d;
+      --moss: #64785d;
+      --rust: #b85832;
+      --gold: #d89a3d;
+      --shadow: 0 22px 70px rgba(16, 24, 21, .18);
+      --radius: 8px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(216, 154, 61, .14), transparent 30rem),
+        linear-gradient(180deg, #fbf7ef 0%, var(--paper) 54%, #eee5d7 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 86vh;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-items: end;
+      color: #fffaf0;
+      background: #17201c;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(10, 15, 13, .9) 0%, rgba(10, 15, 13, .58) 48%, rgba(10, 15, 13, .18) 100%),
+        url("https://focusontrips.com/wp-content/uploads/2019/11/Fedaia2.jpg") center / cover no-repeat;
+      transform: scale(1.02);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 28%;
+      background: linear-gradient(180deg, transparent, var(--paper));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 22px;
+      padding: 42px 0 96px;
+    }
+
+    .back-link,
+    .maps-link {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      border: 1px solid rgba(255, 250, 240, .26);
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: rgba(255, 250, 240, .86);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(23, 32, 28, .32);
+    }
+
+    .back-link:hover,
+    .maps-link:hover {
+      background: rgba(255, 250, 240, .14);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: rgba(255, 250, 240, .76);
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 980px;
+      margin-bottom: 0;
+      font-size: clamp(3.1rem, 8vw, 8.4rem);
+      font-weight: 760;
+    }
+
+    .hero-lede {
+      max-width: 790px;
+      margin-bottom: 0;
+      color: rgba(255, 250, 240, .84);
+      font-size: clamp(1.05rem, 1.7vw, 1.34rem);
+    }
+
+    .hero-tags,
+    .stat-grid,
+    .day-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag,
+    .stat,
+    .day-stat {
+      border: 1px solid rgba(255, 250, 240, .24);
+      border-radius: 999px;
+      padding: 8px 11px;
+      color: rgba(255, 250, 240, .84);
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .03em;
+      background: rgba(23, 32, 28, .32);
+    }
+
+    .section {
+      padding: 76px 0;
+    }
+
+    .intro-grid {
+      display: block;
+    }
+
+    .section-title {
+      margin-bottom: 16px;
+      color: var(--rust);
+      font-size: .86rem;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .summary-card,
+    .day-card,
+    .note-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 250, 240, .74);
+      box-shadow: 0 14px 44px rgba(23, 32, 28, .08);
+    }
+
+    .summary-card {
+      padding: 22px;
+    }
+
+    .summary-card h2 {
+      margin-bottom: 18px;
+      color: var(--rust);
+      font-size: clamp(1.8rem, 3.4vw, 3.2rem);
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+    }
+
+    .summary-list div {
+      display: grid;
+      grid-template-columns: minmax(120px, .85fr) minmax(0, 1fr);
+      gap: 10px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(23, 32, 28, .1);
+    }
+
+    .summary-list div:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .summary-list dt {
+      color: var(--muted);
+      font-size: .74rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .summary-list dd {
+      margin: 0;
+      color: var(--ink);
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .summary-map-link {
+      color: var(--rust);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+    }
+
+    .day-card {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      gap: 18px;
+      padding: 20px;
+    }
+
+    .day-number {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      color: #fffaf0;
+      background: var(--rust);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.75rem;
+      font-weight: 760;
+      box-shadow: 0 12px 28px rgba(184, 88, 50, .22);
+    }
+
+    .day-card h2 {
+      margin-bottom: 10px;
+      font-size: clamp(1.55rem, 2.7vw, 2.45rem);
+    }
+
+    .day-stats {
+      margin-bottom: 14px;
+    }
+
+    .day-stat {
+      border-color: rgba(23, 32, 28, .13);
+      color: var(--ink);
+      background: rgba(242, 231, 207, .62);
+    }
+
+    .day-card p {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: .98rem;
+    }
+
+    .start-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .start-row strong {
+      color: var(--ink);
+    }
+
+    .start-row .maps-link {
+      border-color: rgba(184, 88, 50, .22);
+      color: var(--rust);
+      background: rgba(255, 250, 240, .62);
+    }
+
+    .note-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 24px;
+    }
+
+    .note-card {
+      padding: 18px;
+    }
+
+    .note-card h3 {
+      margin-bottom: 9px;
+      font-size: 1.2rem;
+    }
+
+    .note-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .footer {
+      padding: 28px 0 44px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .footer a {
+      color: var(--rust);
+      font-weight: 850;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    @media (max-width: 920px) {
+      .note-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-list div {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .summary-list dd {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100% - 24px, var(--max));
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-inner {
+        padding: 34px 0 76px;
+      }
+
+      .section {
+        padding: 52px 0;
+      }
+
+      .day-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 17px;
+      }
+
+      .day-number {
+        width: 48px;
+        height: 48px;
+        font-size: 1.45rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="shell hero-inner">
+        <a class="back-link" href="index.html">← До порівняння</a>
+        <p class="eyebrow">Чернетка маршруту · 6 днів / 5 ночей</p>
+        <h1 id="page-title">Alta Via 2 Inspired</h1>
+        <p class="hero-lede">Маршрут-панорама за мотивами Alta Via 2: від Passo Pordoi через темний гребінь Padon, Marmolada, Ombretta і велике плато Pale di San Martino до San Martino di Castrozza.</p>
+        <div class="hero-tags" aria-label="Ключові параметри маршруту">
+          <span class="tag">~75–77 км</span>
+          <span class="tag">+5600–5800 м</span>
+          <span class="tag">4 ферати</span>
+          <span class="tag">3011 м · Cima Ombretta Orientale</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="summary-title">
+      <div class="shell intro-grid">
+        <aside class="summary-card" aria-label="Загальні параметри">
+          <h2 id="summary-title">Основні параметри</h2>
+          <dl class="summary-list">
+            <div>
+              <dt>Старт</dt>
+              <dd><a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&query=Passo+Pordoi+Italy">Passo Pordoi</a></dd>
+            </div>
+            <div>
+              <dt>Фініш</dt>
+              <dd><a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&query=San+Martino+di+Castrozza+Italy">San Martino di Castrozza</a></dd>
+            </div>
+            <div>
+              <dt>Тривалість</dt>
+              <dd>6 днів / 5 ночей</dd>
+            </div>
+            <div>
+              <dt>Дистанція</dt>
+              <dd>~75–77 км</dd>
+            </div>
+            <div>
+              <dt>Середній день</dt>
+              <dd>~12–13 км</dd>
+            </div>
+            <div>
+              <dt>Сумарний набір</dt>
+              <dd>+5600–5800 м</dd>
+            </div>
+            <div>
+              <dt>Повноцінні ферати</dt>
+              <dd>4</dd>
+            </div>
+            <div>
+              <dt>Максимум</dt>
+              <dd>3011 м</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="days-title">
+      <div class="shell">
+        <h2 class="section-title" id="days-title">Дні маршруту</h2>
+        <div class="timeline">
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">1</div>
+            <div>
+              <h2>День 1 — Passo Pordoi → Padon → Bivacco Bontadini</h2>
+              <div class="day-stats" aria-label="Параметри дня 1">
+                <span class="day-stat">~9 км</span>
+                <span class="day-stat">↑ ~700 м</span>
+                <span class="day-stat">↓ ~400 м</span>
+              </div>
+              <p>Старт із Passo Pordoi по панорамному Viel dal Pan з постійними видами на Marmolada. Після Porta Vescovo маршрут виходить на темний вулканічний хребет Padon і проходить Ferrata delle Trincee з військовими позиціями та тунелями Першої світової. Ночівля в Bivacco Bontadini прямо на гребені.</p>
+              <div class="start-row">
+                <span><strong>Старт:</strong> Passo Pordoi</span>
+                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Passo+Pordoi+Italy">Google Maps</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">2</div>
+            <div>
+              <h2>День 2 — Bontadini → Forcella Marmolada → Bivacco Dal Bianco</h2>
+              <div class="day-stats" aria-label="Параметри дня 2">
+                <span class="day-stat">~12–13 км</span>
+                <span class="day-stat">↑ ~1300–1350 м</span>
+                <span class="day-stat">↓ ~1100 м</span>
+              </div>
+              <p>Спуск до Lago di Fedaia, потім підйом по 606 через район колишнього льодовика Vernel до Forcella Marmolada. Після перевалу маршрут іде на південний бік масиву і знову набирає висоту до Passo Ombretta. Ночівля в Bivacco Dal Bianco під великою південною стіною Marmolada.</p>
+              <div class="start-row">
+                <span><strong>Старт:</strong> Bivacco Ernesto Bontadini</span>
+                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Bivacco+Ernesto+Bontadini+Italy">Google Maps</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">3</div>
+            <div>
+              <h2>День 3 — Dal Bianco → Cima Ombretta → Fuciade → район Passo Valles</h2>
+              <div class="day-stats" aria-label="Параметри дня 3">
+                <span class="day-stat">~18–19 км</span>
+                <span class="day-stat">↑ ~800 м</span>
+                <span class="day-stat">↓ ~1400–1500 м</span>
+              </div>
+              <p>Уранці — високий траверс через Cima Ombretta Orientale (~3010 м) і обладнаний маршрут 650. Далі перехід на 607 через Passo delle Cirelle і довгий спуск до зеленої чаші Fuciade. Після Fuciade маршрут продовжується в бік Passo San Pellegrino і Passo Valles. Ночівля в наметі до входу у високу частину Pale di San Martino.</p>
+              <div class="start-row">
+                <span><strong>Старт:</strong> Bivacco Marco Dal Bianco</span>
+                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Bivacco+Marco+Dal+Bianco+Marmolada+Italy">Google Maps</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">4</div>
+            <div>
+              <h2>День 4 — Passo Valles → Mulaz → Farangole → Rosetta</h2>
+              <div class="day-stats" aria-label="Параметри дня 4">
+                <span class="day-stat">~13–14 км</span>
+                <span class="day-stat">↑ ~1550–1600 м</span>
+                <span class="day-stat">↓ ~800–900 м</span>
+              </div>
+              <p>Найнасиченіший за набором день. Від Passo Valles маршрут поступово входить у Pale di San Martino і піднімається до Rifugio Mulaz. Далі починається Sentiero delle Farangole — довгий високогірний обладнаний траверс північною частиною масиву. Фінал дня — вихід на велике кам'яне плато і ночівля в районі Rifugio Rosetta.</p>
+              <div class="start-row">
+                <span><strong>Старт:</strong> Passo Valles</span>
+                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Passo+Valles+Italy">Google Maps</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">5</div>
+            <div>
+              <h2>День 5 — Rosetta → Fradusta → Pradidali → Porton / Velo</h2>
+              <div class="day-stats" aria-label="Параметри дня 5">
+                <span class="day-stat">~14–15 км</span>
+                <span class="day-stat">↑ ~1000 м</span>
+                <span class="day-stat">↓ ~1200 м</span>
+              </div>
+              <p>Перехід через центральне плато Pale з підйомом на Cima Fradusta (~2940 м), потім спуск до Rifugio Pradidali. У другій половині дня — зв'язка Ferrata Porton і Ferrata del Velo серед вертикальних стін південної частини Pale. Ночівля в районі Rifugio Velo della Madonna.</p>
+              <div class="start-row">
+                <span><strong>Старт:</strong> Rifugio Rosetta / Giovanni Pedrotti</span>
+                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Rifugio+Rosetta+Giovanni+Pedrotti+Italy">Google Maps</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">6</div>
+            <div>
+              <h2>День 6 — Rifugio Velo → San Martino di Castrozza</h2>
+              <div class="day-stats" aria-label="Параметри дня 6">
+                <span class="day-stat">~9 км</span>
+                <span class="day-stat">↑ ~300 м</span>
+                <span class="day-stat">↓ ~1100 м</span>
+                <span class="day-stat">~3–4 год</span>
+              </div>
+              <p>Короткий резервний день для від'їзду. Без обов'язкових ферат і серйозних підйомів: довгий спуск від високих стін Pale через лісовий пояс прямо в San Martino di Castrozza. Це дозволяє спокійно вийти вранці й уже до середини дня бути в долині.</p>
+              <div class="start-row">
+                <span><strong>Старт:</strong> Rifugio Velo della Madonna</span>
+                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=Rifugio+Velo+della+Madonna+Italy">Google Maps</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="note-grid" aria-label="Чернеткові примітки">
+          <article class="note-card">
+            <h3>Статус</h3>
+            <p>Це чернетка. Денні цифри, вода, відкриті rifugio і стан обладнаних ділянок треба перевірити перед фіналізацією.</p>
+          </article>
+          <article class="note-card">
+            <h3>Ночівлі</h3>
+            <p>У лінії є bivacco, rifugio і наметова ночівля. Це додає гнучкості, але вимагає точнішого плану води та спорядження.</p>
+          </article>
+          <article class="note-card">
+            <h3>Характер</h3>
+            <p>Маршрут менш монолітний, ніж Brenta, зате ширший за враженнями: Padon, Marmolada, Ombretta і Pale працюють як різні глави одного тижня.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">
+      <a href="index.html">← Повернутися до порівняння Brenta / Alta Via 2</a>
+    </div>
+  </footer>
+</body>
+</html>

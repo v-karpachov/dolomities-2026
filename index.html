@@ -1,0 +1,1446 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dolomites Route Lab: Dolomiti di Brenta чи Alta Via 2 Inspired</title>
+  <meta name="description" content="Робоче порівняння двох концепцій походу в Доломітах: Dolomiti di Brenta з легендарними Bocchette налегке і маршрут за мотивами Alta Via 2.">
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #5d675f;
+      --paper: #f6f1e8;
+      --paper-strong: #fffaf0;
+      --line: rgba(23, 32, 28, .14);
+      --forest: #22372d;
+      --moss: #64785d;
+      --stone: #8a8173;
+      --rust: #b85832;
+      --gold: #d89a3d;
+      --ice: #d9e6e4;
+      --brenta: #41464a;
+      --alta: #a86f32;
+      --shadow: 0 22px 70px rgba(16, 24, 21, .18);
+      --radius: 8px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(216, 154, 61, .12), transparent 30rem),
+        linear-gradient(180deg, #fbf7ef 0%, var(--paper) 50%, #eee5d7 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 100vh;
+      color: #fffaf0;
+      background: #17201c;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-items: stretch;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(10, 15, 13, .88) 0%, rgba(10, 15, 13, .58) 45%, rgba(10, 15, 13, .2) 100%),
+        url("https://focusontrips.com/wp-content/uploads/2019/11/Fedaia2.jpg") center / cover no-repeat;
+      transform: scale(1.02);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 32%;
+      background: linear-gradient(180deg, transparent, var(--paper));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+      align-items: start;
+      padding: 76px 0 112px;
+    }
+
+    .hero .shell {
+      width: min(100% - 32px, 1360px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: rgba(255, 250, 240, .76);
+      font-size: .82rem;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 34px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin-bottom: 0;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(3.2rem, 8.4vw, 7.6rem);
+      line-height: .89;
+      font-weight: 760;
+      letter-spacing: 0;
+    }
+
+    .hero-lede {
+      max-width: 860px;
+      margin-bottom: 0;
+      color: rgba(255, 250, 240, .84);
+      font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+    }
+
+    .hero-intro {
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: 999px;
+      padding: 11px 18px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-weight: 800;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, .18);
+    }
+
+    .btn.dark {
+      background: var(--forest);
+      color: #fffaf0;
+      border-color: rgba(255, 250, 240, .22);
+    }
+
+    .btn.ghost {
+      background: rgba(255, 250, 240, .08);
+      color: #fffaf0;
+      border-color: rgba(255, 250, 240, .28);
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .route-chooser {
+      align-self: end;
+      display: grid;
+      gap: 14px;
+    }
+
+    .choice-card {
+      min-height: 224px;
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 250, 240, .24);
+      box-shadow: var(--shadow);
+      background: #1d2722;
+    }
+
+    .choice-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--bg) center / cover no-repeat;
+      opacity: .72;
+      transition: .35s ease;
+    }
+
+    .choice-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(8, 12, 10, .88) 100%);
+    }
+
+    .choice-card:hover::before {
+      transform: scale(1.05);
+      opacity: .9;
+    }
+
+    .choice-card .content {
+      position: absolute;
+      inset: auto 20px 18px;
+      z-index: 1;
+    }
+
+    .choice-card h2 {
+      margin-bottom: 8px;
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      line-height: 1;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+    }
+
+    .choice-card p {
+      margin: 0;
+      color: rgba(255, 250, 240, .8);
+      font-size: .95rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 18px 0 0;
+    }
+
+    .tag,
+    .draft {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(23, 32, 28, .14);
+      padding: 6px 10px;
+      color: var(--muted);
+      background: rgba(255, 250, 240, .66);
+      font-size: .78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    .hero-tags .tag {
+      border-color: rgba(255, 250, 240, .2);
+      color: rgba(255, 250, 240, .82);
+      background: rgba(255, 250, 240, .1);
+    }
+
+    section {
+      scroll-margin-top: 24px;
+    }
+
+    .section {
+      padding: 88px 0;
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: minmax(0, .82fr) minmax(280px, .48fr);
+      gap: 34px;
+      align-items: end;
+      margin-bottom: 34px;
+    }
+
+    .kicker {
+      margin-bottom: 11px;
+      color: var(--rust);
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(2.15rem, 4.2vw, 4.4rem);
+      line-height: .96;
+      letter-spacing: 0;
+    }
+
+    .section-header p,
+    .wide-copy {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .wide-copy {
+      max-width: 830px;
+    }
+
+    .hero-map {
+      width: 100%;
+      display: grid;
+      gap: 20px;
+      margin: 8px 0 0;
+    }
+
+    .map-image-band {
+      width: min(100%, 980px);
+      margin: 0 auto;
+      overflow: hidden;
+      background: transparent;
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .28) 0%, #000 10%, #000 90%, rgba(0, 0, 0, .28) 100%);
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .28) 0%, #000 10%, #000 90%, rgba(0, 0, 0, .28) 100%);
+    }
+
+    .map-image-band img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .hero .map-copy {
+      display: block;
+      max-width: 860px;
+      padding: 0;
+      border: 0;
+    }
+
+    .hero .map-copy h2 {
+      margin-bottom: 8px;
+      font-size: clamp(2rem, 4.2vw, 4.6rem);
+      color: #fffaf0;
+    }
+
+    .hero .map-copy p {
+      color: rgba(255, 250, 240, .82);
+      font-size: clamp(1rem, 1.5vw, 1.18rem);
+    }
+
+    .fact-rows {
+      display: grid;
+      gap: 22px;
+      grid-column: 1 / -1;
+    }
+
+    .fact-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 18px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .fact-row h3 {
+      grid-column: 1 / -1;
+      display: block;
+      margin: 0;
+      color: var(--rust);
+      text-align: center;
+      font-size: .88rem;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .shared-row-title {
+      display: block;
+      margin: 6px 0 -2px;
+      color: var(--rust);
+      text-align: center;
+      font-size: .88rem;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .fact-text {
+      display: block;
+      min-height: 88px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255, 250, 240, .72);
+      color: var(--muted);
+      font-size: .94rem;
+      text-align: left;
+    }
+
+    .route-info-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255, 250, 240, .72);
+    }
+
+    .route-info-card.is-empty {
+      background: rgba(255, 250, 240, .34);
+    }
+
+    .route-stats {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .route-stats div {
+      display: grid;
+      grid-template-columns: minmax(130px, .78fr) minmax(0, 1fr);
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(23, 32, 28, .1);
+    }
+
+    .route-stats div:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .route-stats dt {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .route-stats dd {
+      margin: 0;
+      color: var(--ink);
+      font-weight: 850;
+      text-align: right;
+    }
+
+    .route-page-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      color: var(--rust);
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .route-page-link:hover {
+      color: var(--forest);
+    }
+
+    .ratings-panel {
+      display: grid;
+      gap: 14px;
+      margin-top: 10px;
+      border: 1px solid rgba(124, 80, 44, .22);
+      border-radius: var(--radius);
+      padding: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 250, 240, .82), rgba(242, 231, 207, .52)),
+        rgba(255, 250, 240, .72);
+      box-shadow: inset 0 1px 0 rgba(255, 250, 240, .68);
+    }
+
+    .ratings-panel > .shared-row-title {
+      margin: 0 0 2px;
+      color: var(--ink);
+    }
+
+    .ratings-panel .rating-row {
+      gap: 7px 12px;
+    }
+
+    .ratings-panel .rating-row h3 {
+      color: rgba(124, 80, 44, .78);
+      font-size: .76rem;
+      letter-spacing: .09em;
+    }
+
+    .rating-card {
+      min-height: 112px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255, 250, 240, .72);
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .rating-card.is-empty {
+      background: rgba(255, 250, 240, .34);
+    }
+
+    .rating-card.brenta-rating .rating-score {
+      text-align: right;
+    }
+
+    .rating-score {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 2.4vw, 2.55rem);
+      line-height: .95;
+      font-weight: 760;
+    }
+
+    .rating-card p {
+      margin: 0;
+      font-size: .94rem;
+    }
+
+    .ratings-panel .rating-card {
+      min-height: 0;
+      padding: 13px 14px 14px;
+      background: rgba(255, 250, 240, .82);
+    }
+
+    .ratings-panel .rating-score {
+      margin-bottom: 5px;
+      font-size: clamp(1.35rem, 1.7vw, 1.85rem);
+    }
+
+    .ratings-panel .rating-card p {
+      font-size: .84rem;
+      line-height: 1.48;
+    }
+
+    .gallery-section {
+      order: 1;
+      padding: 42px 0 22px;
+    }
+
+    .gallery-board {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .gallery-group {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    .gallery-group h3 {
+      order: 2;
+      margin: 0;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(1.7rem, 2.8vw, 3rem);
+      line-height: 1;
+      letter-spacing: 0;
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    .gallery-carousel {
+      order: 1;
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #28332d;
+      box-shadow: var(--shadow);
+    }
+
+    .photo-grid {
+      position: relative;
+      height: clamp(340px, 34vw, 470px);
+    }
+
+    .photo-card {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border: 0;
+      border-radius: var(--radius);
+      padding: 0;
+      background: #28332d;
+      color: #fffaf0;
+      cursor: zoom-in;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.01);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+
+    .photo-card.is-active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: .3s ease;
+    }
+
+    .photo-card:hover img {
+      transform: scale(1.045);
+    }
+
+    .photo-caption {
+      display: none;
+    }
+
+    #map {
+      order: 0;
+    }
+
+    #regions {
+      order: 2;
+      padding-top: 0;
+    }
+
+    #regions .shell {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 250, 240, .48);
+      border-radius: 50%;
+      background: rgba(23, 32, 28, .58);
+      color: #fffaf0;
+      cursor: pointer;
+      transform: translateY(-50%);
+      transition: .2s ease;
+    }
+
+    .carousel-arrow:hover {
+      background: rgba(23, 32, 28, .86);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-arrow.prev {
+      left: 12px;
+    }
+
+    .carousel-arrow.next {
+      right: 12px;
+    }
+
+    .carousel-arrow svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .carousel-count {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      z-index: 2;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: rgba(23, 32, 28, .7);
+      color: rgba(255, 250, 240, .86);
+      font-size: .78rem;
+      font-weight: 900;
+    }
+
+    .plusminus {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .pm-card {
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      padding: 20px;
+      background: rgba(255, 250, 240, .68);
+    }
+
+    .pm-card h3 {
+      margin-bottom: 14px;
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .pm-subhead {
+      margin: 16px 0 9px;
+      color: var(--ink);
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .pm-subhead:first-of-type {
+      margin-top: 0;
+    }
+
+    .pm-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .pm-list li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 10px;
+      color: var(--muted);
+    }
+
+    .pm-list b {
+      color: var(--ink);
+    }
+
+    .mark {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(100, 120, 93, .16);
+      color: var(--forest);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .mark.warn {
+      background: rgba(184, 88, 50, .13);
+      color: var(--rust);
+    }
+
+    .route-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      background: rgba(255, 250, 240, .72);
+      box-shadow: 0 14px 44px rgba(23, 32, 28, .08);
+    }
+
+    .route-card h3 {
+      margin-bottom: 10px;
+      font-size: 1.28rem;
+      line-height: 1.18;
+    }
+
+    .route-card p {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .route-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .route-card {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .route-card.featured {
+      background: var(--forest);
+      color: #fffaf0;
+    }
+
+    .route-card.featured p,
+    .route-card.featured .metric span,
+    .route-card.featured .day-list li {
+      color: rgba(255, 250, 240, .78);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid rgba(23, 32, 28, .12);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: rgba(255, 250, 240, .55);
+    }
+
+    .featured .metric {
+      border-color: rgba(255, 250, 240, .14);
+      background: rgba(255, 250, 240, .08);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 1.15rem;
+      line-height: 1.1;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+    }
+
+    .day-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-size: .94rem;
+    }
+
+    .day-list li {
+      padding-left: 18px;
+      position: relative;
+    }
+
+    .day-list li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: .72em;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--rust);
+    }
+
+    .featured .day-list li::before {
+      background: var(--gold);
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background: rgba(6, 10, 8, .86);
+    }
+
+    .lightbox.is-open {
+      display: grid;
+    }
+
+    .lightbox-panel {
+      width: min(1040px, 100%);
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: #111814;
+      color: #fffaf0;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .55);
+    }
+
+    .lightbox-panel img {
+      width: 100%;
+      max-height: 74vh;
+      object-fit: contain;
+      background: #060a08;
+    }
+
+    .lightbox-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      color: rgba(255, 250, 240, .82);
+      font-size: .92rem;
+    }
+
+    .close-lightbox {
+      border: 1px solid rgba(255, 250, 240, .25);
+      border-radius: 999px;
+      background: transparent;
+      color: #fffaf0;
+      padding: 6px 11px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: .55s ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (max-width: 980px) {
+      .hero-inner,
+      .section-header,
+      .fact-row,
+      .gallery-board,
+      .plusminus,
+      .route-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-inner {
+        padding-top: 58px;
+      }
+
+      .rating-card.is-empty,
+      .route-info-card.is-empty {
+        display: none;
+      }
+
+      .route-stats div {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .route-stats dd {
+        text-align: left;
+      }
+
+      .ratings-panel {
+        padding: 15px;
+      }
+
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        width: min(100% - 24px, var(--max));
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .map-image-band img {
+        height: auto;
+      }
+
+      .hero::before {
+        background:
+          linear-gradient(180deg, rgba(10, 15, 13, .86) 0%, rgba(10, 15, 13, .57) 55%, rgba(10, 15, 13, .7) 100%),
+          url("https://focusontrips.com/wp-content/uploads/2019/11/Fedaia2.jpg") center / cover no-repeat;
+      }
+
+      .hero-inner {
+        gap: 28px;
+        padding: 52px 0 86px;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 15vw, 5rem);
+      }
+
+      .section {
+        padding: 64px 0;
+      }
+
+      .photo-grid {
+        height: 270px;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+    @media (max-width: 430px) {
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="top">
+    <section class="hero" id="map" aria-labelledby="hero-title">
+      <div class="shell hero-inner">
+        <div class="hero-intro">
+          <h1 id="hero-title">Що обираємо?</h1>
+          <p class="hero-lede">Я зараз дивлюся на два дуже різні варіанти.</p>
+          <p class="hero-lede"><strong>Якщо коротко: Brenta — якщо хочеться більше ферат і скельної концентрації; Alta Via 2 — якщо хочеться більше різних пейзажів і відчуття великої подорожі.</strong></p>
+        </div>
+
+        <figure class="hero-map">
+          <figcaption class="map-copy">
+            <h2>Де це</h2>
+            <p>Тренто тут просто точка відліку: Brenta лежить західніше як компактний вузол для класичних виходів, rifugio і ferrata налегке, а маршрут за мотивами Alta Via 2 тягнеться східніше — у бік Padon, Marmolada і Pale di San Martino.</p>
+          </figcaption>
+          <div class="map-image-band">
+            <img src="route-area-map.png" alt="Карта Доломітів із Тренто в центрі та виділеними районами Dolomiti di Brenta і маршруту за мотивами Alta Via 2">
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="regions">
+      <div class="shell">
+        <div class="fact-rows reveal" aria-label="Ключові властивості двох маршрутів">
+          <section class="fact-row route-info-row">
+            <h3>Загальна інформація</h3>
+            <div class="route-info-card">
+              <dl class="route-stats">
+                <div>
+                  <dt>Тривалість</dt>
+                  <dd>6 днів / 5 ночей</dd>
+                </div>
+                <div>
+                  <dt>Дистанція</dt>
+                  <dd>66–70 км</dd>
+                </div>
+                <div>
+                  <dt>Середня дистанція на день</dt>
+                  <dd>~11–12 км</dd>
+                </div>
+                <div>
+                  <dt>Сумарний набір</dt>
+                  <dd>+4800–5200 м</dd>
+                </div>
+                <div>
+                  <dt>Середній набір на день</dt>
+                  <dd>~930 м/день</dd>
+                </div>
+                <div>
+                  <dt>Повноцінні ферати</dt>
+                  <dd>7</dd>
+                </div>
+                <div>
+                  <dt>Максимальна висота</dt>
+                  <dd>~3000 м</dd>
+                </div>
+                <div>
+                  <dt>Найважчий день</dt>
+                  <dd>12–13 км / +1050–1150 м / 8–9 год</dd>
+                </div>
+              </dl>
+              <a class="route-page-link" href="brenta.html">Детальний маршрут →</a>
+            </div>
+            <div class="route-info-card">
+              <dl class="route-stats">
+                <div>
+                  <dt>Тривалість</dt>
+                  <dd>6 днів / 5 ночей</dd>
+                </div>
+                <div>
+                  <dt>Дистанція</dt>
+                  <dd>~75–77 км</dd>
+                </div>
+                <div>
+                  <dt>Середня дистанція на день</dt>
+                  <dd>~12–13 км</dd>
+                </div>
+                <div>
+                  <dt>Сумарний набір</dt>
+                  <dd>+5600–5800 м</dd>
+                </div>
+                <div>
+                  <dt>Середній набір на день</dt>
+                  <dd>~1080 м/день</dd>
+                </div>
+                <div>
+                  <dt>Повноцінні ферати</dt>
+                  <dd>4</dd>
+                </div>
+                <div>
+                  <dt>Максимальна висота</dt>
+                  <dd>3011 м — Cima Ombretta Orientale</dd>
+                </div>
+                <div>
+                  <dt>Найважчий день</dt>
+                  <dd>~13–14 км / +1550–1600 м / 8–10 год</dd>
+                </div>
+              </dl>
+              <a class="route-page-link" href="alta-via.html">Детальний маршрут →</a>
+            </div>
+          </section>
+          <section class="fact-row">
+            <h3>Короткий опис</h3>
+            <p class="fact-text">Brenta — це маршрут із дуже щільним зануренням у скельний світ одного району. Кілька ночей проводиш у самому серці масиву, а частину ключових ферат можна ходити налегке, залишаючи основний рюкзак у bivacco або rifugio. Тут менше постійної зміни декорацій, зате більше часу серед вузьких полиць над урвищами, довгих скельних траверсів, сірих вапнякових башт і знаменитих Bocchette. Це варіант для тих, хто хоче зробити акцент саме на фератах: більше технічних скельних маршрутів, більше часу у високогір’ї й менше довгих переходів між різними районами.</p>
+            <p class="fact-text">Це маршрут-панорама за мотивами Alta Via 2. Його сенс — зібрати різні обличчя Доломітів за один тиждень: озера під Marmolada, найвищою горою Доломітів із льодовиком, осінні ліси, темні вулканічні гребені Padon і величезне світле плато Pale di San Martino серед тритисячників і вертикальних стін. Ферати тут не самоціль, а спосіб пройти найцікавішими лініями: військовими тунелями й повітряним гребенем Padon із Marmolada просто навпроти, через високі перевали та залишки льодовиків, вузькими полицями й скельними стінами Pale. Маршрут менш монолітний, ніж Brenta, зате різноманітніший: більше світла, кольору, простору і відчуття подорожі.</p>
+          </section>
+          <h3 class="shared-row-title">За і проти</h3>
+          <div class="plusminus">
+            <article class="pm-card reveal">
+              <p class="pm-subhead">За</p>
+              <ul class="pm-list">
+                <li><span class="mark">+</span><span>Дуже видовищний і цілісний скельний маршрут: майже кожен день проходить у сильному високогірному рельєфі.</span></li>
+                <li><span class="mark">+</span><span>Один із найкращих варіантів, якщо хочеться зробити акцент саме на фератах.</span></li>
+                <li><span class="mark">+</span><span>Самі ферати дуже сильні: багато класичних, довгих і справді запам'ятовуваних ліній.</span></li>
+                <li><span class="mark">+</span><span>У середині жовтня людей, найімовірніше, буде дуже мало.</span></li>
+              </ul>
+              <p class="pm-subhead">Проти</p>
+              <ul class="pm-list">
+                <li><span class="mark warn">-</span><span>Пейзажі помітно менш різноманітні, ніж на Alta Via 2: кілька днів поспіль можуть виглядати доволі схоже.</span></li>
+                <li><span class="mark warn">-</span><span>Якщо немає особливого інтересу до ферат, значна частина сенсу цього маршруту втрачається.</span></li>
+                <li><span class="mark warn">-</span><span>За атмосферою маршрут доволі однорідний: багато сірого вапняку, стін і високогірного карсту, менше лісів, озер, луків і постійної зміни районів.</span></li>
+              </ul>
+            </article>
+            <article class="pm-card reveal">
+              <p class="pm-subhead">За</p>
+              <ul class="pm-list">
+                <li><span class="mark">+</span><span>Дуже видовищний маршрут із постійною зміною декорацій: вулканічні гребені Padon, Marmolada, високі перевали, осінні ліси й величезне кам'яне плато Pale di San Martino.</span></li>
+                <li><span class="mark">+</span><span>Ферати органічно вбудовані в маршрут і не виглядають окремими радіалками: вони додають технічності та вражень, але не перетворюють весь трек на “ферата-тур”.</span></li>
+                <li><span class="mark">+</span><span>Хороший баланс між високогір'ям і більш живими ландшафтами: скелі, льодовиковий рельєф, луки, ліси, озера й кілька зовсім різних гірських районів.</span></li>
+              </ul>
+              <p class="pm-subhead">Проти</p>
+              <ul class="pm-list">
+                <li><span class="mark warn">-</span><span>Маршрут не дуже дикий: кілька разів перетинаються дороги й туристичні вузли — Passo Pordoi, Fedaia, San Pellegrino та Passo Valles.</span></li>
+                <li><span class="mark warn">-</span><span>Логістика складніша, ніж у компактного маршруту в одному масиві: потрібен трансфер із Trento до старту, є обов'язкова ночівля в наметі, а вода на високих ділянках місцями ненадійна.</span></li>
+                <li><span class="mark warn">-</span><span>Технічне й фізичне навантаження розподілене майже на весь тиждень: навіть за помірного кілометражу багато повільного рельєфу, ферат і днів із набором близько 1000–1500 м.</span></li>
+              </ul>
+            </article>
+          </div>
+          <div class="ratings-panel">
+            <h3 class="shared-row-title">Оцінки</h3>
+            <section class="fact-row rating-row">
+              <h3>Видовищність</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">9.5/10</strong>
+                <p>Майже весь маршрут проходить дуже ефектним високогірним рельєфом: величезні вапнякові башти, вертикальні стіни, вузькі сідловини і знамениті траверси Bocchette. Слабких за краєвидами днів тут практично немає.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">9.5/10</strong>
+                <p>Як і Alta Via 2 загалом, маршрут постійно змінює декорації: долини й озера, високі перевали, льодовиковий масив Marmolada, гребені й величезні світлі плато Pale di San Martino.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Різноманіття</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">6/10</strong>
+                <p>Візуальний характер маршруту доволі однорідний: сірий вапняк, скельні цирки, кулуари й високогірні полиці повторюються з дня в день. Змінюються насамперед самі лінії та характер ферат, а не декорації.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">10/10</strong>
+                <p>Темні вулканічні породи Padon, льодовиковий рельєф Marmolada, осінні ліси й луки, карстові плато Pale — сусідні дні візуально майже не повторюють один одного.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Технічна складність</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">9.5/10</strong>
+                <p>Spellini, Bocchette Centrali, Palmieri, Castiglioni, Ideale, Brentari, Oliva Detassis, Bocchette Alte і SOSAT. Ферати тут складають основну частину маршруту: довгі експоновані траверси, вертикальні драбини, вузькі полиці й ділянки майже на 3000 м.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">8/10</strong>
+                <p>Trincee, 606 і Forcella Marmolada, Ombretta / 650, Farangole, Porton і Velo. Технічних ділянок багато, але вони вбудовані в маршрут і відрізняються за характером.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Фізична складність</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">7/10</strong>
+                <p>Більшість днів дають близько 700–1100 м набору, а найдовші й технічні ділянки розподілені доволі рівномірно. Великий плюс маршруту — Bocchette Alte і частину інших ключових ферат можна проходити налегке, залишаючи основний рюкзак у bivacco.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">8/10</strong>
+                <p>Кілька днів із набором близько 1000–1350 м і один близько 1500–1600 м. Кілометраж помірний, але автономний рюкзак і повільний технічний рельєф помітно додають навантаження.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Дикість / малолюдність</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">8.5/10</strong>
+                <p>У середині жовтня більшість rifugio вже закриті, канатки не працюють, а всередині масиву може бути майже порожньо. Водночас щільна мережа стежок і притулків не створює відчуття повної відірваності від цивілізації.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">6.5/10</strong>
+                <p>На Ombretta і у високих Pale поза сезоном може бути майже порожньо, але маршрут кілька разів повертається до цивілізації й перетинає дороги: Pordoi, Fedaia, San Pellegrino і Passo Valles.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Логістика</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">8/10</strong>
+                <p>Маршрут майже круговий: старт і фініш у районі Madonna di Campiglio / Fontanella. Із Trento сюди дістатися простіше, ніж до старту Alta Via 2 на Passo Pordoi, а зворотна дорога починається практично там само, де й похід.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">6.5/10</strong>
+                <p>Старт із Trento потребує кількох транспортних зв'язок до Passo Pordoi, є обов'язкова наметова ночівля, а вода місцями ненадійна. Фініш у San Martino di Castrozza організувати помітно простіше.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Гнучкість</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">8.5/10</strong>
+                <p>Щільна мережа rifugio і bivacco дає багато варіантів для зміни маршруту й аварійних виходів. Майже на кожному етапі можна скоротити день, пропустити окрему ферату або піти в долину, а кілька ключових ферат проходити налегке.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">9/10</strong>
+                <p>Намет дозволяє рухати місце ночівлі, а багато ключових елементів можна скорочувати або додавати за ситуацією: вершини, окремі ferrata і довжину денних етапів.</p>
+              </div>
+            </section>
+            <section class="fact-row rating-row">
+              <h3>Цілісність маршруту</h3>
+              <div class="rating-card brenta-rating">
+                <strong class="rating-score">8/10</strong>
+                <p>Загальна лінія читається добре і майже весь час залишається всередині одного масиву, але частина ферат усе ж додана саме заради самих ферат, а не тому, що без них неможливо логічно продовжити маршрут. Тому він відчувається зібраним, але трохи менш природним як наскрізний перехід.</p>
+              </div>
+              <div class="rating-card">
+                <strong class="rating-score">9/10</strong>
+                <p>Попри різноманіття, лінія читається природно: Padon → Marmolada → Ombretta → Pale di San Martino. Ферати працюють як продовження шляху, а не як окремі радіалки.</p>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery-section" id="gallery">
+      <div class="shell">
+        <div class="gallery-board">
+          <article class="gallery-group reveal">
+            <h3><a href="brenta.html">Dolomiti di Brenta</a></h3>
+            <div class="gallery-carousel" data-carousel>
+              <div class="photo-grid">
+                <button class="photo-card is-active" type="button" data-title="Bocchette Centrali: панорама стін Brenta" data-source="Komoot / Visit Paganella" data-src="https://d2exd72xrrp1s7.cloudfront.net/www/000/1k4/17/171dnchenkxxo10xifrhqcf27b3l3gsh9q-uhi26353263/0?crop=false&q=75&width=1920">
+                  <img src="https://d2exd72xrrp1s7.cloudfront.net/www/000/1k4/17/171dnchenkxxo10xifrhqcf27b3l3gsh9q-uhi26353263/0?crop=false&q=75&width=1920" alt="Панорама стін і кулуарів Bocchette Centrali у Dolomiti di Brenta" loading="eager">
+                  <span class="photo-caption">Bocchette Centrali</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Класика Via delle Bocchette" data-source="Outdooractive" data-src="https://img1.oastatic.com/img2/5271547/max/variant.webp">
+                  <img src="https://img1.oastatic.com/img2/5271547/max/variant.webp" alt="Альпіністи на маршруті Via delle Bocchette у Brenta" loading="eager">
+                  <span class="photo-caption">Via delle Bocchette</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Rifugio Brentei і стіни Brenta" data-source="Wikimedia Commons" data-src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Rifugio_Brentei.jpg">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Rifugio_Brentei.jpg" alt="Rifugio Brentei на тлі стін Dolomiti di Brenta" loading="eager">
+                  <span class="photo-caption">Rifugio Brentei</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Bocchette: вузька полиця над хмарами" data-source="Outdooractive" data-src="https://img3.oastatic.com/img2/61547084/max/variant.webp">
+                  <img src="https://img3.oastatic.com/img2/61547084/max/variant.webp" alt="Група туристів на вузькій скельній полиці в Dolomiti di Brenta над хмарами" loading="eager">
+                  <span class="photo-caption">Bocchette traverse</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Via ferrata над Molveno" data-source="Visit Molveno" data-src="https://www.visitmolveno.it/files/anteprima/1920/vie-ferrate,6864.jpg?WebbinsCacheCounter=1&amp;webp=true">
+                  <img src="https://www.visitmolveno.it/files/anteprima/1920/vie-ferrate,6864.jpg?WebbinsCacheCounter=1&amp;webp=true" alt="Маршрут via ferrata над озером Molveno у Dolomiti di Brenta" loading="eager">
+                  <span class="photo-caption">Ferrata / Molveno</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Осінні кулуари й башти Dolomiti di Brenta" data-source="Lonely Planet Italia" data-src="https://images.lonelyplanetitalia.it/uploads/CVx2THcPwXCjlrb91slRNcTnRSM6cBht.jpg?q=80&p=slider&s=476667220f8ac402cc3a898ecc35ead7">
+                  <img src="https://images.lonelyplanetitalia.it/uploads/CVx2THcPwXCjlrb91slRNcTnRSM6cBht.jpg?q=80&p=slider&s=476667220f8ac402cc3a898ecc35ead7" alt="Осінні ліси, скельні башти й хмари в Dolomiti di Brenta" loading="eager">
+                  <span class="photo-caption">Осіння Brenta</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Rifugio Pedrotti і високий карст Brenta" data-source="Outdooractive" data-src="https://img0.oastatic.com/img2/614131931/max/variant.jpg">
+                  <img src="https://img0.oastatic.com/img2/614131931/max/variant.jpg" alt="Rifugio Pedrotti серед скель Dolomiti di Brenta" loading="eager">
+                  <span class="photo-caption">Rifugio Pedrotti</span>
+                </button>
+              </div>
+              <button class="carousel-arrow prev" type="button" aria-label="Попереднє фото"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+              <button class="carousel-arrow next" type="button" aria-label="Наступне фото"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+              <span class="carousel-count" aria-live="polite">1 / 7</span>
+            </div>
+          </article>
+
+          <article class="gallery-group reveal">
+            <h3><a href="alta-via.html">Alta Via 2 Inspired</a></h3>
+            <div class="gallery-carousel" data-carousel>
+              <div class="photo-grid">
+                <button class="photo-card is-active" type="button" data-title="Marmolada і Lago di Fedaia в осінньому світлі" data-source="FocusOnTrips" data-src="https://focusontrips.com/wp-content/uploads/2019/11/Fedaia2.jpg">
+                  <img src="https://focusontrips.com/wp-content/uploads/2019/11/Fedaia2.jpg" alt="Lago di Fedaia і Marmolada з осінніми модринами" loading="eager">
+                  <span class="photo-caption">Marmolada / Fedaia</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Rifugio Rosetta на плато Pale di San Martino" data-source="Trekking.it" data-src="https://www.trekking.it/wp-content/uploads/2021/09/16/11/30/Rifugio-Rosetta_ph-Enrica-Pallaver.jpg?v=148549">
+                  <img src="https://www.trekking.it/wp-content/uploads/2021/09/16/11/30/Rifugio-Rosetta_ph-Enrica-Pallaver.jpg?v=148549" alt="Rifugio Rosetta на кам'яному плато Pale di San Martino" loading="eager">
+                  <span class="photo-caption">Pale / Rosetta</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Val Venegia і Pale di San Martino" data-source="Wikimedia Commons" data-src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pale_di_San_Martino-Val_Venegia.jpg">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pale_di_San_Martino-Val_Venegia.jpg" alt="Val Venegia і Pale di San Martino" loading="eager">
+                  <span class="photo-caption">Val Venegia</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Marmolada над осіннім лісом" data-source="Mountain Photography" data-src="https://www.mountainphotography.com/images/xl/20191104-Marmolada-Autumn.jpg">
+                  <img src="https://www.mountainphotography.com/images/xl/20191104-Marmolada-Autumn.jpg" alt="Marmolada над осіннім лісом у Доломітах" loading="eager">
+                  <span class="photo-caption">Marmolada autumn</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Passo Fedaia і схили Marmolada" data-source="Val di Fassa" data-src="https://www.fassa.com/01-immagini-APT/PASSI%20DOLOMITICI/PASSO%20FEDAIA/AUTUNNO/59401/image-thumb__59401__fullscreenHeader/ApTValdiFassa_050_IMAGO%20GARAGE_2024%20Autunno%20APT%20-114%402x.jpg">
+                  <img src="https://www.fassa.com/01-immagini-APT/PASSI%20DOLOMITICI/PASSO%20FEDAIA/AUTUNNO/59401/image-thumb__59401__fullscreenHeader/ApTValdiFassa_050_IMAGO%20GARAGE_2024%20Autunno%20APT%20-114%402x.jpg" alt="Passo Fedaia і Marmolada з осінніми схилами" loading="eager">
+                  <span class="photo-caption">Passo Fedaia</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Rifugio Pradidali в серці Pale" data-source="Moon & Honey Travel" data-src="https://www.moonhoneytravel.com/wp-content/uploads/2020/11/moonhoneytravel_Pala-di-San-Martino-circuit-11-1024x683.jpg">
+                  <img src="https://www.moonhoneytravel.com/wp-content/uploads/2020/11/moonhoneytravel_Pala-di-San-Martino-circuit-11-1024x683.jpg" alt="Rifugio Pradidali серед башт Pale di San Martino" loading="eager">
+                  <span class="photo-caption">Rifugio Pradidali</span>
+                </button>
+                <button class="photo-card" type="button" data-title="Palaronda Ferrata: вечір біля високого rifugio" data-source="San Martino" data-src="https://www.sanmartino.com/imports/images/itinerary/dolomiti-palaronda-ferrata-classic-tappa-5-85444e11-2885-5d6a-b28b-d19694cdab43/1336/image-thumb__1336__thumb800/img-30076865.1a4f69b3.jpg">
+                  <img src="https://www.sanmartino.com/imports/images/itinerary/dolomiti-palaronda-ferrata-classic-tappa-5-85444e11-2885-5d6a-b28b-d19694cdab43/1336/image-thumb__1336__thumb800/img-30076865.1a4f69b3.jpg" alt="Вечірній rifugio на маршруті Palaronda Ferrata у Pale di San Martino" loading="eager">
+                  <span class="photo-caption">Palaronda Ferrata</span>
+                </button>
+              </div>
+              <button class="carousel-arrow prev" type="button" aria-label="Попереднє фото"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button>
+              <button class="carousel-arrow next" type="button" aria-label="Наступне фото"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button>
+              <span class="carousel-count" aria-live="polite">1 / 7</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="lightbox" role="dialog" aria-modal="true" aria-label="Перегляд фотографії">
+    <div class="lightbox-panel">
+      <img src="" alt="">
+      <div class="lightbox-meta">
+        <span class="lightbox-title"></span>
+        <button class="close-lightbox" type="button">Закрити</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+
+    document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+      const slides = [...carousel.querySelectorAll(".photo-card")];
+      const count = carousel.querySelector(".carousel-count");
+      const previous = carousel.querySelector(".carousel-arrow.prev");
+      const next = carousel.querySelector(".carousel-arrow.next");
+      let index = 0;
+      let timer;
+
+      const showSlide = (nextIndex) => {
+        index = (nextIndex + slides.length) % slides.length;
+        slides.forEach((slide, slideIndex) => {
+          slide.classList.toggle("is-active", slideIndex === index);
+          slide.setAttribute("tabindex", slideIndex === index ? "0" : "-1");
+          slide.setAttribute("aria-hidden", String(slideIndex !== index));
+        });
+        count.textContent = `${index + 1} / ${slides.length}`;
+      };
+
+      const start = () => {
+        window.clearInterval(timer);
+        timer = window.setInterval(() => showSlide(index + 1), 3000);
+      };
+
+      const move = (direction) => {
+        showSlide(index + direction);
+        start();
+      };
+
+      previous.addEventListener("click", () => move(-1));
+      next.addEventListener("click", () => move(1));
+      carousel.addEventListener("mouseenter", () => window.clearInterval(timer));
+      carousel.addEventListener("mouseleave", start);
+      carousel.addEventListener("focusin", () => window.clearInterval(timer));
+      carousel.addEventListener("focusout", start);
+
+      showSlide(0);
+      start();
+    });
+
+    const lightbox = document.querySelector(".lightbox");
+    const lightboxImage = lightbox.querySelector("img");
+    const lightboxTitle = lightbox.querySelector(".lightbox-title");
+    const closeLightbox = () => {
+      lightbox.classList.remove("is-open");
+      lightboxImage.src = "";
+      document.body.style.overflow = "";
+    };
+
+    document.querySelectorAll(".photo-card").forEach((button) => {
+      button.addEventListener("click", () => {
+        lightboxImage.src = button.dataset.src;
+        lightboxImage.alt = button.querySelector("img").alt;
+        lightboxTitle.textContent = `${button.dataset.title} · ${button.dataset.source}`;
+        lightbox.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      });
+    });
+
+    document.querySelector(".close-lightbox").addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", (event) => {
+      if (event.target === lightbox) closeLightbox();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && lightbox.classList.contains("is-open")) closeLightbox();
+    });
+  </script>
+</body>
+</html>
