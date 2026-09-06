@@ -571,6 +571,10 @@
       display: none;
     }
 
+    .gallery-swipe-hint {
+      display: none;
+    }
+
     .gallery-section {
       order: 1;
       padding: 42px 0 22px;
@@ -1050,6 +1054,27 @@
         scrollbar-color: rgba(184, 88, 50, .45) rgba(23, 32, 28, .08);
       }
 
+      .gallery-swipe-hint {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 0 0 14px;
+        color: rgba(23, 32, 28, .72);
+        font-size: .74rem;
+        font-weight: 900;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+      }
+
+      .gallery-swipe-hint::before,
+      .gallery-swipe-hint::after {
+        content: "";
+        width: 34px;
+        height: 1px;
+        background: rgba(184, 88, 50, .42);
+      }
+
       .gallery-group {
         flex: 0 0 100%;
         min-width: 0;
@@ -1074,6 +1099,80 @@
         width: 100%;
       }
 
+      .mobile-swipe-header {
+        position: sticky;
+        top: 0;
+        z-index: 15;
+        display: grid;
+        gap: 9px;
+        margin: 0 -12px 14px;
+        padding: 12px 12px 10px;
+        border-bottom: 1px solid rgba(23, 32, 28, .1);
+        background: rgba(246, 241, 232, .92);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 14px 30px rgba(23, 32, 28, .08);
+      }
+
+      .mobile-current-route {
+        margin: 0;
+        color: var(--ink);
+        font-family: ui-serif, Georgia, "Times New Roman", serif;
+        font-size: clamp(1.35rem, 6vw, 1.7rem);
+        line-height: 1;
+        text-align: center;
+        text-wrap: balance;
+      }
+
+      .mobile-swipe-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .mobile-swipe-button {
+        min-height: 30px;
+        border: 1px solid rgba(23, 32, 28, .13);
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: rgba(255, 250, 240, .58);
+        color: rgba(23, 32, 28, .68);
+        font-size: .72rem;
+        font-weight: 900;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+
+      .mobile-swipe-button.is-active {
+        background: var(--forest);
+        color: #fffaf0;
+        border-color: var(--forest);
+      }
+
+      .swipe-arrow {
+        color: var(--rust);
+        font-size: 1.05rem;
+        font-weight: 900;
+        animation: swipe-nudge 1.35s ease-in-out infinite;
+      }
+
+      .swipe-arrow:last-child {
+        animation-delay: .18s;
+      }
+
+      @keyframes swipe-nudge {
+        0%,
+        100% {
+          transform: translateX(0);
+          opacity: .46;
+        }
+
+        50% {
+          transform: translateX(3px);
+          opacity: 1;
+        }
+      }
+
       .mobile-route-track {
         display: flex;
         gap: 14px;
@@ -1094,25 +1193,6 @@
         gap: 14px;
         scroll-snap-align: start;
         scroll-snap-stop: always;
-      }
-
-      .mobile-route-header {
-        position: sticky;
-        top: 0;
-        z-index: 4;
-        padding: 10px 0 4px;
-        background: linear-gradient(180deg, rgba(246, 241, 232, .97), rgba(246, 241, 232, .88));
-        backdrop-filter: blur(10px);
-      }
-
-      .mobile-route-header h2 {
-        max-width: calc(100vw - 32px);
-        margin: 0 auto;
-        color: var(--ink);
-        font-size: clamp(1.35rem, 6vw, 1.7rem);
-        line-height: 1;
-        text-align: center;
-        text-wrap: balance;
       }
 
       .mobile-compare-block {
@@ -1400,6 +1480,15 @@
           </div>
         </div>
         <div class="mobile-compare" data-mobile-compare aria-label="Порівняння маршрутів у мобільному форматі">
+          <div class="mobile-swipe-header" data-mobile-swipe-header>
+            <h2 class="mobile-current-route" data-mobile-current-route>Dolomiti di Brenta</h2>
+            <div class="mobile-swipe-controls" aria-label="Перемикання маршруту">
+              <span class="swipe-arrow" aria-hidden="true">←</span>
+              <button class="mobile-swipe-button is-active" type="button" data-route-jump="0">Brenta</button>
+              <button class="mobile-swipe-button" type="button" data-route-jump="1">Alta Via</button>
+              <span class="swipe-arrow" aria-hidden="true">→</span>
+            </div>
+          </div>
           <div class="mobile-route-track" data-mobile-route-track>
             <article class="mobile-route-panel" data-mobile-route="brenta" aria-label="Dolomiti di Brenta"></article>
             <article class="mobile-route-panel" data-mobile-route="alta" aria-label="Alta Via 2 Inspired"></article>
@@ -1410,6 +1499,7 @@
 
     <section class="section gallery-section" id="gallery">
       <div class="shell">
+        <div class="gallery-swipe-hint" aria-hidden="true">Фото: Brenta ↔ Alta Via</div>
         <div class="gallery-board">
           <article class="gallery-group reveal">
             <h3><a href="brenta.html">Dolomiti di Brenta</a></h3>
@@ -1522,6 +1612,9 @@
         brenta: "Dolomiti di Brenta",
         alta: "Alta Via 2 Inspired"
       };
+      const routeOrder = ["brenta", "alta"];
+      const currentRouteTitle = document.querySelector("[data-mobile-current-route]");
+      const routeButtons = [...document.querySelectorAll("[data-route-jump]")];
       const panels = [...mobileTrack.querySelectorAll("[data-mobile-route]")].reduce((result, panel) => {
         result[panel.dataset.mobileRoute] = panel;
         return result;
@@ -1542,15 +1635,6 @@
         block.append(heading, cloneForMobile(element));
         panel.append(block);
       };
-
-      Object.entries(panels).forEach(([route, panel]) => {
-        const header = document.createElement("header");
-        header.className = "mobile-route-header";
-        const title = document.createElement("h2");
-        title.textContent = routeNames[route];
-        header.append(title);
-        panel.append(header);
-      });
 
       document.querySelectorAll(".fact-rows > .fact-row:not(.rating-row)").forEach((row) => {
         const title = row.querySelector("h3")?.textContent.trim();
@@ -1593,6 +1677,31 @@
       if (mobileTrack.querySelector(".mobile-compare-block")) {
         document.body.classList.add("has-mobile-compare");
       }
+
+      const setActiveMobileRoute = (index) => {
+        const route = routeOrder[index] || routeOrder[0];
+        if (currentRouteTitle) currentRouteTitle.textContent = routeNames[route];
+        routeButtons.forEach((button) => {
+          button.classList.toggle("is-active", Number(button.dataset.routeJump) === index);
+        });
+      };
+      const updateActiveMobileRoute = () => {
+        const width = mobileTrack.clientWidth || 1;
+        const index = Math.round(mobileTrack.scrollLeft / width);
+        setActiveMobileRoute(Math.max(0, Math.min(routeOrder.length - 1, index)));
+      };
+
+      routeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = Number(button.dataset.routeJump);
+          mobileTrack.scrollTo({ left: mobileTrack.clientWidth * index, behavior: "smooth" });
+          setActiveMobileRoute(index);
+        });
+      });
+      mobileTrack.addEventListener("scroll", () => {
+        window.requestAnimationFrame(updateActiveMobileRoute);
+      }, { passive: true });
+      updateActiveMobileRoute();
     }
 
     document.querySelectorAll("[data-carousel]").forEach((carousel) => {
