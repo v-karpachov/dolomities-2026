@@ -41,6 +41,7 @@
         linear-gradient(180deg, #fbf7ef 0%, var(--paper) 50%, #eee5d7 100%);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       line-height: 1.5;
+      overflow-x: hidden;
     }
 
     main {
@@ -156,6 +157,7 @@
     .hero-intro {
       display: grid;
       gap: 20px;
+      min-width: 0;
     }
 
     .hero-actions {
@@ -563,6 +565,10 @@
     .ratings-panel .rating-card p {
       font-size: .84rem;
       line-height: 1.48;
+    }
+
+    .mobile-compare {
+      display: none;
     }
 
     .gallery-section {
@@ -1006,7 +1012,21 @@
       }
 
       h1 {
-        font-size: clamp(3rem, 15vw, 5rem);
+        max-width: calc(100vw - 32px);
+        font-size: clamp(2.25rem, 8.7vw, 2.75rem);
+        line-height: 1;
+        text-wrap: balance;
+      }
+
+      .hero-intro {
+        max-width: calc(100vw - 32px);
+      }
+
+      .hero-lede {
+        width: min(100%, 340px);
+        max-width: calc(100vw - 32px);
+        font-size: .98rem;
+        overflow-wrap: break-word;
       }
 
       .section {
@@ -1017,8 +1037,122 @@
         height: 270px;
       }
 
+      .gallery-board {
+        display: flex;
+        gap: 14px;
+        margin: 0 -12px;
+        padding: 0 12px 18px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(184, 88, 50, .45) rgba(23, 32, 28, .08);
+      }
+
+      .gallery-group {
+        flex: 0 0 100%;
+        min-width: 0;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+
       .metric-grid {
         grid-template-columns: 1fr;
+      }
+
+      body.has-mobile-compare #regions .fact-rows {
+        display: none;
+      }
+
+      body.has-mobile-compare #regions .shell {
+        display: block;
+      }
+
+      body.has-mobile-compare .mobile-compare {
+        display: block;
+        width: 100%;
+      }
+
+      .mobile-route-track {
+        display: flex;
+        gap: 14px;
+        margin: 0 -12px;
+        padding: 0 12px 18px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(184, 88, 50, .45) rgba(23, 32, 28, .08);
+      }
+
+      .mobile-route-panel {
+        flex: 0 0 100%;
+        min-width: 0;
+        display: grid;
+        gap: 14px;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+      }
+
+      .mobile-route-header {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        padding: 10px 0 4px;
+        background: linear-gradient(180deg, rgba(246, 241, 232, .97), rgba(246, 241, 232, .88));
+        backdrop-filter: blur(10px);
+      }
+
+      .mobile-route-header h2 {
+        max-width: calc(100vw - 32px);
+        margin: 0 auto;
+        color: var(--ink);
+        font-size: clamp(1.35rem, 6vw, 1.7rem);
+        line-height: 1;
+        text-align: center;
+        text-wrap: balance;
+      }
+
+      .mobile-compare-block {
+        display: grid;
+        gap: 8px;
+      }
+
+      .mobile-compare-block > h3,
+      .mobile-ratings-panel > h3 {
+        margin: 0;
+        color: var(--rust);
+        text-align: center;
+        font-size: .76rem;
+        font-weight: 900;
+        letter-spacing: .09em;
+        text-transform: uppercase;
+      }
+
+      .mobile-ratings-panel {
+        display: grid;
+        gap: 10px;
+        border: 1px solid rgba(124, 80, 44, .22);
+        border-radius: var(--radius);
+        padding: 14px;
+        background:
+          linear-gradient(180deg, rgba(255, 250, 240, .82), rgba(242, 231, 207, .52)),
+          rgba(255, 250, 240, .72);
+      }
+
+      .mobile-compare .fact-text,
+      .mobile-compare .route-info-card,
+      .mobile-compare .pm-card,
+      .mobile-compare .rating-card {
+        width: 100%;
+        min-height: 0;
+        margin: 0;
+      }
+
+      .mobile-compare .brenta-rating .rating-score {
+        text-align: left;
       }
 
     }
@@ -1061,7 +1195,7 @@
         <div class="fact-rows reveal" aria-label="Ключові властивості двох маршрутів">
           <section class="fact-row route-info-row">
             <h3>Загальна інформація</h3>
-            <div class="route-info-card">
+            <div class="route-info-card" data-route="brenta">
               <dl class="route-stats">
                 <div>
                   <dt>Тривалість</dt>
@@ -1098,7 +1232,7 @@
               </dl>
               <a class="route-page-link" href="brenta.html">Детальний маршрут →</a>
             </div>
-            <div class="route-info-card">
+            <div class="route-info-card" data-route="alta">
               <dl class="route-stats">
                 <div>
                   <dt>Тривалість</dt>
@@ -1138,12 +1272,12 @@
           </section>
           <section class="fact-row">
             <h3>Короткий опис</h3>
-            <p class="fact-text">Brenta — це маршрут, де весь похід зосереджений навколо одного масиву й його ферат. Кілька ночей проводиш у самому серці масиву, а частину ключових ферат можна ходити налегке, залишаючи основний рюкзак у bivacco або rifugio. Тут менше постійної зміни декорацій, зате більше часу серед вузьких полиць над урвищами, довгих скельних траверсів, сірих вапнякових башт і знаменитих Bocchette. Це варіант для тих, хто хоче зробити акцент саме на фератах: більше технічних скельних маршрутів, більше часу у високогір’ї й менше довгих переходів між різними районами.</p>
-            <p class="fact-text">Це маршрут-панорама за мотивами Alta Via 2. Його сенс — зібрати різні Доломіти за один тиждень: озера під Marmolada, найвищою горою Доломітів, осінні ліси, темні вулканічні гребені Padon і величезне світле плато Pale di San Martino серед тритисячників і вертикальних стін. Ферати тут не самоціль, а спосіб пройти найцікавішими лініями: військовими тунелями й повітряним гребенем Padon із Marmolada просто навпроти, через високі перевали та залишки льодовиків, вузькими полицями й скельними стінами Pale. Маршрут менш монолітний, ніж Brenta, зате різноманітніший: більше світла, кольору, простору і відчуття подорожі.</p>
+            <p class="fact-text" data-route="brenta">Brenta — це маршрут, де весь похід зосереджений навколо одного масиву й його ферат. Кілька ночей проводиш у самому серці масиву, а частину ключових ферат можна ходити налегке, залишаючи основний рюкзак у bivacco або rifugio. Тут менше постійної зміни декорацій, зате більше часу серед вузьких полиць над урвищами, довгих скельних траверсів, сірих вапнякових башт і знаменитих Bocchette. Це варіант для тих, хто хоче зробити акцент саме на фератах: більше технічних скельних маршрутів, більше часу у високогір’ї й менше довгих переходів між різними районами.</p>
+            <p class="fact-text" data-route="alta">Це маршрут-панорама за мотивами Alta Via 2. Його сенс — зібрати різні Доломіти за один тиждень: озера під Marmolada, найвищою горою Доломітів, осінні ліси, темні вулканічні гребені Padon і величезне світле плато Pale di San Martino серед тритисячників і вертикальних стін. Ферати тут не самоціль, а спосіб пройти найцікавішими лініями: військовими тунелями й повітряним гребенем Padon із Marmolada просто навпроти, через високі перевали та залишки льодовиків, вузькими полицями й скельними стінами Pale. Маршрут менш монолітний, ніж Brenta, зате різноманітніший: більше світла, кольору, простору і відчуття подорожі.</p>
           </section>
           <h3 class="shared-row-title">За і проти</h3>
           <div class="plusminus">
-            <article class="pm-card reveal">
+            <article class="pm-card reveal" data-route="brenta">
               <p class="pm-subhead">За</p>
               <ul class="pm-list">
                 <li><span class="mark">+</span><span>Дуже видовищний і цілісний скельний маршрут: майже кожен день проходить серед великих стін, башт і вузьких перевалів.</span></li>
@@ -1158,7 +1292,7 @@
                 <li><span class="mark warn">-</span><span>За атмосферою маршрут доволі однорідний: багато сірого вапняку, стін і високогірного карсту, менше лісів, озер, луків і постійної зміни районів.</span></li>
               </ul>
             </article>
-            <article class="pm-card reveal">
+            <article class="pm-card reveal" data-route="alta">
               <p class="pm-subhead">За</p>
               <ul class="pm-list">
                 <li><span class="mark">+</span><span>Дуже видовищний маршрут із постійною зміною декорацій.</span></li>
@@ -1177,92 +1311,98 @@
             <h3 class="shared-row-title">Оцінки</h3>
             <section class="fact-row rating-row">
               <h3>Видовищність</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">9.5/10</strong>
                 <p>Майже весь маршрут проходить дуже ефектним високогірним рельєфом: величезні вапнякові башти, вертикальні стіни, вузькі сідловини і знамениті траверси Bocchette. Слабких за краєвидами днів тут практично немає.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">9.5/10</strong>
                 <p>Як і Alta Via 2 загалом, маршрут постійно змінює декорації: долини й озера, високі перевали, гребені й величезні плато.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Різноманіття</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">6/10</strong>
                 <p>Візуальний характер маршруту доволі однорідний: сірий вапняк, скельні цирки, кулуари й високогірні полиці повторюються з дня в день. Змінюються насамперед самі лінії та характер ферат, а не декорації.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">10/10</strong>
                 <p>Темні вулканічні породи Padon, льодовиковий рельєф Marmolada, осінні ліси й луки, карстові плато Pale — сусідні дні візуально майже не повторюють один одного.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Технічна складність</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">9.5/10</strong>
                 <p>Ферати тут складають основну частину маршруту: довгі експоновані траверси, вертикальні драбини, вузькі полиці й ділянки майже на 3000 м.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">8/10</strong>
                 <p>Технічних ділянок багато, але вони вбудовані в маршрут і відрізняються за характером.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Фізична складність</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">7/10</strong>
                 <p>Більшість днів дають близько 700–1100 м набору, а найдовші й технічні ділянки розподілені доволі рівномірно. Великий плюс маршруту — Bocchette Alte і частину інших ключових ферат можна проходити налегке, залишаючи основний рюкзак у bivacco.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">9/10</strong>
                 <p>Кілька днів із набором близько 1000–1350 м і один близько 1500–1600 м. Кілометраж помірний, але автономний рюкзак і повільний технічний рельєф помітно додають навантаження.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Дикість / малолюдність</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">8.5/10</strong>
                 <p>Всередині масиву може бути майже порожньо. Водночас щільна мережа стежок і притулків не створює відчуття повної відірваності від цивілізації.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">6.5/10</strong>
                 <p>На Ombretta і у високих Pale поза сезоном може бути майже порожньо, але маршрут кілька разів повертається до цивілізації й перетинає дороги: Pordoi, Fedaia, San Pellegrino і Passo Valles.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Логістика</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">8/10</strong>
                 <p>Маршрут майже круговий: старт і фініш у районі Madonna di Campiglio / Fontanella. Із Trento сюди дістатися простіше, ніж до старту Alta Via 2 на Passo Pordoi, а зворотна дорога починається практично там само, де й похід.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">6.5/10</strong>
                 <p>Старт із Trento потребує кількох транспортних зв'язок до Passo Pordoi, є обов'язкова наметова ночівля. Фініш у San Martino di Castrozza організувати помітно простіше.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Гнучкість</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">8.5/10</strong>
                 <p>Щільна мережа rifugio і bivacco дає багато варіантів для зміни маршруту й аварійних виходів. Майже на кожному етапі можна скоротити день, пропустити окрему ферату або піти в долину, а кілька ключових ферат проходити налегке.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">9/10</strong>
                 <p>Намет дозволяє рухати місце ночівлі, а багато ключових елементів можна скорочувати або додавати за ситуацією: вершини, окремі ferrata і довжину денних етапів.</p>
               </div>
             </section>
             <section class="fact-row rating-row">
               <h3>Цілісність маршруту</h3>
-              <div class="rating-card brenta-rating">
+              <div class="rating-card brenta-rating" data-route="brenta">
                 <strong class="rating-score">8/10</strong>
                 <p>Загальна лінія читається добре і майже весь час залишається всередині одного масиву, але частина ферат усе ж додана саме заради самих ферат, а не тому, що без них неможливо логічно продовжити маршрут.</p>
               </div>
-              <div class="rating-card">
+              <div class="rating-card" data-route="alta">
                 <strong class="rating-score">9/10</strong>
                 <p>Попри різноманіття, лінія читається природно: Padon → Marmolada → Ombretta → Pale di San Martino. Ферати працюють як продовження шляху, а не як окремі радіалки.</p>
               </div>
             </section>
+          </div>
+        </div>
+        <div class="mobile-compare" data-mobile-compare aria-label="Порівняння маршрутів у мобільному форматі">
+          <div class="mobile-route-track" data-mobile-route-track>
+            <article class="mobile-route-panel" data-mobile-route="brenta" aria-label="Dolomiti di Brenta"></article>
+            <article class="mobile-route-panel" data-mobile-route="alta" aria-label="Alta Via 2 Inspired"></article>
           </div>
         </div>
       </div>
@@ -1375,6 +1515,85 @@
     }, { threshold: 0.12 });
 
     document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+
+    const mobileTrack = document.querySelector("[data-mobile-route-track]");
+    if (mobileTrack) {
+      const routeNames = {
+        brenta: "Dolomiti di Brenta",
+        alta: "Alta Via 2 Inspired"
+      };
+      const panels = [...mobileTrack.querySelectorAll("[data-mobile-route]")].reduce((result, panel) => {
+        result[panel.dataset.mobileRoute] = panel;
+        return result;
+      }, {});
+      const cloneForMobile = (element) => {
+        const clone = element.cloneNode(true);
+        clone.classList.remove("reveal", "is-visible");
+        clone.querySelectorAll(".reveal, .is-visible").forEach((child) => {
+          child.classList.remove("reveal", "is-visible");
+        });
+        return clone;
+      };
+      const appendBlock = (panel, title, element) => {
+        const block = document.createElement("section");
+        block.className = "mobile-compare-block";
+        const heading = document.createElement("h3");
+        heading.textContent = title;
+        block.append(heading, cloneForMobile(element));
+        panel.append(block);
+      };
+
+      Object.entries(panels).forEach(([route, panel]) => {
+        const header = document.createElement("header");
+        header.className = "mobile-route-header";
+        const title = document.createElement("h2");
+        title.textContent = routeNames[route];
+        header.append(title);
+        panel.append(header);
+      });
+
+      document.querySelectorAll(".fact-rows > .fact-row:not(.rating-row)").forEach((row) => {
+        const title = row.querySelector("h3")?.textContent.trim();
+        if (!title) return;
+        [...row.children].forEach((child) => {
+          const panel = panels[child.dataset.route];
+          if (panel) appendBlock(panel, title, child);
+        });
+      });
+
+      const plusMinusTitle = document.querySelector(".fact-rows > .shared-row-title")?.textContent.trim();
+      document.querySelectorAll(".fact-rows > .plusminus > [data-route]").forEach((card) => {
+        const panel = panels[card.dataset.route];
+        if (panel && plusMinusTitle) appendBlock(panel, plusMinusTitle, card);
+      });
+
+      const ratingsPanel = document.querySelector(".ratings-panel");
+      const ratingGroups = {};
+      if (ratingsPanel) {
+        const title = ratingsPanel.querySelector(".shared-row-title")?.textContent.trim() || "Оцінки";
+        Object.entries(panels).forEach(([route, panel]) => {
+          const group = document.createElement("section");
+          group.className = "mobile-ratings-panel";
+          const heading = document.createElement("h3");
+          heading.textContent = title;
+          group.append(heading);
+          panel.append(group);
+          ratingGroups[route] = group;
+        });
+        ratingsPanel.querySelectorAll(".rating-row").forEach((row) => {
+          const rowTitle = row.querySelector("h3")?.textContent.trim();
+          if (!rowTitle) return;
+          [...row.children].forEach((child) => {
+            const group = ratingGroups[child.dataset.route];
+            if (group) appendBlock(group, rowTitle, child);
+          });
+        });
+      }
+
+      if (mobileTrack.querySelector(".mobile-compare-block")) {
+        document.body.classList.add("has-mobile-compare");
+      }
+    }
 
     document.querySelectorAll("[data-carousel]").forEach((carousel) => {
       const slides = [...carousel.querySelectorAll(".photo-card")];
