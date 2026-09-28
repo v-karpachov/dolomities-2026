@@ -46,6 +46,6 @@ Run: `node scripts/verify-brenta-page.mjs && git diff --check`
 
 Then inspect the page at desktop width and 390 px, confirming no overflow and that the section precedes Day 1.
 
-- [ ] **Step 5: Commit and publish**
+- [x] **Step 5: Commit and publish**
 
 Commit only the redesigned page, verifier, design, and plan; push `main`; wait for GitHub Pages; verify the live page.
