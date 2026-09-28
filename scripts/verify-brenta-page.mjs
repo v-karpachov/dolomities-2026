@@ -25,8 +25,12 @@ const checks = {
   logisticsRoute: html.includes("start-logistics-route"),
   recommendedService: html.includes("Рекомендований рейс"),
   departureStrip: html.includes("start-logistics-departure"),
+  wideLogistics: html.includes('class="start-logistics start-logistics-wide"'),
+  compactLogisticsHeading: html.includes('class="start-logistics-title"'),
   mainArrival: html.includes("08:48") && html.includes("10:56"),
   earlyArrival: html.includes("07:48") && html.includes("09:56"),
+  logisticsBeforeDaysHeading: html.indexOf("data-start-logistics") >= 0
+    && html.indexOf("data-start-logistics") < html.indexOf('id="days-title"'),
   logisticsBeforeDayOne: html.indexOf("data-start-logistics") >= 0
     && html.indexOf("data-start-logistics") < html.indexOf("День 1 — Madonna di Campiglio")
 };
@@ -46,8 +50,11 @@ for (const key of [
   "logisticsRoute",
   "recommendedService",
   "departureStrip",
+  "wideLogistics",
+  "compactLogisticsHeading",
   "mainArrival",
   "earlyArrival",
+  "logisticsBeforeDaysHeading",
   "logisticsBeforeDayOne"
 ]) {
   if (!checks[key]) throw new Error(`Missing Brenta page capability: ${key}`);

@@ -347,6 +347,11 @@
       box-shadow: 0 16px 42px rgba(23, 32, 28, .06);
     }
 
+    .start-logistics-wide {
+      width: 100%;
+      max-width: none;
+    }
+
     .start-logistics-header {
       max-width: 760px;
       margin-bottom: 22px;
@@ -361,9 +366,9 @@
       text-transform: uppercase;
     }
 
-    .start-logistics h2 {
+    .start-logistics-title {
       margin: 0;
-      font-size: clamp(1.85rem, 3.4vw, 2.8rem);
+      font-size: clamp(1.5rem, 2.4vw, 2.05rem);
     }
 
     .start-logistics-route {
@@ -814,12 +819,10 @@
 
     <section class="section" aria-labelledby="days-title">
       <div class="shell">
-        <h2 class="section-title" id="days-title">Дні маршруту</h2>
-        <p class="route-draft-note">Лінії на мапах і GPX — планувальні чернетки. Перед походом їх потрібно звірити з актуальним станом ферат, снігу та закриттів.</p>
-        <section class="start-logistics" data-start-logistics aria-labelledby="start-logistics-title">
+        <section class="start-logistics start-logistics-wide" data-start-logistics aria-labelledby="start-logistics-title">
           <div class="start-logistics-header">
             <p class="start-logistics-kicker">Логістика до старту</p>
-            <h2 id="start-logistics-title">Як дістатися до старту</h2>
+            <h2 class="start-logistics-title" id="start-logistics-title">Як дістатися до старту</h2>
             <div class="start-logistics-route">
               <strong>Trento → Madonna di Campiglio</strong>
               <span>Субота, 10 жовтня 2026</span>
@@ -850,6 +853,8 @@
             <a class="maps-link" href="https://www.trentinotrasporti.it/it/opendata-it">Trentino Trasporti</a>
           </div>
         </section>
+        <h2 class="section-title" id="days-title">Дні маршруту</h2>
+        <p class="route-draft-note">Лінії на мапах і GPX — планувальні чернетки. Перед походом їх потрібно звірити з актуальним станом ферат, снігу та закриттів.</p>
         <div class="timeline">
           <article class="day-card">
             <div class="day-number" aria-hidden="true">1</div>
