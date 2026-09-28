@@ -105,3 +105,43 @@ Confirm aligned columns, readable descriptions, stable image frames, and no text
 - [ ] **Step 4: Run the same browser checks against the live URL with a cache-busting query**
 
 - [ ] **Step 5: Stop the local server and report the new home and preserved comparison URLs**
+
+---
+
+### Task 4: Add the three-route overview map
+
+**Files:**
+- Modify: `index.html`
+- Modify: `scripts/verify-index-page.mjs`
+
+**Interfaces:**
+- Consumes: the eighteen primary day-level GeoJSON tracks under `routes/`.
+- Produces: `initOverviewMap()` and three `data-map-route` filter buttons.
+
+- [ ] **Step 1: Extend the static verifier before changing the page**
+
+Require Leaflet CSS and JavaScript, one `data-overview-map` container, three `data-map-route` buttons, eighteen primary GeoJSON paths, route filtering, start/finish markers, and an inline map status element.
+
+- [ ] **Step 2: Run the verifier and confirm the map requirements fail**
+
+Run `node scripts/verify-index-page.mjs`.
+
+- [ ] **Step 3: Add the map structure and responsive styling before the route grid**
+
+Use a 500 px desktop canvas and a 360 px mobile canvas. Keep the legend buttons above the map and allow them to wrap without horizontal overflow.
+
+- [ ] **Step 4: Implement `initOverviewMap()`**
+
+Load each route's daily files with `Promise.all`, extract the route LineString, add color-coded polylines to one Leaflet feature group per route, add start and finish circle markers, and fit the combined bounds.
+
+- [ ] **Step 5: Implement route selection**
+
+Clicking a route button sets `aria-pressed="true"`, keeps its line fully opaque, dims the other groups, and fits the selected bounds. Clicking the active button clears the selection and restores the combined bounds.
+
+- [ ] **Step 6: Verify static and browser behavior**
+
+Run `node scripts/verify-index-page.mjs`, `git diff --check`, and Playwright at 1440×1000 and 390×844. Assert eighteen route layers, two markers per route, three filter buttons, selection/restore behavior, no page errors, and no horizontal overflow.
+
+- [ ] **Step 7: Commit and publish**
+
+Commit message: `Add overview map to route index`. Push `main`, wait for GitHub Pages, and repeat the Playwright check against the live URL.
