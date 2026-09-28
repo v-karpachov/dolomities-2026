@@ -23,7 +23,7 @@ Add a `Seceda → Costabella →` route link beside the existing Alta Via 2 and 
 
 ## Visual Direction
 
-Reuse the existing warm paper, forest, rust, and gold palette; serif display headings; compact parameter pills; bordered route cards; and mobile breakpoints. Use the Seceda ridge panorama at `https://throneandvine.com/wp-content/uploads/seceda-panorama.webp` as the hero image, with the same dark readability overlay used by the existing detail pages.
+Reuse the existing warm paper, forest, rust, and gold palette; serif display headings; compact parameter pills; bordered route cards; and mobile breakpoints. Use the Seceda ridge panorama at `https://static.wixstatic.com/media/09b168_d39418f30c7b4e26a840402478dcf053~mv2.jpg/v1/fill/w_1600,h_1067,al_c,q_90/09b168_d39418f30c7b4e26a840402478dcf053~mv2.jpg` as the hero image, with the same dark readability overlay used by the existing detail pages.
 
 ## Content Rules
 
