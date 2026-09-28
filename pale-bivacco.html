@@ -440,6 +440,67 @@
       display: none;
     }
 
+    .elevation-profile {
+      margin-top: 18px;
+    }
+
+    .elevation-profile-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .elevation-profile h4 {
+      margin: 0;
+      color: var(--forest);
+      font-size: .9rem;
+      letter-spacing: 0;
+    }
+
+    .elevation-profile-readout {
+      color: var(--muted);
+      font-size: .82rem;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .elevation-profile-chart {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      border-top: 1px solid rgba(23, 32, 28, .12);
+      border-bottom: 1px solid rgba(23, 32, 28, .12);
+      background: rgba(255, 250, 240, .36);
+      touch-action: pan-y;
+    }
+
+    .elevation-profile-chart:focus-visible {
+      outline: 3px solid rgba(216, 154, 61, .5);
+      outline-offset: 2px;
+    }
+
+    .elevation-profile-chart svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .elevation-profile-chart text {
+      fill: var(--muted);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+
+    .elevation-profile-chart .profile-waypoint-label {
+      fill: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
     .route-map .leaflet-control-attribution {
       font-size: .68rem;
     }
@@ -526,6 +587,10 @@
 
       .route-map-canvas {
         height: 360px;
+      }
+
+      .elevation-profile-chart {
+        height: 160px;
       }
     }
   </style>
@@ -698,6 +763,13 @@
                   <a class="route-map-download" href="routes/pale-day-4.gpx" download>Завантажити GPX</a>
                 </div>
                 <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 4"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header">
+                    <h4>Профіль висот</h4>
+                    <output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output>
+                  </div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 4"></div>
+                </div>
                 <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
                 <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-4.gpx" download>Завантажити GPX дня 4</a>.</p></noscript>
               </section>
@@ -833,6 +905,254 @@
     };
 
     const routeMapStates = new WeakMap();
+    const elevationProfileStates = new WeakMap();
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    function createSvgElement(tag, attributes = {}, text = "") {
+      const element = document.createElementNS(SVG_NS, tag);
+      Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+      if (text) element.textContent = text;
+      return element;
+    }
+
+    function distanceKm([longitudeA, latitudeA], [longitudeB, latitudeB]) {
+      const toRadians = (degrees) => degrees * Math.PI / 180;
+      const latitudeDelta = toRadians(latitudeB - latitudeA);
+      const longitudeDelta = toRadians(longitudeB - longitudeA);
+      const a = Math.sin(latitudeDelta / 2) ** 2
+        + Math.cos(toRadians(latitudeA)) * Math.cos(toRadians(latitudeB))
+        * Math.sin(longitudeDelta / 2) ** 2;
+      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function formatDecimal(value, digits = 1) {
+      return value.toLocaleString("uk-UA", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+    }
+
+    function prepareElevationPoints(line) {
+      let travelled = 0;
+      return line.geometry.coordinates.map((coordinate, index, coordinates) => {
+        if (index > 0) travelled += distanceKm(coordinates[index - 1], coordinate);
+        return {
+          coordinate,
+          distance: travelled,
+          elevation: Number(coordinate[2])
+        };
+      }).filter((point) => Number.isFinite(point.elevation));
+    }
+
+    function nearestProfilePoint(points, [longitude, latitude]) {
+      return points.reduce((nearest, point) => {
+        const [pointLongitude, pointLatitude] = point.coordinate;
+        const separation = (pointLongitude - longitude) ** 2 + (pointLatitude - latitude) ** 2;
+        return separation < nearest.separation ? { point, separation } : nearest;
+      }, { point: points[0], separation: Number.POSITIVE_INFINITY }).point;
+    }
+
+    function drawElevationProfile(container) {
+      const state = elevationProfileStates.get(container);
+      if (!state?.points.length) return;
+
+      const chart = container.querySelector(".elevation-profile-chart");
+      const readout = container.querySelector(".elevation-profile-readout");
+      const width = Math.max(Math.round(chart.clientWidth), 280);
+      const height = Math.max(Math.round(chart.clientHeight), 150);
+      const compact = width < 520;
+      const margin = { top: 25, right: 14, bottom: 28, left: compact ? 38 : 44 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const elevations = state.points.map((point) => point.elevation);
+      const rawMinimum = Math.min(...elevations);
+      const rawMaximum = Math.max(...elevations);
+      const elevationRange = rawMaximum - rawMinimum;
+      const elevationStep = elevationRange <= 400 ? 100 : elevationRange <= 800 ? 200 : 250;
+      const minimum = Math.floor(rawMinimum / elevationStep) * elevationStep;
+      const maximum = Math.ceil(rawMaximum / elevationStep) * elevationStep;
+      const totalDistance = state.points[state.points.length - 1].distance;
+      const x = (distance) => margin.left + distance / totalDistance * plotWidth;
+      const y = (elevation) => margin.top + (maximum - elevation) / Math.max(maximum - minimum, 1) * plotHeight;
+      const overview = `${formatDecimal(totalDistance)} км · ${Math.round(rawMinimum)}–${Math.round(rawMaximum)} м`;
+      const svg = createSvgElement("svg", {
+        viewBox: `0 0 ${width} ${height}`,
+        "aria-hidden": "true"
+      });
+
+      for (let elevation = minimum; elevation <= maximum; elevation += elevationStep) {
+        const position = y(elevation);
+        svg.append(
+          createSvgElement("line", {
+            x1: margin.left,
+            y1: position,
+            x2: width - margin.right,
+            y2: position,
+            stroke: "rgba(23, 32, 28, .12)",
+            "stroke-width": "1"
+          }),
+          createSvgElement("text", {
+            x: margin.left - 7,
+            y: position + 4,
+            "text-anchor": "end"
+          }, String(elevation))
+        );
+      }
+
+      const distanceTickCount = compact ? 2 : 4;
+      for (let index = 0; index <= distanceTickCount; index += 1) {
+        const distance = totalDistance * index / distanceTickCount;
+        const position = x(distance);
+        svg.append(
+          createSvgElement("line", {
+            x1: position,
+            y1: margin.top,
+            x2: position,
+            y2: height - margin.bottom,
+            stroke: "rgba(23, 32, 28, .08)",
+            "stroke-width": "1"
+          }),
+          createSvgElement("text", {
+            x: position,
+            y: height - 8,
+            "text-anchor": index === 0 ? "start" : index === distanceTickCount ? "end" : "middle"
+          }, `${formatDecimal(distance)} км`)
+        );
+      }
+
+      const linePath = state.points.map((point, index) => `${index === 0 ? "M" : "L"}${x(point.distance).toFixed(2)},${y(point.elevation).toFixed(2)}`).join(" ");
+      const areaPath = `${linePath} L${x(totalDistance).toFixed(2)},${height - margin.bottom} L${margin.left},${height - margin.bottom} Z`;
+      svg.append(
+        createSvgElement("path", {
+          d: areaPath,
+          fill: state.color,
+          "fill-opacity": ".14"
+        }),
+        createSvgElement("path", {
+          d: linePath,
+          fill: "none",
+          stroke: state.color,
+          "stroke-width": "2.5",
+          "stroke-linejoin": "round",
+          "stroke-linecap": "round"
+        })
+      );
+
+      const profileLabels = new Map([
+        ["Rifugio Rosetta", "Rosetta"],
+        ["Passo di Ball", "Passo di Ball"]
+      ]);
+      state.waypoints.filter((waypoint) => profileLabels.has(waypoint.properties.name)).forEach((waypoint) => {
+        const point = nearestProfilePoint(state.points, waypoint.geometry.coordinates);
+        const positionX = x(point.distance);
+        const positionY = y(point.elevation);
+        svg.append(
+          createSvgElement("line", {
+            x1: positionX,
+            y1: margin.top,
+            x2: positionX,
+            y2: height - margin.bottom,
+            stroke: state.color,
+            "stroke-opacity": ".42",
+            "stroke-width": "1",
+            "stroke-dasharray": "3 4"
+          }),
+          createSvgElement("circle", {
+            cx: positionX,
+            cy: positionY,
+            r: "4",
+            fill: "#fffaf0",
+            stroke: state.color,
+            "stroke-width": "2"
+          }),
+          createSvgElement("text", {
+            x: positionX,
+            y: margin.top - 9,
+            "text-anchor": "middle",
+            class: "profile-waypoint-label"
+          }, profileLabels.get(waypoint.properties.name))
+        );
+      });
+
+      const cursor = createSvgElement("g", { opacity: "0" });
+      const cursorLine = createSvgElement("line", {
+        y1: margin.top,
+        y2: height - margin.bottom,
+        stroke: "#17201c",
+        "stroke-width": "1"
+      });
+      const cursorPoint = createSvgElement("circle", {
+        r: "5",
+        fill: "#fffaf0",
+        stroke: "#17201c",
+        "stroke-width": "2"
+      });
+      cursor.append(cursorLine, cursorPoint);
+      svg.append(cursor);
+
+      function selectPoint(clientX) {
+        const bounds = svg.getBoundingClientRect();
+        const localX = Math.min(Math.max(clientX - bounds.left, margin.left), width - margin.right);
+        const selectedDistance = (localX - margin.left) / plotWidth * totalDistance;
+        const point = state.points.reduce((nearest, candidate) => (
+          Math.abs(candidate.distance - selectedDistance) < Math.abs(nearest.distance - selectedDistance) ? candidate : nearest
+        ), state.points[0]);
+        const positionX = x(point.distance);
+        const positionY = y(point.elevation);
+        cursor.setAttribute("opacity", "1");
+        cursorLine.setAttribute("x1", positionX);
+        cursorLine.setAttribute("x2", positionX);
+        cursorPoint.setAttribute("cx", positionX);
+        cursorPoint.setAttribute("cy", positionY);
+        readout.textContent = `${formatDecimal(point.distance)} км · ${Math.round(point.elevation)} м`;
+        chart.dataset.selectedIndex = String(state.points.indexOf(point));
+      }
+
+      svg.addEventListener("pointermove", (event) => selectPoint(event.clientX));
+      svg.addEventListener("pointerdown", (event) => selectPoint(event.clientX));
+      svg.addEventListener("pointerleave", () => {
+        cursor.setAttribute("opacity", "0");
+        readout.textContent = overview;
+        delete chart.dataset.selectedIndex;
+      });
+      chart.onkeydown = (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const current = Number(chart.dataset.selectedIndex ?? (event.key === "ArrowRight" ? -1 : state.points.length));
+        const next = Math.min(Math.max(current + (event.key === "ArrowRight" ? 1 : -1), 0), state.points.length - 1);
+        const point = state.points[next];
+        const bounds = svg.getBoundingClientRect();
+        selectPoint(bounds.left + x(point.distance));
+      };
+
+      chart.replaceChildren(svg);
+      chart.setAttribute("aria-label", `Профіль висот маршруту дня 4: ${formatDecimal(totalDistance)} кілометра, від ${Math.round(rawMinimum)} до ${Math.round(rawMaximum)} метрів. Для перегляду значень використовуйте дотик, мишу або клавіші зі стрілками.`);
+      readout.textContent = overview;
+    }
+
+    function renderElevationProfile(container, line, waypoints, color) {
+      if (!container) return;
+      const points = prepareElevationPoints(line);
+      if (points.length < 2) {
+        container.hidden = true;
+        return;
+      }
+
+      let state = elevationProfileStates.get(container);
+      if (!state) {
+        state = { points, waypoints, color, resizeFrame: 0 };
+        state.observer = new ResizeObserver(() => {
+          cancelAnimationFrame(state.resizeFrame);
+          state.resizeFrame = requestAnimationFrame(() => drawElevationProfile(container));
+        });
+        state.observer.observe(container.querySelector(".elevation-profile-chart"));
+        elevationProfileStates.set(container, state);
+      } else {
+        Object.assign(state, { points, waypoints, color });
+      }
+      container.hidden = false;
+      drawElevationProfile(container);
+    }
 
     async function selectRouteMap(section, routeId) {
       const route = ROUTE_MAPS[routeId];
@@ -890,11 +1210,14 @@
             .addTo(state.layer);
         });
 
+        renderElevationProfile(section.querySelector("[data-elevation-profile]"), line, waypoints, route.color);
         state.map.fitBounds(routeBounds, { padding: [28, 28] });
         status.hidden = true;
       } catch (error) {
         if (request !== state.request) return;
         state.layer.clearLayers();
+        const profile = section.querySelector("[data-elevation-profile]");
+        if (profile) profile.hidden = true;
         status.hidden = false;
         status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
       }
