@@ -12,7 +12,7 @@ The page contains:
 
 1. A full-width hero with an autumn Seceda/Odle image, the route title `Seceda → Marmolada → Costabella`, a draft label, a concise route introduction, and four headline parameters for the primary Col Raiser start.
 2. An `Основні параметри` card with linked start and finish locations, duration, primary and reserve distance/ascent totals, total descent, technical sections, and overnight sequence.
-3. Six route-day cards preserving the route line, working distance/elevation/time ranges, key technical sections, overnight information, and Google Maps links from the source document. Day 1 contains a primary start via Col Raiser and a shorter reserve start via Ortisei and Seceda.
+3. Six route-day cards preserving the route line, working distance/elevation/time ranges, key technical sections, overnight information, and Google Maps links from the source document. Day 1 contains a primary start via Col Raiser and a shorter reserve start via Ortisei and Seceda. Day 6 ends the mandatory walking route at Passo San Pellegrino, uses hitchhiking to Moena as the primary scenario, and keeps the SP346 road walk as an emergency reserve.
 4. A footer link back to the comparison page.
 
 The page ends after Day 6 apart from the footer. It does not reproduce the repeated total, route commentary, late-season checklist, or source list that follows Day 6 in the Markdown document.
