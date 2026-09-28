@@ -283,6 +283,36 @@
       background: rgba(184, 88, 50, .07);
     }
 
+    .day-option {
+      margin-top: 24px;
+      border-top: 1px solid rgba(23, 32, 28, .12);
+      padding-top: 22px;
+    }
+
+    .day-option h3 {
+      margin-bottom: 12px;
+      color: var(--forest);
+      font-size: clamp(1.3rem, 2.2vw, 2rem);
+    }
+
+    .day-option .day-stats {
+      margin-bottom: 14px;
+    }
+
+    .day-choice {
+      display: grid;
+      gap: 6px;
+      max-width: 920px;
+      margin-top: 20px;
+      border-left: 3px solid var(--rust);
+      padding: 13px 15px;
+      background: rgba(184, 88, 50, .07);
+    }
+
+    .day-choice p {
+      margin-bottom: 0;
+    }
+
     .route-note {
       max-width: 920px;
       margin: 16px 0;
@@ -377,8 +407,8 @@
         <h1 id="page-title">Seceda → Marmolada → Costabella</h1>
         <p class="hero-lede">Лінійний високогірний траверс через кілька дуже різних районів Доломітів: осінні луки Seceda, кам'яні плато Puez і Sella, темний гребінь Padon, Marmolada з Ombretta та історичну лінію Bepi Zac по Costabella.</p>
         <div class="hero-tags" aria-label="Ключові параметри маршруту">
-          <span class="tag">~85–87 км</span>
-          <span class="tag">↑ ~5200–5400 м</span>
+          <span class="tag">~88.5–90.5 км</span>
+          <span class="tag">↑ ~5620–5820 м</span>
           <span class="tag">4–5 технічних зв'язок</span>
           <span class="tag">3011 м · Cima Ombretta Orientale</span>
         </div>
@@ -392,7 +422,7 @@
           <dl class="summary-list">
             <div>
               <dt>Старт</dt>
-              <dd><a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Seceda+Ortisei">Seceda, верхня станція канатки</a></dd>
+              <dd><a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Col+Raiser+Santa+Cristina">Santa Cristina / Col Raiser</a> · резерв через <a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Seceda+Ortisei">Ortisei / Seceda</a></dd>
             </div>
             <div>
               <dt>Фініш</dt>
@@ -404,11 +434,11 @@
             </div>
             <div>
               <dt>Дистанція</dt>
-              <dd>~85–87 км</dd>
+              <dd>Основний: ~88.5–90.5 км · резервний: ~85–87 км</dd>
             </div>
             <div>
               <dt>Сумарний набір</dt>
-              <dd>↑ ~5200–5400 м</dd>
+              <dd>Основний: ↑ ~5620–5820 м · резервний: ↑ ~5200–5400 м</dd>
             </div>
             <div>
               <dt>Сумарний скид</dt>
@@ -438,18 +468,48 @@
           <article class="day-card">
             <div class="day-number" aria-hidden="true">1</div>
             <div>
-              <h2>День 1 — Seceda → Forces de Siëles → Puez</h2>
-              <div class="day-stats" aria-label="Параметри дня 1">
-                <span class="day-stat">10.8 км</span>
-                <span class="day-stat">↑ 577 м</span>
-                <span class="day-stat">↓ 580 м</span>
-                <span class="day-stat">~4–5 год</span>
-              </div>
-              <p>Канаткою з Ortisei одразу виходимо на Seceda і починаємо маршрут з одного з найсильніших осінніх пейзажів: луки Seceda, зубці Odle й поступовий перехід у сухий кам'яний світ Puez. Далі маршрут іде через район Forces de Siëles до Rifugio Puez.</p>
-              <p>Це навмисно спокійний перший день: після дороги не потрібно одразу заходити на ферату, але маршрут із першої години вже тримається вище 2000 метрів.</p>
-              <div class="start-row">
-                <span><strong>Ніч:</strong> Rifugio Puez · locale invernale / тент як резерв</span>
-                <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Seceda+Ortisei">Старт на мапі</a>
+              <h2>День 1 — Santa Cristina → Seceda → Forces de Siëles → Puez</h2>
+              <p>На перший день є два варіанти старту із Santa Cristina. Обидва сходяться на Seceda і далі йдуть однією лінією через Forces de Siëles до Rifugio Puez.</p>
+
+              <section class="day-option" aria-labelledby="day-1-option-a">
+                <h3 id="day-1-option-a">Варіант A — через Col Raiser</h3>
+                <div class="day-stats" aria-label="Параметри варіанта A дня 1">
+                  <span class="day-stat">~14.3 км</span>
+                  <span class="day-stat">↑ ~1000 м</span>
+                  <span class="day-stat">↓ ~600 м</span>
+                  <span class="day-stat">~5.5–6.5 год</span>
+                </div>
+                <p>Із Santa Cristina піднімаємося канаткою Col Raiser до верхньої станції приблизно на 2100 м. Вартість підйому в один бік — <strong>€23</strong>.</p>
+                <p>Від Col Raiser не йдемо безпосередньо в Puez, а спочатку набираємо висоту до Seceda. Цей відрізок додає приблизно 3.5 км і ↑ ~420 м, зате маршрут зберігає головний панорамний старт через луки Seceda і зубці Odle.</p>
+                <p>Від Seceda продовжуємо основною лінією через район Forces de Siëles у бік плато Puez і закінчуємо день біля Rifugio Puez. Це повноцінніший варіант: стартуємо безпосередньо із Santa Cristina, канатка знімає лише нижню частину підйому, а решта набору стає частиною маршруту.</p>
+                <div class="start-row">
+                  <span><strong>Канатка:</strong> Col Raiser · €23 / one way</span>
+                  <span><strong>Ніч:</strong> Rifugio Puez · locale invernale / тент як резерв</span>
+                  <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Col+Raiser+Santa+Cristina">Старт на мапі</a>
+                </div>
+              </section>
+
+              <section class="day-option" aria-labelledby="day-1-option-b">
+                <h3 id="day-1-option-b">Варіант B — через Ortisei і Seceda</h3>
+                <div class="day-stats" aria-label="Параметри варіанта B дня 1">
+                  <span class="day-stat">10.8 км</span>
+                  <span class="day-stat">↑ 577 м</span>
+                  <span class="day-stat">↓ 580 м</span>
+                  <span class="day-stat">~4–5 год</span>
+                </div>
+                <p>Із Santa Cristina переїжджаємо в Ortisei й піднімаємося канатками Ortisei → Furnes → Seceda одразу приблизно до 2500 м. Вартість повного підйому в один бік — <strong>€49</strong>.</p>
+                <p>Далі маршрут повністю збігається з основною лінією: від Seceda йдемо через високі луки під Odle, поступово переходимо в сухіший кам'яний рельєф Puez і через район Forces de Siëles виходимо до Rifugio Puez.</p>
+                <p>Це короткий варіант на випадок пізнього старту, втоми після дороги або малого запасу часу. Він майже повністю знімає початковий набір і дозволяє почати маршрут одразу на висоті.</p>
+                <div class="start-row">
+                  <span><strong>Канатка:</strong> Ortisei → Furnes → Seceda · €49 / one way</span>
+                  <span><strong>Ніч:</strong> Rifugio Puez · locale invernale / тент як резерв</span>
+                  <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Seceda+Ortisei">Старт на мапі</a>
+                </div>
+              </section>
+
+              <div class="day-choice">
+                <p><strong>Основний варіант:</strong> через Col Raiser — дешевше і краще зберігає відчуття лінійного старту із Santa Cristina.</p>
+                <p><strong>Резервний варіант:</strong> через Ortisei → Seceda — приблизно на 3.5 км і 420 м набору коротше, якщо потрібно полегшити перший день.</p>
               </div>
             </div>
           </article>
