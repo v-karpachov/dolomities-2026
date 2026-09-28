@@ -12,7 +12,7 @@ const checks = {
   maps: count(/<section class="route-map" data-route-map/g),
   canvases: count(/class="route-map-canvas"/g),
   profiles: count(/<div class="elevation-profile" data-elevation-profile>/g),
-  gpxLinks: count(/class="route-map-download" href="routes\/brenta-day-[1-6]\.gpx"/g),
+  gpxLinks: count(/class="route-map-download" href="routes\/brenta-day-[1-6]\.gpx(?:\?[^\"]+)?"/g),
   routeDefinitions: count(/"brenta-day-[1-6]": \{/g),
   leafletCss: html.includes("leaflet@1.9.4/dist/leaflet.css"),
   leafletJs: html.includes("leaflet@1.9.4/dist/leaflet.js"),
