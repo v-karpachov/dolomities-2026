@@ -21,6 +21,10 @@ const checks = {
   keyboardNavigation: html.includes('event.key !== "ArrowLeft"') && html.includes('event.key !== "ArrowRight"'),
   planningDraftNote: html.includes("планувальні чернетки"),
   startLogistics: html.includes("data-start-logistics"),
+  logisticsHeading: html.includes("Як дістатися до старту"),
+  logisticsRoute: html.includes("start-logistics-route"),
+  recommendedService: html.includes("Рекомендований рейс"),
+  departureStrip: html.includes("start-logistics-departure"),
   mainArrival: html.includes("08:48") && html.includes("10:56"),
   earlyArrival: html.includes("07:48") && html.includes("09:56"),
   logisticsBeforeDayOne: html.indexOf("data-start-logistics") >= 0
@@ -38,6 +42,10 @@ for (const key of [
   "keyboardNavigation",
   "planningDraftNote",
   "startLogistics",
+  "logisticsHeading",
+  "logisticsRoute",
+  "recommendedService",
+  "departureStrip",
   "mainArrival",
   "earlyArrival",
   "logisticsBeforeDayOne"
