@@ -334,6 +334,104 @@
       text-align: center;
     }
 
+    .start-logistics {
+      max-width: 920px;
+      margin: 0 auto 28px;
+      padding: 24px 0;
+      border-top: 1px solid rgba(23, 32, 28, .16);
+      border-bottom: 1px solid rgba(23, 32, 28, .16);
+    }
+
+    .start-logistics-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, .8fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    .start-logistics-kicker {
+      margin: 0 0 5px;
+      color: var(--rust);
+      font-size: .73rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics h2 {
+      margin: 0;
+      font-size: clamp(1.65rem, 3vw, 2.6rem);
+    }
+
+    .start-logistics-intro,
+    .start-logistics-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .start-logistics-options {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .start-logistics-option {
+      padding: 16px 18px;
+      background: rgba(255, 250, 240, .62);
+      border: 1px solid rgba(23, 32, 28, .12);
+      border-radius: 6px;
+    }
+
+    .start-logistics-option.is-primary {
+      border-top: 4px solid var(--rust);
+      padding-top: 13px;
+    }
+
+    .start-logistics-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--rust);
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-time {
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.75rem;
+      font-weight: 780;
+      line-height: 1.05;
+    }
+
+    .start-logistics-option p:last-child {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .start-logistics-note strong {
+      color: var(--ink);
+    }
+
+    .start-logistics-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .start-logistics-links .maps-link {
+      border-color: rgba(184, 88, 50, .22);
+      color: var(--rust);
+      background: rgba(255, 250, 240, .62);
+    }
+
     .route-map {
       max-width: 920px;
       margin: 24px 0 28px;
@@ -551,6 +649,15 @@
         padding: 52px 0;
       }
 
+      .start-logistics-header,
+      .start-logistics-options {
+        grid-template-columns: 1fr;
+      }
+
+      .start-logistics-header {
+        gap: 10px;
+      }
+
       .day-card {
         grid-template-columns: 1fr;
         gap: 12px;
@@ -642,6 +749,33 @@
       <div class="shell">
         <h2 class="section-title" id="days-title">Дні маршруту</h2>
         <p class="route-draft-note">Лінії на мапах і GPX — планувальні чернетки. Перед походом їх потрібно звірити з актуальним станом ферат, снігу та закриттів.</p>
+        <section class="start-logistics" data-start-logistics aria-labelledby="start-logistics-title">
+          <div class="start-logistics-header">
+            <div>
+              <p class="start-logistics-kicker">Логістика до старту · субота, 10 жовтня 2026</p>
+              <h2 id="start-logistics-title">Trento → Madonna di Campiglio</h2>
+            </div>
+            <p class="start-logistics-intro">Виходимо на зупинці M.Campiglio Laghetto — приблизно за 120 м від початку треку першого дня.</p>
+          </div>
+          <div class="start-logistics-options">
+            <article class="start-logistics-option is-primary">
+              <span class="start-logistics-label">Основний варіант</span>
+              <p class="start-logistics-time">08:48 → 10:56</p>
+              <p>Trento Autostazione → Tione о 09:56, узгоджена пересадка на B231 о 09:59 → M.Campiglio Laghetto о 10:56.</p>
+            </article>
+            <article class="start-logistics-option">
+              <span class="start-logistics-label">Ранній прямий</span>
+              <p class="start-logistics-time">07:48 → 09:56</p>
+              <p>Прямий автобус у напрямку Campo Carlo Magno без пересадки. Залишає додаткову годину запасу на погоду й повільний темп.</p>
+            </article>
+          </div>
+          <p class="start-logistics-note"><strong>План на день:</strong> після прибуття основним рейсом виходимо на маршрут близько 11:10 і очікуємо бути біля Tuckett орієнтовно о 15:10–16:10. Виїзд із Trento о 09:48 із прибуттям о 11:54 залишає менше запасу й розглядається лише як резерв.</p>
+          <div class="start-logistics-links">
+            <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Trento+Autostazione+Italy">Trento Autostazione</a>
+            <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Madonna+di+Campiglio+Laghetto+bus+stop">M.Campiglio Laghetto</a>
+            <a class="maps-link" href="https://www.trentinotrasporti.it/it/opendata-it">Trentino Trasporti</a>
+          </div>
+        </section>
         <div class="timeline">
           <article class="day-card">
             <div class="day-number" aria-hidden="true">1</div>

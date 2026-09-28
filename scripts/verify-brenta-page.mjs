@@ -19,13 +19,29 @@ const checks = {
   elevationRenderer: html.includes("function drawElevationProfile(container)"),
   synchronizedMarker: html.includes("state.profileMarker.setLatLng"),
   keyboardNavigation: html.includes('event.key !== "ArrowLeft"') && html.includes('event.key !== "ArrowRight"'),
-  planningDraftNote: html.includes("планувальні чернетки")
+  planningDraftNote: html.includes("планувальні чернетки"),
+  startLogistics: html.includes("data-start-logistics"),
+  mainArrival: html.includes("08:48") && html.includes("10:56"),
+  earlyArrival: html.includes("07:48") && html.includes("09:56"),
+  logisticsBeforeDayOne: html.indexOf("data-start-logistics") >= 0
+    && html.indexOf("data-start-logistics") < html.indexOf("День 1 — Madonna di Campiglio")
 };
 
 for (const key of ["maps", "canvases", "profiles", "gpxLinks", "routeDefinitions"]) {
   if (checks[key] !== 6) throw new Error(`Expected 6 ${key}, found ${checks[key]}`);
 }
-for (const key of ["leafletCss", "leafletJs", "elevationRenderer", "synchronizedMarker", "keyboardNavigation", "planningDraftNote"]) {
+for (const key of [
+  "leafletCss",
+  "leafletJs",
+  "elevationRenderer",
+  "synchronizedMarker",
+  "keyboardNavigation",
+  "planningDraftNote",
+  "startLogistics",
+  "mainArrival",
+  "earlyArrival",
+  "logisticsBeforeDayOne"
+]) {
   if (!checks[key]) throw new Error(`Missing Brenta page capability: ${key}`);
 }
 
