@@ -346,6 +346,189 @@
       background: rgba(184, 88, 50, .09);
     }
 
+    .start-logistics {
+      position: relative;
+      width: 100%;
+      margin: 0 0 28px;
+      padding: 28px 30px 24px;
+      overflow: hidden;
+      background: rgba(255, 250, 240, .72);
+      border: 1px solid rgba(23, 32, 28, .13);
+      border-left: 5px solid var(--rust);
+      border-radius: 6px;
+      box-shadow: 0 16px 42px rgba(23, 32, 28, .06);
+    }
+
+    .start-logistics-header {
+      max-width: 820px;
+      margin-bottom: 22px;
+    }
+
+    .start-logistics-kicker {
+      margin: 0 0 6px;
+      color: var(--rust);
+      font-size: .73rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+    }
+
+    .start-logistics-route {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      margin: 14px 0 8px;
+    }
+
+    .start-logistics-route strong {
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.15rem;
+    }
+
+    .start-logistics-route span {
+      padding: 5px 9px;
+      color: var(--rust);
+      background: rgba(184, 88, 50, .1);
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 850;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .start-logistics-options {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+      gap: 12px;
+    }
+
+    .start-logistics-option {
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, .5);
+      border: 1px solid rgba(23, 32, 28, .12);
+      border-radius: 6px;
+    }
+
+    .start-logistics-option.is-primary {
+      background: rgba(184, 88, 50, .08);
+      border-color: rgba(184, 88, 50, .32);
+      box-shadow: inset 4px 0 0 var(--rust);
+    }
+
+    .start-logistics-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--rust);
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-time {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.75rem;
+      font-weight: 780;
+      line-height: 1.05;
+    }
+
+    .start-logistics-legs {
+      display: grid;
+      gap: 7px;
+    }
+
+    .start-logistics-legs p {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 10px;
+      margin: 0;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .start-logistics-legs strong {
+      color: var(--ink);
+    }
+
+    .start-logistics-legs .start-logistics-transfer {
+      grid-template-columns: 1fr;
+      gap: 2px;
+      padding: 7px 0;
+      border-top: 1px solid rgba(184, 88, 50, .2);
+      border-bottom: 1px solid rgba(184, 88, 50, .2);
+    }
+
+    .start-logistics-transfer strong {
+      color: var(--rust);
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-warning strong {
+      display: block;
+      margin: 8px 0;
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.28rem;
+      line-height: 1.08;
+    }
+
+    .start-logistics-warning p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .start-logistics-warning p:last-child {
+      margin-bottom: 0;
+    }
+
+    .start-logistics-departure {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
+      gap: 10px 20px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 14px 16px;
+      color: rgba(255, 255, 255, .76);
+      background: var(--ink);
+      border-radius: 6px;
+      font-size: .86rem;
+    }
+
+    .start-logistics-departure-label {
+      color: #efd6c8;
+      font-size: .7rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-departure strong {
+      color: #fff;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+    }
+
+    .start-logistics-departure span:last-child {
+      text-align: right;
+    }
+
     .route-map {
       max-width: 920px;
       margin: 28px 0 32px;
@@ -570,6 +753,24 @@
         padding: 52px 0;
       }
 
+      .start-logistics {
+        padding: 24px 18px 20px;
+      }
+
+      .start-logistics-options,
+      .start-logistics-departure {
+        grid-template-columns: 1fr;
+      }
+
+      .start-logistics-departure {
+        gap: 4px;
+      }
+
+      .start-logistics-departure span:last-child {
+        margin-top: 4px;
+        text-align: left;
+      }
+
       .day-card {
         grid-template-columns: 1fr;
         gap: 12px;
@@ -673,6 +874,41 @@
 
     <section class="section" aria-labelledby="days-title">
       <div class="shell">
+        <section class="start-logistics" data-start-logistics aria-labelledby="start-logistics-title">
+          <div class="start-logistics-header">
+            <p class="start-logistics-kicker">Логістика до старту</p>
+            <h2 class="start-logistics-title" id="start-logistics-title">Як дістатися до старту</h2>
+            <div class="start-logistics-route">
+              <strong>Trento → Col Raiser</strong>
+              <span>Субота, 10 жовтня 2026</span>
+            </div>
+            <p class="start-logistics-intro">Автобус 358 зупиняється безпосередньо біля нижньої станції канатки Col Raiser.</p>
+          </div>
+          <div class="start-logistics-options">
+            <article class="start-logistics-option is-primary">
+              <span class="start-logistics-label">Рекомендований рейс</span>
+              <p class="start-logistics-time">07:05 → 10:01</p>
+              <div class="start-logistics-legs">
+                <p><strong>R16662</strong><span>Trento 07:05 → Bolzano 07:52</span></p>
+                <p class="start-logistics-transfer"><strong>Пересадка у Bolzano · 31 хв</strong><span>Близько 5 хв пішки від залізничної станції до автостанції</span></p>
+                <p><strong>350</strong><span>Bolzano Autostazione 08:28 → Selva, Piazza Nives 09:48</span></p>
+                <p class="start-logistics-transfer"><strong>Пересадка у Selva · 6 хв</strong><span>Автобус 358 вирушає о 09:54</span></p>
+                <p><strong>358</strong><span>Selva, Piazza Nives 09:54 → Col Raiser 10:01</span></p>
+              </div>
+            </article>
+            <article class="start-logistics-option start-logistics-warning">
+              <span class="start-logistics-label">Канатка та резерв</span>
+              <strong>Col Raiser працює 08:30–17:00</strong>
+              <p>10 жовтня — останній день цього графіка. Підйом в один бік коштує €23, бронювання не потрібне.</p>
+              <p>Резерв через Ortisei теж доступний: виходимо з автобуса 350 раніше й піднімаємося зв'язкою Ortisei → Furnes → Seceda, яка працює до 17:30.</p>
+            </article>
+          </div>
+          <div class="start-logistics-departure">
+            <span class="start-logistics-departure-label">Після канатки</span>
+            <strong>Вихід на маршрут близько 10:20</strong>
+            <span>Puez орієнтовно о 16:20–17:50</span>
+          </div>
+        </section>
         <h2 class="section-title" id="days-title">Дні маршруту</h2>
         <div class="timeline">
           <article class="day-card">
