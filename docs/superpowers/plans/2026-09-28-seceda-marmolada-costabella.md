@@ -94,7 +94,7 @@ git diff --check
 
 Expected: all three Alta-side links are present, each target exists, and the diff check exits 0.
 
-- [ ] **Step 3: Commit and publish**
+- [x] **Step 3: Commit and publish**
 
 Run:
 
@@ -106,7 +106,7 @@ git push
 
 Expected: the commit succeeds and `main` pushes to `origin`.
 
-- [ ] **Step 4: Verify GitHub Pages**
+- [x] **Step 4: Verify GitHub Pages**
 
 Run:
 
