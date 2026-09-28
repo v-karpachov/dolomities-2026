@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dolomiti di Brenta: чернетка 6-денного маршруту</title>
   <meta name="description" content="Чернеткова 6-денна лінія маршруту Dolomiti di Brenta: Fontanella, Vallesinella, Tuckett, Pedrotti, XII Apostoli, Detassis, Bocchette Centrali і Bocchette Alte.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
     :root {
       --ink: #17201c;
@@ -325,6 +326,164 @@
       background: rgba(255, 250, 240, .62);
     }
 
+    .route-draft-note {
+      max-width: 920px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    .route-map {
+      max-width: 920px;
+      margin: 24px 0 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(23, 32, 28, .12);
+    }
+
+    .route-map-toolbar,
+    .route-map-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .route-map-toolbar {
+      margin-bottom: 14px;
+    }
+
+    .route-map-kicker {
+      margin-bottom: 4px !important;
+      color: var(--rust) !important;
+      font-size: .72rem !important;
+      font-weight: 900;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+
+    .route-map h3 {
+      margin-bottom: 0;
+      color: var(--forest);
+      font-size: 1.2rem;
+      line-height: 1.1;
+    }
+
+    .route-map-download {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: #fffaf0;
+      background: var(--rust);
+      font: inherit;
+      font-size: .78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .route-map-download:hover {
+      background: #9e4729;
+    }
+
+    .route-map-download:focus-visible,
+    .elevation-profile-chart:focus-visible {
+      outline: 3px solid rgba(216, 154, 61, .5);
+      outline-offset: 2px;
+    }
+
+    .route-map-canvas {
+      width: 100%;
+      height: 460px;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .14);
+      border-radius: 6px;
+      background: #d9ded7;
+    }
+
+    .route-map-status {
+      margin: 10px 0 0 !important;
+      color: var(--muted) !important;
+      font-size: .82rem !important;
+    }
+
+    .route-map-status[hidden] {
+      display: none;
+    }
+
+    .elevation-profile {
+      margin-top: 18px;
+    }
+
+    .elevation-profile-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .elevation-profile h4 {
+      margin: 0;
+      color: var(--forest);
+      font-size: .9rem;
+      letter-spacing: 0;
+    }
+
+    .elevation-profile-readout {
+      color: var(--muted);
+      font-size: .82rem;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .elevation-profile-chart {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      border-top: 1px solid rgba(23, 32, 28, .12);
+      border-bottom: 1px solid rgba(23, 32, 28, .12);
+      background: rgba(255, 250, 240, .36);
+      touch-action: pan-y;
+    }
+
+    .elevation-profile-chart svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .elevation-profile-chart text {
+      fill: var(--muted);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+
+    .elevation-profile-chart .profile-waypoint-label {
+      fill: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .route-map .leaflet-control-attribution {
+      font-size: .68rem;
+    }
+
+    .route-map .leaflet-tooltip {
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: 4px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, .95);
+      box-shadow: 0 6px 20px rgba(23, 32, 28, .12);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
     .note-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -403,6 +562,24 @@
         height: 48px;
         font-size: 1.45rem;
       }
+
+      .route-map-toolbar,
+      .route-map-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .route-map-download {
+        width: 100%;
+      }
+
+      .route-map-canvas {
+        height: 360px;
+      }
+
+      .elevation-profile-chart {
+        height: 160px;
+      }
     }
   </style>
 </head>
@@ -415,8 +592,8 @@
         <h1 id="page-title">Dolomiti di Brenta</h1>
         <p class="hero-lede">Компактний скельний маршрут у самому серці Brenta: Vallesinella, Tuckett, Pedrotti, XII Apostoli, Detassis і дві ключові зв'язки ферат, які можна пройти налегке.</p>
         <div class="hero-tags" aria-label="Ключові параметри маршруту">
-          <span class="tag">~67–70 км</span>
-          <span class="tag">+4800–5000 м</span>
+          <span class="tag">~61.5 км</span>
+          <span class="tag">↑ ~5390 м</span>
           <span class="tag">7 ферат</span>
           <span class="tag">дві великі зв'язки налегке</span>
         </div>
@@ -442,11 +619,11 @@
             </div>
             <div>
               <dt>Дистанція</dt>
-              <dd>~67–70 км</dd>
+              <dd>~61.5 км</dd>
             </div>
             <div>
               <dt>Сумарний набір</dt>
-              <dd>+4800–5000 м</dd>
+              <dd>↑ ~5390 м</dd>
             </div>
             <div>
               <dt>Повноцінні ферати</dt>
@@ -464,16 +641,38 @@
     <section class="section" aria-labelledby="days-title">
       <div class="shell">
         <h2 class="section-title" id="days-title">Дні маршруту</h2>
+        <p class="route-draft-note">Лінії на мапах і GPX — планувальні чернетки. Перед походом їх потрібно звірити з актуальним станом ферат, снігу та закриттів.</p>
         <div class="timeline">
           <article class="day-card">
             <div class="day-number" aria-hidden="true">1</div>
             <div>
               <h2>День 1 — Fontanella → Vallesinella → Tuckett</h2>
               <div class="day-stats" aria-label="Параметри дня 1">
-                <span class="day-stat">~10–11 км</span>
-                <span class="day-stat">↑ ~800 м</span>
-                <span class="day-stat">↓ ~100 м</span>
+                <span class="day-stat">~10.3 км</span>
+                <span class="day-stat">↑ ~870 м</span>
+                <span class="day-stat">↓ ~50 м</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="brenta-day-1" aria-labelledby="brenta-day-1-map-title">
+                <div class="route-map-toolbar">
+                  <div>
+                    <p class="route-map-kicker">Мапа дня 1</p>
+                    <h3 id="brenta-day-1-map-title">Fontanella → Tuckett</h3>
+                  </div>
+                  <div class="route-map-actions">
+                    <a class="route-map-download" href="routes/brenta-day-1.gpx" download>Завантажити GPX</a>
+                  </div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 1"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header">
+                    <h4>Профіль висот</h4>
+                    <output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output>
+                  </div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 1"></div>
+                </div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/brenta-day-1.gpx" download>Завантажити GPX дня 1</a>.</p></noscript>
+              </section>
               <p>Спокійний вхід у масив через Vallesinella і підйом до Rifugio Tuckett. Це день, який дає плавно зайти в рельєф Brenta без форсування технічної частини з першої години. Ночівля в зимовій кімнаті Tuckett.</p>
               <div class="start-row">
                 <span><strong>Старт:</strong> Loc. Fontanella, Madonna di Campiglio</span>
@@ -487,11 +686,27 @@
             <div>
               <h2>День 2 — Tuckett → Orsi → Pedrotti + кільце Spellini → Centrali</h2>
               <div class="day-stats" aria-label="Параметри дня 2">
-                <span class="day-stat">~13–14 км</span>
-                <span class="day-stat">↑ ~1200–1300 м</span>
-                <span class="day-stat">↓ ~1000–1100 м</span>
+                <span class="day-stat">~11.7 км</span>
+                <span class="day-stat">↑ ~1470 м</span>
+                <span class="day-stat">↓ ~1250 м</span>
                 <span class="day-stat">~8–9 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="brenta-day-2" aria-labelledby="brenta-day-2-map-title">
+                <div class="route-map-toolbar">
+                  <div>
+                    <p class="route-map-kicker">Мапа дня 2</p>
+                    <h3 id="brenta-day-2-map-title">Orsi + Spellini + Bocchette Centrali</h3>
+                  </div>
+                  <div class="route-map-actions"><a class="route-map-download" href="routes/brenta-day-2.gpx" download>Завантажити GPX</a></div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 2"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 2"></div>
+                </div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/brenta-day-2.gpx" download>Завантажити GPX дня 2</a>.</p></noscript>
+              </section>
               <p>Уранці перехід по Sentiero Osvaldo Orsi через Bocca di Tuckett до Pedrotti. Тут залишаємо основний рюкзак і йдемо кільце налегке: Orsi → Busa degli Sfulmini → Ferrata Spellini вгору → Bocca degli Armi → Bocchette Centrali → Pedrotti. Ночівля в зимовій кімнаті Pedrotti.</p>
               <div class="start-row">
                 <span><strong>Старт:</strong> Rifugio Tuckett</span>
@@ -505,11 +720,24 @@
             <div>
               <h2>День 3 — Pedrotti → Agostini → Castiglioni → XII Apostoli</h2>
               <div class="day-stats" aria-label="Параметри дня 3">
-                <span class="day-stat">~9 км</span>
-                <span class="day-stat">↑ ~800–900 м</span>
-                <span class="day-stat">↓ ~800 м</span>
+                <span class="day-stat">~9.1 км</span>
+                <span class="day-stat">↑ ~720 м</span>
+                <span class="day-stat">↓ ~720 м</span>
                 <span class="day-stat">~5–6 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="brenta-day-3" aria-labelledby="brenta-day-3-map-title">
+                <div class="route-map-toolbar">
+                  <div><p class="route-map-kicker">Мапа дня 3</p><h3 id="brenta-day-3-map-title">Palmieri + Castiglioni</h3></div>
+                  <div class="route-map-actions"><a class="route-map-download" href="routes/brenta-day-3.gpx" download>Завантажити GPX</a></div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 3"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 3"></div>
+                </div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/brenta-day-3.gpx" download>Завантажити GPX дня 3</a>.</p></noscript>
+              </section>
               <p>Перехід по Palmieri через південну частину масиву до Rifugio Agostini, потім Ferrata Castiglioni через Bocca dei Due Denti до XII Apostoli. Після довгого другого дня це помітно спокійніший етап, але він усе одно лишається повністю в характері Brenta.</p>
               <div class="start-row">
                 <span><strong>Старт:</strong> Rifugio Tosa Pedrotti</span>
@@ -523,11 +751,24 @@
             <div>
               <h2>День 4 — XII Apostoli → Ideale → Brentari → Pedrotti → Detassis</h2>
               <div class="day-stats" aria-label="Параметри дня 4">
-                <span class="day-stat">~12–13 км</span>
-                <span class="day-stat">↑ ~600–700 м</span>
-                <span class="day-stat">↓ ~1650–1750 м</span>
+                <span class="day-stat">~8.8 км</span>
+                <span class="day-stat">↑ ~780 м</span>
+                <span class="day-stat">↓ ~1090 м</span>
                 <span class="day-stat">~6 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="brenta-day-4" aria-labelledby="brenta-day-4-map-title">
+                <div class="route-map-toolbar">
+                  <div><p class="route-map-kicker">Мапа дня 4</p><h3 id="brenta-day-4-map-title">Ideale + Brentari → Detassis</h3></div>
+                  <div class="route-map-actions"><a class="route-map-download" href="routes/brenta-day-4.gpx" download>Завантажити GPX</a></div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 4"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 4"></div>
+                </div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/brenta-day-4.gpx" download>Завантажити GPX дня 4</a>.</p></noscript>
+              </section>
               <p>Повернення до центральної Brenta через Ferrata dell'Ideale і Ferrata Brentari. Після Pedrotti — перехід через Bocca di Brenta і спуск до Bivacco Catullo Detassis. Це день із великим скиданням висоти, але без такої щільної технічної напруги, як у другий і п'ятий день.</p>
               <div class="start-row">
                 <span><strong>Старт:</strong> Rifugio XII Apostoli</span>
@@ -541,12 +782,25 @@
             <div>
               <h2>День 5 — Detassis → Oliva Detassis → Bocchette Alte → SOSAT → Detassis</h2>
               <div class="day-stats" aria-label="Параметри дня 5">
-                <span class="day-stat">~12 км</span>
-                <span class="day-stat">↑ ~1100 м</span>
-                <span class="day-stat">↓ ~1100 м</span>
+                <span class="day-stat">~10.4 км</span>
+                <span class="day-stat">↑ ~1430 м</span>
+                <span class="day-stat">↓ ~1430 м</span>
                 <span class="day-stat">~8–9 год</span>
               </div>
               <span class="light-note">Налегке</span>
+              <section class="route-map" data-route-map data-default-route="brenta-day-5" aria-labelledby="brenta-day-5-map-title">
+                <div class="route-map-toolbar">
+                  <div><p class="route-map-kicker">Мапа дня 5</p><h3 id="brenta-day-5-map-title">Oliva Detassis + Bocchette Alte + SOSAT</h3></div>
+                  <div class="route-map-actions"><a class="route-map-download" href="routes/brenta-day-5.gpx" download>Завантажити GPX</a></div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 5"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 5"></div>
+                </div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/brenta-day-5.gpx" download>Завантажити GPX дня 5</a>.</p></noscript>
+              </section>
               <p>Основний рюкзак залишається в bivacco. Підйом по Oliva Detassis, потім високий траверс Bocchette Alte і повернення через Bocca di Tuckett та SOSAT назад у Detassis. Це друга велика технічна зв'язка маршруту і один із головних аргументів на користь такої побудови Brenta.</p>
               <div class="start-row">
                 <span><strong>Старт:</strong> Bivacco Catullo Detassis / Rifugio Brentei</span>
@@ -560,11 +814,24 @@
             <div>
               <h2>День 6 — Detassis → Val Brenta → Fontanella</h2>
               <div class="day-stats" aria-label="Параметри дня 6">
-                <span class="day-stat">~10–11 км</span>
-                <span class="day-stat">↑ ~300 м</span>
-                <span class="day-stat">↓ ~1000 м</span>
+                <span class="day-stat">~11.1 км</span>
+                <span class="day-stat">↑ ~120 м</span>
+                <span class="day-stat">↓ ~850 м</span>
                 <span class="day-stat">~3–4 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="brenta-day-6" aria-labelledby="brenta-day-6-map-title">
+                <div class="route-map-toolbar">
+                  <div><p class="route-map-kicker">Мапа дня 6</p><h3 id="brenta-day-6-map-title">Detassis → Val Brenta → Fontanella</h3></div>
+                  <div class="route-map-actions"><a class="route-map-download" href="routes/brenta-day-6.gpx" download>Завантажити GPX</a></div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 6"></div>
+                <div class="elevation-profile" data-elevation-profile>
+                  <div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div>
+                  <div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 6"></div>
+                </div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/brenta-day-6.gpx" download>Завантажити GPX дня 6</a>.</p></noscript>
+              </section>
               <p>Спуск по Val Brenta назад до Fontanella. Це коротший резервний день для виходу з масиву й повернення до точки старту без обов'язкових ферат.</p>
               <div class="start-row">
                 <span><strong>Старт:</strong> Bivacco Catullo Detassis / Rifugio Brentei</span>
@@ -577,7 +844,7 @@
         <div class="note-grid" aria-label="Підсумкові примітки">
           <article class="note-card">
             <h3>В цілому</h3>
-            <p>6 днів / 5 ночей · ~67–70 км · ↑ ~4800–5000 м. Це чернеткова оцінка, яку ще треба звірити з точним треком і станом ферат.</p>
+            <p>6 днів / 5 ночей · ~61.5 км · ↑ ~5390 м · ↓ ~5390 м. Це чернеткова оцінка за побудованими треками, яку ще треба звірити зі станом ферат.</p>
           </article>
           <article class="note-card">
             <h3>Ночівлі</h3>
@@ -597,5 +864,417 @@
       <a href="index.html">← Повернутися до порівняння Brenta / Alta Via 2</a>
     </div>
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const ROUTE_MAPS = {
+      "brenta-day-1": {
+        geojson: "routes/brenta-day-1.geojson",
+        gpx: "routes/brenta-day-1.gpx",
+        color: "#b85832",
+        profileLabels: [["Vallesinella", "Vallesinella"]]
+      },
+      "brenta-day-2": {
+        geojson: "routes/brenta-day-2.geojson",
+        gpx: "routes/brenta-day-2.gpx",
+        color: "#2f6b52",
+        profileLabels: [["Ferrata Spellini", "Spellini"], ["Bocchette Centrali", "Centrali"]]
+      },
+      "brenta-day-3": {
+        geojson: "routes/brenta-day-3.geojson",
+        gpx: "routes/brenta-day-3.gpx",
+        color: "#b85832",
+        profileLabels: [["Rifugio Agostini", "Agostini"], ["Bocchetta dei Due Denti", "Due Denti"]]
+      },
+      "brenta-day-4": {
+        geojson: "routes/brenta-day-4.geojson",
+        gpx: "routes/brenta-day-4.gpx",
+        color: "#2f6b52",
+        profileLabels: [["Ferrata dell'Ideale", "Ideale"], ["Ferrata Brentari", "Brentari"], ["Rifugio Pedrotti", "Pedrotti"]]
+      },
+      "brenta-day-5": {
+        geojson: "routes/brenta-day-5.geojson",
+        gpx: "routes/brenta-day-5.gpx",
+        color: "#b85832",
+        profileLabels: [["Ferrata Oliva Detassis", "Oliva"], ["Bocchette Alte", "Bocchette Alte"], ["Sentiero SOSAT", "SOSAT"]]
+      },
+      "brenta-day-6": {
+        geojson: "routes/brenta-day-6.geojson",
+        gpx: "routes/brenta-day-6.gpx",
+        color: "#2f6b52",
+        profileLabels: []
+      }
+    };
+
+    const routeMapStates = new WeakMap();
+    const elevationProfileStates = new WeakMap();
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    function createSvgElement(tag, attributes = {}, text = "") {
+      const element = document.createElementNS(SVG_NS, tag);
+      Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+      if (text) element.textContent = text;
+      return element;
+    }
+
+    function distanceKm([longitudeA, latitudeA], [longitudeB, latitudeB]) {
+      const toRadians = (degrees) => degrees * Math.PI / 180;
+      const latitudeDelta = toRadians(latitudeB - latitudeA);
+      const longitudeDelta = toRadians(longitudeB - longitudeA);
+      const a = Math.sin(latitudeDelta / 2) ** 2
+        + Math.cos(toRadians(latitudeA)) * Math.cos(toRadians(latitudeB))
+        * Math.sin(longitudeDelta / 2) ** 2;
+      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function formatDecimal(value, digits = 1) {
+      return value.toLocaleString("uk-UA", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+    }
+
+    function prepareElevationPoints(line) {
+      let travelled = 0;
+      return line.geometry.coordinates.map((coordinate, index, coordinates) => {
+        if (index > 0) travelled += distanceKm(coordinates[index - 1], coordinate);
+        return {
+          coordinate,
+          distance: travelled,
+          elevation: Number(coordinate[2])
+        };
+      }).filter((point) => Number.isFinite(point.elevation));
+    }
+
+    function nearestProfilePoint(points, [longitude, latitude]) {
+      return points.reduce((nearest, point) => {
+        const [pointLongitude, pointLatitude] = point.coordinate;
+        const separation = (pointLongitude - longitude) ** 2 + (pointLatitude - latitude) ** 2;
+        return separation < nearest.separation ? { point, separation } : nearest;
+      }, { point: points[0], separation: Number.POSITIVE_INFINITY }).point;
+    }
+
+    function drawElevationProfile(container) {
+      const state = elevationProfileStates.get(container);
+      if (!state?.points.length) return;
+
+      const chart = container.querySelector(".elevation-profile-chart");
+      const readout = container.querySelector(".elevation-profile-readout");
+      const width = Math.max(Math.round(chart.clientWidth), 280);
+      const height = Math.max(Math.round(chart.clientHeight), 150);
+      const compact = width < 520;
+      const margin = { top: 25, right: 14, bottom: 28, left: compact ? 38 : 44 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const elevations = state.points.map((point) => point.elevation);
+      const rawMinimum = Math.min(...elevations);
+      const rawMaximum = Math.max(...elevations);
+      const elevationRange = rawMaximum - rawMinimum;
+      const elevationStep = elevationRange <= 400 ? 100 : elevationRange <= 800 ? 200 : 250;
+      const minimum = Math.floor(rawMinimum / elevationStep) * elevationStep;
+      const maximum = Math.ceil(rawMaximum / elevationStep) * elevationStep;
+      const totalDistance = state.points[state.points.length - 1].distance;
+      const x = (distance) => margin.left + distance / totalDistance * plotWidth;
+      const y = (elevation) => margin.top + (maximum - elevation) / Math.max(maximum - minimum, 1) * plotHeight;
+      const overview = `${formatDecimal(totalDistance)} км · ${Math.round(rawMinimum)}–${Math.round(rawMaximum)} м`;
+      const svg = createSvgElement("svg", {
+        viewBox: `0 0 ${width} ${height}`,
+        "aria-hidden": "true"
+      });
+
+      for (let elevation = minimum; elevation <= maximum; elevation += elevationStep) {
+        const position = y(elevation);
+        svg.append(
+          createSvgElement("line", {
+            x1: margin.left,
+            y1: position,
+            x2: width - margin.right,
+            y2: position,
+            stroke: "rgba(23, 32, 28, .12)",
+            "stroke-width": "1"
+          }),
+          createSvgElement("text", {
+            x: margin.left - 7,
+            y: position + 4,
+            "text-anchor": "end"
+          }, String(elevation))
+        );
+      }
+
+      const distanceTickCount = compact ? 2 : 4;
+      for (let index = 0; index <= distanceTickCount; index += 1) {
+        const distance = totalDistance * index / distanceTickCount;
+        const position = x(distance);
+        svg.append(
+          createSvgElement("line", {
+            x1: position,
+            y1: margin.top,
+            x2: position,
+            y2: height - margin.bottom,
+            stroke: "rgba(23, 32, 28, .08)",
+            "stroke-width": "1"
+          }),
+          createSvgElement("text", {
+            x: position,
+            y: height - 8,
+            "text-anchor": index === 0 ? "start" : index === distanceTickCount ? "end" : "middle"
+          }, `${formatDecimal(distance)} км`)
+        );
+      }
+
+      const linePath = state.points.map((point, index) => `${index === 0 ? "M" : "L"}${x(point.distance).toFixed(2)},${y(point.elevation).toFixed(2)}`).join(" ");
+      const areaPath = `${linePath} L${x(totalDistance).toFixed(2)},${height - margin.bottom} L${margin.left},${height - margin.bottom} Z`;
+      svg.append(
+        createSvgElement("path", {
+          d: areaPath,
+          fill: state.color,
+          "fill-opacity": ".14"
+        }),
+        createSvgElement("path", {
+          d: linePath,
+          fill: "none",
+          stroke: state.color,
+          "stroke-width": "2.5",
+          "stroke-linejoin": "round",
+          "stroke-linecap": "round"
+        })
+      );
+
+      const profileLabels = new Map(state.profileLabels);
+      state.waypoints.filter((waypoint) => profileLabels.has(waypoint.properties.name)).forEach((waypoint) => {
+        const point = nearestProfilePoint(state.points, waypoint.geometry.coordinates);
+        const positionX = x(point.distance);
+        const positionY = y(point.elevation);
+        svg.append(
+          createSvgElement("line", {
+            x1: positionX,
+            y1: margin.top,
+            x2: positionX,
+            y2: height - margin.bottom,
+            stroke: state.color,
+            "stroke-opacity": ".42",
+            "stroke-width": "1",
+            "stroke-dasharray": "3 4"
+          }),
+          createSvgElement("circle", {
+            cx: positionX,
+            cy: positionY,
+            r: "4",
+            fill: "#fffaf0",
+            stroke: state.color,
+            "stroke-width": "2"
+          }),
+          createSvgElement("text", {
+            x: positionX,
+            y: margin.top - 9,
+            "text-anchor": "middle",
+            class: "profile-waypoint-label"
+          }, profileLabels.get(waypoint.properties.name))
+        );
+      });
+
+      const cursor = createSvgElement("g", { opacity: "0" });
+      const cursorLine = createSvgElement("line", {
+        y1: margin.top,
+        y2: height - margin.bottom,
+        stroke: "#17201c",
+        "stroke-width": "1"
+      });
+      const cursorPoint = createSvgElement("circle", {
+        r: "5",
+        fill: "#fffaf0",
+        stroke: "#17201c",
+        "stroke-width": "2"
+      });
+      cursor.append(cursorLine, cursorPoint);
+      svg.append(cursor);
+
+      function selectPoint(clientX) {
+        const bounds = svg.getBoundingClientRect();
+        const localX = Math.min(Math.max(clientX - bounds.left, margin.left), width - margin.right);
+        const selectedDistance = (localX - margin.left) / plotWidth * totalDistance;
+        const point = state.points.reduce((nearest, candidate) => (
+          Math.abs(candidate.distance - selectedDistance) < Math.abs(nearest.distance - selectedDistance) ? candidate : nearest
+        ), state.points[0]);
+        const positionX = x(point.distance);
+        const positionY = y(point.elevation);
+        cursor.setAttribute("opacity", "1");
+        cursorLine.setAttribute("x1", positionX);
+        cursorLine.setAttribute("x2", positionX);
+        cursorPoint.setAttribute("cx", positionX);
+        cursorPoint.setAttribute("cy", positionY);
+        readout.textContent = `${formatDecimal(point.distance)} км · ${Math.round(point.elevation)} м`;
+        chart.dataset.selectedIndex = String(state.points.indexOf(point));
+        state.onSelect(point);
+      }
+
+      function clearSelection() {
+        cursor.setAttribute("opacity", "0");
+        readout.textContent = overview;
+        delete chart.dataset.selectedIndex;
+        state.onClear();
+      }
+
+      svg.addEventListener("pointermove", (event) => selectPoint(event.clientX));
+      svg.addEventListener("pointerdown", (event) => selectPoint(event.clientX));
+      chart.onpointerleave = clearSelection;
+      chart.onpointercancel = clearSelection;
+      chart.onblur = clearSelection;
+      chart.onkeydown = (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const current = Number(chart.dataset.selectedIndex ?? (event.key === "ArrowRight" ? -1 : state.points.length));
+        const next = Math.min(Math.max(current + (event.key === "ArrowRight" ? 1 : -1), 0), state.points.length - 1);
+        const point = state.points[next];
+        const bounds = svg.getBoundingClientRect();
+        selectPoint(bounds.left + x(point.distance));
+      };
+
+      chart.replaceChildren(svg);
+      chart.setAttribute("aria-label", `Профіль висот: ${state.routeName}. Дистанція ${formatDecimal(totalDistance)} км, висота від ${Math.round(rawMinimum)} до ${Math.round(rawMaximum)} метрів. Для перегляду значень використовуйте дотик, мишу або клавіші зі стрілками.`);
+      readout.textContent = overview;
+    }
+
+    function renderElevationProfile(container, line, waypoints, color, profileLabels, onSelect, onClear) {
+      if (!container) return;
+      const points = prepareElevationPoints(line);
+      if (points.length < 2) {
+        container.hidden = true;
+        return;
+      }
+
+      let state = elevationProfileStates.get(container);
+      if (!state) {
+        state = { points, waypoints, color, profileLabels, routeName: line.properties.name, onSelect, onClear, resizeFrame: 0 };
+        state.observer = new ResizeObserver(() => {
+          cancelAnimationFrame(state.resizeFrame);
+          state.resizeFrame = requestAnimationFrame(() => drawElevationProfile(container));
+        });
+        state.observer.observe(container.querySelector(".elevation-profile-chart"));
+        elevationProfileStates.set(container, state);
+      } else {
+        Object.assign(state, { points, waypoints, color, profileLabels, routeName: line.properties.name, onSelect, onClear });
+      }
+      container.hidden = false;
+      drawElevationProfile(container);
+    }
+
+    async function selectRouteMap(section, routeId) {
+      const route = ROUTE_MAPS[routeId];
+      const state = routeMapStates.get(section);
+      const status = section.querySelector(".route-map-status");
+      const download = section.querySelector(".route-map-download");
+      const request = ++state.request;
+
+      section.querySelectorAll("[data-route]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.route === routeId));
+      });
+      download.href = route.gpx;
+      status.hidden = false;
+      status.textContent = "Завантажуємо маршрут…";
+
+      try {
+        const response = await fetch(route.geojson);
+        if (!response.ok) throw new Error(`Route request failed: ${response.status}`);
+        const data = await response.json();
+        if (request !== state.request) return;
+
+        const line = data.features.find((feature) => feature.properties.kind === "route");
+        const waypoints = data.features.filter((feature) => feature.properties.kind === "waypoint");
+        const latLngs = line.geometry.coordinates.map(([longitude, latitude]) => [latitude, longitude]);
+        const compactMap = window.matchMedia("(max-width: 640px)").matches;
+
+        state.layer.clearLayers();
+        L.polyline(latLngs, { color: "#fffaf0", weight: 9, opacity: .9 }).addTo(state.layer);
+        L.polyline(latLngs, { color: route.color, weight: 5, opacity: 1 }).addTo(state.layer);
+
+        waypoints.forEach((waypoint, index) => {
+          const [longitude, latitude] = waypoint.geometry.coordinates;
+          const showLabel = waypoint.properties.show_label !== false;
+          L.circleMarker([latitude, longitude], {
+            radius: index === 0 ? 7 : 6,
+            color: "#fffaf0",
+            weight: 2,
+            fillColor: index === 0 ? "#d89a3d" : route.color,
+            fillOpacity: 1
+          })
+            .bindTooltip(waypoint.properties.name, {
+              direction: "top",
+              offset: [0, -6],
+              permanent: compactMap ? index === 0 || index === waypoints.length - 1 : showLabel
+            })
+            .addTo(state.layer);
+        });
+
+        renderElevationProfile(
+          section.querySelector("[data-elevation-profile]"),
+          line,
+          waypoints,
+          route.color,
+          route.profileLabels,
+          (point) => {
+            const [longitude, latitude] = point.coordinate;
+            state.profileMarker.setLatLng([latitude, longitude]);
+            if (!state.map.hasLayer(state.profileMarker)) state.profileMarker.addTo(state.map);
+          },
+          () => state.profileMarker.remove()
+        );
+        state.map.fitBounds(L.latLngBounds(latLngs), { padding: [28, 28] });
+        status.hidden = true;
+      } catch (error) {
+        if (request !== state.request) return;
+        state.layer.clearLayers();
+        const profile = section.querySelector("[data-elevation-profile]");
+        if (profile) profile.hidden = true;
+        status.hidden = false;
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+      }
+    }
+
+    function initRouteMap(section) {
+      if (routeMapStates.has(section)) return;
+
+      const status = section.querySelector(".route-map-status");
+      if (!window.L) {
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+        return;
+      }
+
+      const map = L.map(section.querySelector(".route-map-canvas"), { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+        maxZoom: 17,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+      }).addTo(map);
+      const layer = L.layerGroup().addTo(map);
+      const profileMarker = L.circleMarker([0, 0], {
+        radius: 7,
+        color: "#fffaf0",
+        weight: 3,
+        fillColor: "#17201c",
+        fillOpacity: 1,
+        interactive: false
+      });
+      routeMapStates.set(section, { map, layer, profileMarker, request: 0 });
+
+      section.querySelectorAll("[data-route]").forEach((button) => {
+        button.addEventListener("click", () => selectRouteMap(section, button.dataset.route));
+      });
+
+      selectRouteMap(section, section.dataset.defaultRoute);
+    }
+
+    const routeMapSections = document.querySelectorAll("[data-route-map]");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          initRouteMap(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: "400px 0px" });
+      routeMapSections.forEach((section) => observer.observe(section));
+    } else {
+      routeMapSections.forEach(initRouteMap);
+    }
+  </script>
 </body>
 </html>

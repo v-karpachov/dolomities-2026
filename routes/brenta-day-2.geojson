@@ -4831,7 +4831,7 @@
       "properties": {
         "kind": "waypoint",
         "name": "Bocca degli Armi",
-        "show_label": true
+        "show_label": false
       },
       "geometry": {
         "type": "Point",
