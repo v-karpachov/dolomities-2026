@@ -52,7 +52,9 @@ const checks = {
   overviewTracks: overviewTracks.every((track) => html.includes(track)),
   mapFiltering: html.includes("function selectMapRoute"),
   mapMarkers: html.includes("L.circleMarker"),
-  mapStatus: html.includes("data-overview-map-status")
+  mapStatus: html.includes("data-overview-map-status"),
+  neutralMapTiles: html.includes("tile.openstreetmap.org") && !html.includes("basemaps.cartocdn.com"),
+  contrastedMapRoutes: html.includes("drop-shadow(0 0 2px") && html.includes("weight: 6")
 };
 
 for (const key of ["routeCards", "galleries", "previousButtons", "nextButtons", "slideCounts"]) {
@@ -75,7 +77,9 @@ for (const key of [
   "overviewTracks",
   "mapFiltering",
   "mapMarkers",
-  "mapStatus"
+  "mapStatus",
+  "neutralMapTiles",
+  "contrastedMapRoutes"
 ]) {
   if (!checks[key]) throw new Error(`Missing index capability: ${key}`);
 }

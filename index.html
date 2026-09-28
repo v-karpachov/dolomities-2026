@@ -145,7 +145,7 @@
     }
 
     .map-route-button {
-      --route-color: var(--rust);
+      --route-color: #d33f2f;
       display: inline-flex;
       min-height: 40px;
       align-items: center;
@@ -161,11 +161,11 @@
     }
 
     .map-route-button[data-map-route="pale"] {
-      --route-color: var(--green);
+      --route-color: #087b59;
     }
 
     .map-route-button[data-map-route="seceda"] {
-      --route-color: var(--gold);
+      --route-color: #d69000;
     }
 
     .map-route-button::before {
@@ -208,6 +208,10 @@
     .overview-map img {
       width: auto;
       max-width: none;
+    }
+
+    .overview-map .overview-route-line {
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, .98)) drop-shadow(0 0 1px #fff);
     }
 
     .overview-map-status {
@@ -728,7 +732,7 @@
     const OVERVIEW_ROUTES = {
       brenta: {
         label: "Dolomiti di Brenta",
-        color: "#b85832",
+        color: "#d33f2f",
         files: [
           "routes/brenta-day-1.geojson?v=overview-1",
           "routes/brenta-day-2.geojson?v=overview-1",
@@ -740,7 +744,7 @@
       },
       pale: {
         label: "Pale di San Martino",
-        color: "#2f6b52",
+        color: "#087b59",
         files: [
           "routes/pale-day-1.geojson?v=overview-1",
           "routes/pale-day-2.geojson?v=overview-1",
@@ -752,7 +756,7 @@
       },
       seceda: {
         label: "Seceda → Marmolada → Costabella",
-        color: "#d89a3d",
+        color: "#d69000",
         files: [
           "routes/day-1-col-raiser.geojson?v=overview-1",
           "routes/day-2.geojson?v=overview-1",
@@ -789,7 +793,7 @@
         const highlighted = !nextSelection || id === nextSelection;
         route.lines.forEach((line) => line.setStyle({
           opacity: highlighted ? 1 : .13,
-          weight: nextSelection === id ? 7 : 5
+          weight: nextSelection === id ? 8 : 6
         }));
         route.markers.forEach((marker) => marker.setStyle({
           opacity: highlighted ? 1 : .18,
@@ -812,9 +816,9 @@
       try {
         const map = L.map(container, { scrollWheelZoom: false, zoomControl: true });
         overviewMapState.map = map;
-        L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
-          maxZoom: 17,
-          attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style © <a href="https://opentopomap.org">OpenTopoMap</a>'
+        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         const allBounds = L.latLngBounds([]);
@@ -837,7 +841,7 @@
             allBounds.extend(latLngs);
             lines.push(L.polyline(latLngs, {
               color: definition.color,
-              weight: 5,
+              weight: 6,
               opacity: 1,
               lineCap: "round",
               lineJoin: "round",
