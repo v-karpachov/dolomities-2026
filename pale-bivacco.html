@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pale di San Martino: чернетка 6-денного маршруту</title>
   <meta name="description" content="Чернеткова автономна 6-денна лінія через Pale di San Martino: Velo, Porton, Rosetta, Bolver Lugli, Cima della Vezzana, Fiamme Gialle, Pradidali і Reali.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
     :root {
       --ink: #17201c;
@@ -327,6 +328,133 @@
       color: var(--ink);
     }
 
+    .route-map {
+      max-width: 920px;
+      margin: 28px 0 32px;
+      border-top: 1px solid rgba(23, 32, 28, .14);
+      border-bottom: 1px solid rgba(23, 32, 28, .14);
+      padding: 22px 0;
+    }
+
+    .route-map-toolbar,
+    .route-map-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .route-map-toolbar {
+      margin-bottom: 14px;
+    }
+
+    .route-map-kicker {
+      margin-bottom: 4px;
+      color: var(--rust) !important;
+      font-size: .78rem !important;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .route-map h3 {
+      margin: 0;
+      color: var(--forest);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: clamp(1.35rem, 2.2vw, 2rem);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .route-map-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .2);
+      border-radius: 6px;
+      background: rgba(255, 250, 240, .66);
+    }
+
+    .route-map-toggle button,
+    .route-map-download {
+      min-height: 42px;
+      border: 0;
+      padding: 9px 13px;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .route-map-toggle button {
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .route-map-toggle button + button {
+      border-left: 1px solid rgba(23, 32, 28, .14);
+    }
+
+    .route-map-toggle button[aria-pressed="true"] {
+      color: #fffaf0;
+      background: var(--forest);
+    }
+
+    .route-map-toggle button:focus-visible,
+    .route-map-download:focus-visible {
+      outline: 3px solid rgba(216, 154, 61, .5);
+      outline-offset: 2px;
+    }
+
+    .route-map-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: #fffaf0;
+      background: var(--rust);
+      white-space: nowrap;
+    }
+
+    .route-map-download:hover {
+      background: #9e4729;
+    }
+
+    .route-map-canvas {
+      width: 100%;
+      height: 460px;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: var(--radius);
+      background: #dde2d8;
+      box-shadow: 0 14px 34px rgba(23, 32, 28, .12);
+    }
+
+    .route-map-status {
+      margin: 10px 0 0 !important;
+      color: var(--muted) !important;
+      font-size: .86rem !important;
+    }
+
+    .route-map-status[hidden] {
+      display: none;
+    }
+
+    .route-map .leaflet-control-attribution {
+      font-size: .68rem;
+    }
+
+    .route-map .leaflet-tooltip {
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: 4px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, .94);
+      box-shadow: 0 6px 18px rgba(23, 32, 28, .14);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
     .footer {
       padding: 28px 0 44px;
       color: var(--muted);
@@ -378,6 +506,26 @@
         width: 48px;
         height: 48px;
         font-size: 1.45rem;
+      }
+
+      .route-map-toolbar,
+      .route-map-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .route-map-toggle,
+      .route-map-download {
+        width: 100%;
+      }
+
+      .route-map-toggle button {
+        min-width: 0;
+        padding-inline: 8px;
+      }
+
+      .route-map-canvas {
+        height: 360px;
       }
     }
   </style>
@@ -460,6 +608,15 @@
                 <span class="day-stat">↓ ~100 м</span>
                 <span class="day-stat">~3–3.5 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="pale-day-1" aria-labelledby="pale-day-1-map-title">
+                <div class="route-map-toolbar">
+                  <h3 id="pale-day-1-map-title">Мапа дня 1</h3>
+                  <a class="route-map-download" href="routes/pale-day-1.gpx" download>Завантажити GPX</a>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 1"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-1.gpx" download>Завантажити GPX дня 1</a>.</p></noscript>
+              </section>
               <p>Спокійний вхід у масив із San Martino di Castrozza. Маршрут поступово виходить із лісу під стіни Cima della Madonna і Sass Maor та закінчується біля Rifugio Velo della Madonna на висоті близько 2358 м.</p>
               <p>День спеціально не перевантажений: основна технічна частина починається наступного ранку.</p>
               <div class="start-row">
@@ -479,6 +636,15 @@
                 <span class="day-stat">↓ ~650–750 м</span>
                 <span class="day-stat">~5.5–6.5 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="pale-day-2" aria-labelledby="pale-day-2-map-title">
+                <div class="route-map-toolbar">
+                  <h3 id="pale-day-2-map-title">Мапа дня 2</h3>
+                  <a class="route-map-download" href="routes/pale-day-2.gpx" download>Завантажити GPX</a>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 2"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-2.gpx" download>Завантажити GPX дня 2</a>.</p></noscript>
+              </section>
               <p>Від Velo одразу починається технічна частина: Ferrata del Velo, Forcella Porton, Ferrata del Porton і вихід до Pradidali. На цю зв'язку варто закладати приблизно три години.</p>
               <p>Після короткої паузи в Pradidali маршрут продовжується через Passo Pradidali Basso на велике кам'яне плато Pale і далі до Rosetta. Це вже повноцінний день: спочатку ферати, потім високогірний перехід по плато.</p>
               <div class="start-row">
@@ -498,6 +664,15 @@
                 <span class="day-stat">↓ ~750–850 м</span>
                 <span class="day-stat">~6 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="pale-day-3" aria-labelledby="pale-day-3-map-title">
+                <div class="route-map-toolbar">
+                  <h3 id="pale-day-3-map-title">Мапа дня 3</h3>
+                  <a class="route-map-download" href="routes/pale-day-3.gpx" download>Завантажити GPX</a>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 3"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-3.gpx" download>Завантажити GPX дня 3</a>.</p></noscript>
+              </section>
               <p>Від Rosetta маршрут спочатку втрачає частину висоти по 701 / 712 і виходить до початку Ferrata Bolver Lugli. Bolver піднімається південним боком Cimon della Pala й закінчується майже біля Bivacco Fiamme Gialle на висоті близько 3005 м.</p>
               <p>У bivacco можна залишити основний рюкзак і пройти налегке до Passo del Travignolo, Cima della Vezzana 3192 м і назад. Vezzana — найвища точка всього маршруту.</p>
               <div class="start-row">
@@ -517,6 +692,15 @@
                 <span class="day-stat">↓ ~1150–1250 м</span>
                 <span class="day-stat">~5–6 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="pale-day-4" aria-labelledby="pale-day-4-map-title">
+                <div class="route-map-toolbar">
+                  <h3 id="pale-day-4-map-title">Мапа дня 4</h3>
+                  <a class="route-map-download" href="routes/pale-day-4.gpx" download>Завантажити GPX</a>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 4"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-4.gpx" download>Завантажити GPX дня 4</a>.</p></noscript>
+              </section>
               <p>Уранці — спуск від Fiamme Gialle до Passo del Travignolo і далі через Val dei Cantoni. Після виходу з долини маршрут повертається через Passo Bettega в район Rosetta.</p>
               <p>Далі знову перетинається частина плато через Passo Pradidali Basso і спуск у верхню Val Pradidali. Після двох технічно насичених днів це більш спокійний перехідний етап, але він усе одно залишається у високогірному рельєфі.</p>
               <div class="start-row">
@@ -537,6 +721,24 @@
                 <span class="day-stat">Menegazzi: ~14–15 км</span>
                 <span class="day-stat">↓ ~1650–1750 м</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="pale-day-5-reali" aria-labelledby="pale-day-5-map-title">
+                <div class="route-map-toolbar">
+                  <div>
+                    <p class="route-map-kicker">Мапа дня 5</p>
+                    <h3 id="pale-day-5-map-title">Варіанти ночівлі</h3>
+                  </div>
+                  <div class="route-map-actions">
+                    <div class="route-map-toggle" role="group" aria-label="Варіант маршруту дня 5">
+                      <button type="button" data-route="pale-day-5-reali" aria-pressed="true">До Reali</button>
+                      <button type="button" data-route="pale-day-5-menegazzi" aria-pressed="false">До Menegazzi</button>
+                    </div>
+                    <a class="route-map-download" href="routes/pale-day-5-reali.gpx" download>Завантажити GPX</a>
+                  </div>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа варіантів маршруту дня 5"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-5-reali.gpx" download>Завантажити GPX до Reali</a> або <a href="routes/pale-day-5-menegazzi.gpx" download>до Menegazzi</a>.</p></noscript>
+              </section>
               <p>Найрізноманітніший день маршруту. Із Pradidali підйом іде назад у високу частину масиву, після чого лінія виходить на sentiero 708. Замість великого скидання до Rifugio Treviso маршрут тримається високо через район Fradusta, Forcella Alta del Ghiacciaio, Buse Alte і Passo Canali.</p>
               <p>Від Passo Canali починається спуск по 707, але не до самого Treviso. Приблизно на висоті 2050–2100 м маршрут повертає у Vallon del Coro і починає довгий підйом до Ferrata Fiamme Gialle, яка виводить до Forcella del Marmor і Bivacco Renato Reali.</p>
               <div class="light-note">
@@ -562,6 +764,15 @@
                 <span class="day-stat">↓ ~500–600 м</span>
                 <span class="day-stat">~2.5–3 год</span>
               </div>
+              <section class="route-map" data-route-map data-default-route="pale-day-6" aria-labelledby="pale-day-6-map-title">
+                <div class="route-map-toolbar">
+                  <h3 id="pale-day-6-map-title">Мапа дня 6</h3>
+                  <a class="route-map-download" href="routes/pale-day-6.gpx" download>Завантажити GPX</a>
+                </div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 6"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status">Мапа потребує JavaScript. <a href="routes/pale-day-6.gpx" download>Завантажити GPX дня 6</a>.</p></noscript>
+              </section>
               <p>Короткий вихід для частини групи, якій потрібно встигнути на ранній автобус із Forcella Aurine. Лінія: Menegazzi → Malga Camp → Col / Passo di Luna → Forcella Aurine.</p>
               <p>Якщо вийти з Menegazzi о 06:30–06:45, орієнтовне прибуття до Forcella Aurine — 09:15–09:45. Це залишає близько години резерву до автобуса 10:44. Група, яка залишається в Reali, проводить шостий день окремо і до цього рейсу не прив'язана.</p>
               <div class="start-row">
@@ -580,5 +791,151 @@
       <a href="index.html">← Повернутися до порівняння Brenta / Alta Via 2</a>
     </div>
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const ROUTE_MAPS = {
+      "pale-day-1": {
+        geojson: "routes/pale-day-1.geojson",
+        gpx: "routes/pale-day-1.gpx",
+        color: "#b85832"
+      },
+      "pale-day-2": {
+        geojson: "routes/pale-day-2.geojson",
+        gpx: "routes/pale-day-2.gpx",
+        color: "#2f6b52"
+      },
+      "pale-day-3": {
+        geojson: "routes/pale-day-3.geojson",
+        gpx: "routes/pale-day-3.gpx",
+        color: "#b85832"
+      },
+      "pale-day-4": {
+        geojson: "routes/pale-day-4.geojson",
+        gpx: "routes/pale-day-4.gpx",
+        color: "#2f6b52"
+      },
+      "pale-day-5-reali": {
+        geojson: "routes/pale-day-5-reali.geojson",
+        gpx: "routes/pale-day-5-reali.gpx",
+        color: "#b85832"
+      },
+      "pale-day-5-menegazzi": {
+        geojson: "routes/pale-day-5-menegazzi.geojson",
+        gpx: "routes/pale-day-5-menegazzi.gpx",
+        color: "#2f6b52"
+      },
+      "pale-day-6": {
+        geojson: "routes/pale-day-6.geojson",
+        gpx: "routes/pale-day-6.gpx",
+        color: "#b85832"
+      }
+    };
+
+    const routeMapStates = new WeakMap();
+
+    async function selectRouteMap(section, routeId) {
+      const route = ROUTE_MAPS[routeId];
+      const state = routeMapStates.get(section);
+      const status = section.querySelector(".route-map-status");
+      const download = section.querySelector(".route-map-download");
+      const request = ++state.request;
+
+      section.querySelectorAll("[data-route]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.route === routeId));
+      });
+      download.href = route.gpx;
+      status.hidden = false;
+      status.textContent = "Завантажуємо маршрут…";
+
+      try {
+        const response = await fetch(route.geojson);
+        if (!response.ok) throw new Error(`Route request failed: ${response.status}`);
+        const data = await response.json();
+        if (request !== state.request) return;
+
+        const line = data.features.find((feature) => feature.properties.kind === "route");
+        const waypoints = data.features.filter((feature) => feature.properties.kind === "waypoint");
+        const latLngs = line.geometry.coordinates.map(([longitude, latitude]) => [latitude, longitude]);
+        const compactMap = window.matchMedia("(max-width: 640px)").matches;
+        const routeBounds = L.latLngBounds(latLngs);
+        const west = routeBounds.getWest();
+        const east = routeBounds.getEast();
+        const south = routeBounds.getSouth();
+        const north = routeBounds.getNorth();
+
+        state.layer.clearLayers();
+        L.polyline(latLngs, { color: "#fffaf0", weight: 9, opacity: .9 }).addTo(state.layer);
+        L.polyline(latLngs, { color: route.color, weight: 5, opacity: 1 }).addTo(state.layer);
+
+        waypoints.forEach((waypoint, index) => {
+          const [longitude, latitude] = waypoint.geometry.coordinates;
+          const showLabel = waypoint.properties.show_label !== false;
+          const relativeX = (longitude - west) / Math.max(east - west, Number.EPSILON);
+          const relativeY = (latitude - south) / Math.max(north - south, Number.EPSILON);
+          const direction = relativeY > .84 ? "bottom" : relativeX < .18 ? "right" : relativeX > .82 ? "left" : "top";
+          const offset = direction === "bottom" ? [0, 6] : direction === "left" ? [-6, 0] : direction === "right" ? [6, 0] : [0, -6];
+          L.circleMarker([latitude, longitude], {
+            radius: index === 0 ? 7 : 6,
+            color: "#fffaf0",
+            weight: 2,
+            fillColor: index === 0 ? "#d89a3d" : route.color,
+            fillOpacity: 1
+          })
+            .bindTooltip(waypoint.properties.name, {
+              direction,
+              offset,
+              permanent: compactMap ? index === 0 || index === waypoints.length - 1 : showLabel
+            })
+            .addTo(state.layer);
+        });
+
+        state.map.fitBounds(routeBounds, { padding: [28, 28] });
+        status.hidden = true;
+      } catch (error) {
+        if (request !== state.request) return;
+        state.layer.clearLayers();
+        status.hidden = false;
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+      }
+    }
+
+    function initRouteMap(section) {
+      if (routeMapStates.has(section)) return;
+
+      const status = section.querySelector(".route-map-status");
+      if (!window.L) {
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+        return;
+      }
+
+      const map = L.map(section.querySelector(".route-map-canvas"), { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+        maxZoom: 17,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+      }).addTo(map);
+      const layer = L.layerGroup().addTo(map);
+      routeMapStates.set(section, { map, layer, request: 0 });
+
+      section.querySelectorAll("[data-route]").forEach((button) => {
+        button.addEventListener("click", () => selectRouteMap(section, button.dataset.route));
+      });
+
+      selectRouteMap(section, section.dataset.defaultRoute);
+    }
+
+    const routeMapSections = document.querySelectorAll("[data-route-map]");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          initRouteMap(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: "400px 0px" });
+      routeMapSections.forEach((section) => observer.observe(section));
+    } else {
+      routeMapSections.forEach(initRouteMap);
+    }
+  </script>
 </body>
 </html>
