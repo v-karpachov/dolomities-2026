@@ -5,7 +5,6 @@
   <wpt lat="46.424326" lon="11.846478"><ele>3011</ele><name>Cima Ombretta Orientale</name></wpt>
   <wpt lat="46.418601" lon="11.832738"><ele>2630</ele><name>Ferrata Ombretta / 650</name></wpt>
   <wpt lat="46.41011" lon="11.823617"><ele>2683</ele><name>Passo Cirelle</name></wpt>
-  <wpt lat="46.400647" lon="11.805735"><ele>2438</ele><name>P02 / Val di Tasca</name></wpt>
   <wpt lat="46.404239" lon="11.811376"><ele>2760</ele><name>Forcella Laghet</name></wpt>
   <wpt lat="46.403478" lon="11.780985"><ele>2660</ele><name>Bepi Zac</name></wpt>
   <wpt lat="46.397024" lon="11.762657"><ele>2528</ele><name>Passo delle Selle</name></wpt>
@@ -406,47 +405,6 @@
       <trkpt lat="46.404342" lon="11.811436"><ele>2761</ele></trkpt>
       <trkpt lat="46.404295" lon="11.811434"><ele>2760.8</ele></trkpt>
       <trkpt lat="46.40425" lon="11.811414"><ele>2760.3</ele></trkpt>
-      <trkpt lat="46.404215" lon="11.811175"><ele>2760.8</ele></trkpt>
-      <trkpt lat="46.404285" lon="11.811056"><ele>2763.3</ele></trkpt>
-      <trkpt lat="46.404412" lon="11.810938"><ele>2768</ele></trkpt>
-      <trkpt lat="46.404448" lon="11.810888"><ele>2770</ele></trkpt>
-      <trkpt lat="46.404583" lon="11.810648"><ele>2785</ele></trkpt>
-      <trkpt lat="46.404586" lon="11.810438"><ele>2798.5</ele></trkpt>
-      <trkpt lat="46.404548" lon="11.810305"><ele>2803.5</ele></trkpt>
-      <trkpt lat="46.404574" lon="11.81"><ele>2813</ele></trkpt>
-      <trkpt lat="46.40458" lon="11.809798"><ele>2796</ele></trkpt>
-      <trkpt lat="46.404625" lon="11.80973"><ele>2797.3</ele></trkpt>
-      <trkpt lat="46.404601" lon="11.809601"><ele>2782.8</ele></trkpt>
-      <trkpt lat="46.404574" lon="11.809348"><ele>2755.3</ele></trkpt>
-      <trkpt lat="46.404617" lon="11.809021"><ele>2731.5</ele></trkpt>
-      <trkpt lat="46.404153" lon="11.809253"><ele>2701.8</ele></trkpt>
-      <trkpt lat="46.403527" lon="11.80886"><ele>2646.3</ele></trkpt>
-      <trkpt lat="46.402861" lon="11.808079"><ele>2584</ele></trkpt>
-      <trkpt lat="46.402484" lon="11.807751"><ele>2553.5</ele></trkpt>
-      <trkpt lat="46.402135" lon="11.807395"><ele>2527.8</ele></trkpt>
-      <trkpt lat="46.401334" lon="11.806452"><ele>2481</ele></trkpt>
-      <trkpt lat="46.401021" lon="11.806053"><ele>2460.3</ele></trkpt>
-      <trkpt lat="46.400647" lon="11.805735"><ele>2437.8</ele></trkpt>
-      <trkpt lat="46.401021" lon="11.806053"><ele>2460.3</ele></trkpt>
-      <trkpt lat="46.401334" lon="11.806452"><ele>2481</ele></trkpt>
-      <trkpt lat="46.402135" lon="11.807395"><ele>2527.8</ele></trkpt>
-      <trkpt lat="46.402484" lon="11.807751"><ele>2553.5</ele></trkpt>
-      <trkpt lat="46.402861" lon="11.808079"><ele>2584</ele></trkpt>
-      <trkpt lat="46.403527" lon="11.80886"><ele>2646.3</ele></trkpt>
-      <trkpt lat="46.404153" lon="11.809253"><ele>2701.8</ele></trkpt>
-      <trkpt lat="46.404617" lon="11.809021"><ele>2731.5</ele></trkpt>
-      <trkpt lat="46.404574" lon="11.809348"><ele>2755.3</ele></trkpt>
-      <trkpt lat="46.404601" lon="11.809601"><ele>2782.8</ele></trkpt>
-      <trkpt lat="46.404625" lon="11.80973"><ele>2797.3</ele></trkpt>
-      <trkpt lat="46.40458" lon="11.809798"><ele>2796</ele></trkpt>
-      <trkpt lat="46.404574" lon="11.81"><ele>2813</ele></trkpt>
-      <trkpt lat="46.404548" lon="11.810305"><ele>2803.5</ele></trkpt>
-      <trkpt lat="46.404586" lon="11.810438"><ele>2798.5</ele></trkpt>
-      <trkpt lat="46.404583" lon="11.810648"><ele>2785</ele></trkpt>
-      <trkpt lat="46.404448" lon="11.810888"><ele>2770</ele></trkpt>
-      <trkpt lat="46.404412" lon="11.810938"><ele>2768</ele></trkpt>
-      <trkpt lat="46.404285" lon="11.811056"><ele>2763.3</ele></trkpt>
-      <trkpt lat="46.404215" lon="11.811175"><ele>2760.8</ele></trkpt>
       <trkpt lat="46.404244" lon="11.811373"><ele>2760.3</ele></trkpt>
       <trkpt lat="46.404215" lon="11.811175"><ele>2760.8</ele></trkpt>
       <trkpt lat="46.404285" lon="11.811056"><ele>2763.3</ele></trkpt>
