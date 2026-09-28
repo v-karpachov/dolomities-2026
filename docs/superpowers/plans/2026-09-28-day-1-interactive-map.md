@@ -31,11 +31,11 @@
 - Consumes: the route sequences `Col Raiser → Seceda → Forces de Siëles → Rifugio Puez` and `Seceda → Forces de Siëles → Rifugio Puez`.
 - Produces: GeoJSON `FeatureCollection` files containing one `LineString` route and named `Point` features; matching GPX 1.1 files containing one track and named waypoints.
 
-- [ ] **Step 1: Resolve and inspect the route geometry**
+- [x] **Step 1: Resolve and inspect the route geometry**
 
 Use OpenStreetMap place data and hiking routing to resolve the four named locations and construct both alternatives. Inspect the line against the mapped trails and ensure the shorter alternative is the suffix of the primary route from Seceda onward.
 
-- [ ] **Step 2: Save the browser map assets**
+- [x] **Step 2: Save the browser map assets**
 
 Save each browser asset with this shape:
 
@@ -51,11 +51,11 @@ Save each browser asset with this shape:
 
 Include the complete routed coordinate arrays in the saved files. Option B omits the Col Raiser waypoint.
 
-- [ ] **Step 3: Save matching GPX downloads**
+- [x] **Step 3: Save matching GPX downloads**
 
 Use GPX 1.1 with UTF-8 names, one `<trk>` per file, one `<trkseg>`, and `<trkpt lat="…" lon="…">` entries matching the corresponding GeoJSON line. Add named `<wpt>` elements for the same visible map markers.
 
-- [ ] **Step 4: Validate both formats**
+- [x] **Step 4: Validate both formats**
 
 Run:
 
@@ -75,15 +75,15 @@ Expected: every command exits with status 0, both route lines contain more than 
 - Consumes: `routes/day-1-col-raiser.geojson`, `routes/day-1-seceda.geojson`, and their matching GPX files.
 - Produces: `initDayOneMap(): void` and `selectDayOneRoute(routeId: "col-raiser" | "seceda"): Promise<void>` in the page script.
 
-- [ ] **Step 1: Load pinned Leaflet assets**
+- [x] **Step 1: Load pinned Leaflet assets**
 
 Add Leaflet 1.9.4 CSS in `<head>` and its script before the page's own map script. Include integrity and `crossorigin` attributes from the Leaflet distribution.
 
-- [ ] **Step 2: Add stable responsive map styling**
+- [x] **Step 2: Add stable responsive map styling**
 
 Add styles for `.route-map`, `.route-map-toolbar`, `.route-map-toggle`, `.route-map-download`, `.route-map-canvas`, `.route-map-status`, and selected/focus states. Keep the canvas height at `460px` on desktop and `360px` below `640px`, with an `8px` maximum corner radius.
 
-- [ ] **Step 3: Add Day 1 map markup**
+- [x] **Step 3: Add Day 1 map markup**
 
 Insert after the Day 1 introduction:
 
@@ -107,11 +107,11 @@ Insert after the Day 1 introduction:
 </section>
 ```
 
-- [ ] **Step 4: Implement route switching and failure handling**
+- [x] **Step 4: Implement route switching and failure handling**
 
 Create a `DAY_ONE_ROUTES` configuration for the two local files and colors. Initialize Leaflet with OpenTopoMap tiles and full attribution. On selection, update `aria-pressed`, fetch and draw the selected GeoJSON, bind permanent or click labels to waypoint markers, fit bounds with padding, update the GPX link, and clear the loading status. On failure, keep the GPX link visible and show `Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.`
 
-- [ ] **Step 5: Check static page contracts**
+- [x] **Step 5: Check static page contracts**
 
 Run:
 
@@ -132,11 +132,11 @@ Expected: all map assets and both route configurations are present, and the diff
 - Consumes: the completed static page and route assets.
 - Produces: a published GitHub Pages map whose two options can be viewed and downloaded.
 
-- [ ] **Step 1: Serve the site locally**
+- [x] **Step 1: Serve the site locally**
 
 Run a local static server from the repository root and open `seceda-marmolada-costabella.html` through HTTP so GeoJSON `fetch` requests are allowed.
 
-- [ ] **Step 2: Verify desktop and mobile behavior**
+- [x] **Step 2: Verify desktop and mobile behavior**
 
 At approximately `1440×1000` and `390×844`, verify that the map renders nonblank, the selected route changes, named markers are visible, controls do not overlap, the map canvas keeps its height, and both GPX links download the correct files.
 

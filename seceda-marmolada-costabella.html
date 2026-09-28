@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Seceda → Marmolada → Costabella: чернетка 6-денного маршруту</title>
   <meta name="description" content="Чернетковий 6-денний траверс Доломітами: Seceda, Puez, Sella, Padon, Marmolada, Ombretta, Costabella і фініш у Moena.">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
   <style>
     :root {
       --ink: #17201c;
@@ -345,6 +346,130 @@
       background: rgba(184, 88, 50, .09);
     }
 
+    .route-map {
+      max-width: 920px;
+      margin: 28px 0 32px;
+      border-top: 1px solid rgba(23, 32, 28, .14);
+      border-bottom: 1px solid rgba(23, 32, 28, .14);
+      padding: 22px 0;
+    }
+
+    .route-map-toolbar,
+    .route-map-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .route-map-toolbar {
+      margin-bottom: 14px;
+    }
+
+    .route-map-kicker {
+      margin-bottom: 4px;
+      color: var(--rust) !important;
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .route-map h3 {
+      margin-bottom: 0;
+      color: var(--forest);
+      font-size: clamp(1.35rem, 2.2vw, 2rem);
+    }
+
+    .route-map-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .2);
+      border-radius: 6px;
+      background: rgba(255, 250, 240, .66);
+    }
+
+    .route-map-toggle button,
+    .route-map-download {
+      min-height: 42px;
+      border: 0;
+      padding: 9px 13px;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .route-map-toggle button {
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .route-map-toggle button + button {
+      border-left: 1px solid rgba(23, 32, 28, .14);
+    }
+
+    .route-map-toggle button[aria-pressed="true"] {
+      color: #fffaf0;
+      background: var(--forest);
+    }
+
+    .route-map-toggle button:focus-visible,
+    .route-map-download:focus-visible {
+      outline: 3px solid rgba(216, 154, 61, .5);
+      outline-offset: 2px;
+    }
+
+    .route-map-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: #fffaf0;
+      background: var(--rust);
+      white-space: nowrap;
+    }
+
+    .route-map-download:hover {
+      background: #9e4729;
+    }
+
+    .route-map-canvas {
+      width: 100%;
+      height: 460px;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: var(--radius);
+      background: #dde2d8;
+      box-shadow: 0 14px 34px rgba(23, 32, 28, .12);
+    }
+
+    .route-map-status {
+      margin: 10px 0 0;
+      color: var(--muted) !important;
+      font-size: .86rem;
+    }
+
+    .route-map-status[hidden] {
+      display: none;
+    }
+
+    .route-map .leaflet-control-attribution {
+      font-size: .68rem;
+    }
+
+    .route-map .leaflet-tooltip {
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: 4px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, .94);
+      box-shadow: 0 6px 18px rgba(23, 32, 28, .14);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
     .footer {
       padding: 28px 0 44px;
       color: var(--muted);
@@ -394,6 +519,26 @@
         width: 48px;
         height: 48px;
         font-size: 1.45rem;
+      }
+
+      .route-map-toolbar,
+      .route-map-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .route-map-toggle,
+      .route-map-download {
+        width: 100%;
+      }
+
+      .route-map-toggle button {
+        min-width: 0;
+        padding-inline: 8px;
+      }
+
+      .route-map-canvas {
+        height: 360px;
       }
     }
   </style>
@@ -470,6 +615,27 @@
             <div>
               <h2>День 1 — Santa Cristina → Seceda → Forces de Siëles → Puez</h2>
               <p>На перший день є два варіанти старту із Santa Cristina. Обидва сходяться на Seceda і далі йдуть однією лінією через Forces de Siëles до Rifugio Puez.</p>
+
+              <section class="route-map" aria-labelledby="day-1-map-title">
+                <div class="route-map-toolbar">
+                  <div>
+                    <p class="route-map-kicker">Мапа дня 1</p>
+                    <h3 id="day-1-map-title">Варіанти старту</h3>
+                  </div>
+                  <div class="route-map-actions">
+                    <div class="route-map-toggle" role="group" aria-label="Варіант маршруту дня 1">
+                      <button type="button" data-route="col-raiser" aria-pressed="true">Через Col Raiser</button>
+                      <button type="button" data-route="seceda" aria-pressed="false">Через Seceda</button>
+                    </div>
+                    <a class="route-map-download" href="routes/day-1-col-raiser.gpx" download>Завантажити GPX</a>
+                  </div>
+                </div>
+                <div id="day-1-map" class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 1"></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript>
+                  <p class="route-map-status">Мапа потребує JavaScript. <a href="routes/day-1-col-raiser.gpx" download>Завантажити GPX варіанта A</a> або <a href="routes/day-1-seceda.gpx" download>варіанта B</a>.</p>
+                </noscript>
+              </section>
 
               <section class="day-option" aria-labelledby="day-1-option-a">
                 <h3 id="day-1-option-a">Варіант A — через Col Raiser</h3>
@@ -628,5 +794,102 @@
       <a href="index.html">← Повернутися до порівняння Brenta / Alta Via 2</a>
     </div>
   </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script>
+    const DAY_ONE_ROUTES = {
+      "col-raiser": {
+        geojson: "routes/day-1-col-raiser.geojson",
+        gpx: "routes/day-1-col-raiser.gpx",
+        color: "#b85832"
+      },
+      seceda: {
+        geojson: "routes/day-1-seceda.geojson",
+        gpx: "routes/day-1-seceda.gpx",
+        color: "#2f6b52"
+      }
+    };
+
+    let dayOneMap;
+    let dayOneRouteLayer;
+    let dayOneRequest = 0;
+
+    async function selectDayOneRoute(routeId) {
+      const route = DAY_ONE_ROUTES[routeId];
+      const status = document.querySelector(".route-map-status");
+      const download = document.querySelector(".route-map-download");
+      const request = ++dayOneRequest;
+
+      document.querySelectorAll(".route-map-toggle button").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.route === routeId));
+      });
+      download.href = route.gpx;
+      status.hidden = false;
+      status.textContent = "Завантажуємо маршрут…";
+
+      try {
+        const response = await fetch(route.geojson);
+        if (!response.ok) throw new Error(`Route request failed: ${response.status}`);
+        const data = await response.json();
+        if (request !== dayOneRequest) return;
+
+        const line = data.features.find((feature) => feature.properties.kind === "route");
+        const waypoints = data.features.filter((feature) => feature.properties.kind === "waypoint");
+        const latLngs = line.geometry.coordinates.map(([longitude, latitude]) => [latitude, longitude]);
+        const compactMap = window.matchMedia("(max-width: 640px)").matches;
+
+        dayOneRouteLayer.clearLayers();
+        L.polyline(latLngs, { color: "#fffaf0", weight: 9, opacity: .9 }).addTo(dayOneRouteLayer);
+        L.polyline(latLngs, { color: route.color, weight: 5, opacity: 1 }).addTo(dayOneRouteLayer);
+
+        waypoints.forEach((waypoint, index) => {
+          const [longitude, latitude] = waypoint.geometry.coordinates;
+          L.circleMarker([latitude, longitude], {
+            radius: index === 0 ? 7 : 6,
+            color: "#fffaf0",
+            weight: 2,
+            fillColor: index === 0 ? "#d89a3d" : route.color,
+            fillOpacity: 1
+          })
+            .bindTooltip(waypoint.properties.name, {
+              direction: "top",
+              offset: [0, -6],
+              permanent: !compactMap || index === 0 || index === waypoints.length - 1
+            })
+            .addTo(dayOneRouteLayer);
+        });
+
+        dayOneMap.fitBounds(L.latLngBounds(latLngs), { padding: [28, 28] });
+        status.hidden = true;
+      } catch (error) {
+        if (request !== dayOneRequest) return;
+        dayOneRouteLayer.clearLayers();
+        status.hidden = false;
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+      }
+    }
+
+    function initDayOneMap() {
+      const status = document.querySelector(".route-map-status");
+      if (!window.L) {
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+        return;
+      }
+
+      dayOneMap = L.map("day-1-map", { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+        maxZoom: 17,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+      }).addTo(dayOneMap);
+      dayOneRouteLayer = L.layerGroup().addTo(dayOneMap);
+
+      document.querySelectorAll(".route-map-toggle button").forEach((button) => {
+        button.addEventListener("click", () => selectDayOneRoute(button.dataset.route));
+      });
+
+      selectDayOneRoute("col-raiser");
+    }
+
+    initDayOneMap();
+  </script>
 </body>
 </html>
