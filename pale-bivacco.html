@@ -1106,6 +1106,7 @@
         cursorPoint.setAttribute("cy", positionY);
         readout.textContent = `${formatDecimal(point.distance)} км · ${Math.round(point.elevation)} м`;
         chart.dataset.selectedIndex = String(state.points.indexOf(point));
+        state.onSelect(point);
       }
 
       svg.addEventListener("pointermove", (event) => selectPoint(event.clientX));
@@ -1114,7 +1115,9 @@
         cursor.setAttribute("opacity", "0");
         readout.textContent = overview;
         delete chart.dataset.selectedIndex;
+        state.onClear();
       });
+      chart.onblur = state.onClear;
       chart.onkeydown = (event) => {
         if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
         event.preventDefault();
@@ -1130,7 +1133,7 @@
       readout.textContent = overview;
     }
 
-    function renderElevationProfile(container, line, waypoints, color) {
+    function renderElevationProfile(container, line, waypoints, color, onSelect, onClear) {
       if (!container) return;
       const points = prepareElevationPoints(line);
       if (points.length < 2) {
@@ -1140,7 +1143,7 @@
 
       let state = elevationProfileStates.get(container);
       if (!state) {
-        state = { points, waypoints, color, resizeFrame: 0 };
+        state = { points, waypoints, color, onSelect, onClear, resizeFrame: 0 };
         state.observer = new ResizeObserver(() => {
           cancelAnimationFrame(state.resizeFrame);
           state.resizeFrame = requestAnimationFrame(() => drawElevationProfile(container));
@@ -1148,7 +1151,7 @@
         state.observer.observe(container.querySelector(".elevation-profile-chart"));
         elevationProfileStates.set(container, state);
       } else {
-        Object.assign(state, { points, waypoints, color });
+        Object.assign(state, { points, waypoints, color, onSelect, onClear });
       }
       container.hidden = false;
       drawElevationProfile(container);
@@ -1210,7 +1213,18 @@
             .addTo(state.layer);
         });
 
-        renderElevationProfile(section.querySelector("[data-elevation-profile]"), line, waypoints, route.color);
+        renderElevationProfile(
+          section.querySelector("[data-elevation-profile]"),
+          line,
+          waypoints,
+          route.color,
+          (point) => {
+            const [longitude, latitude] = point.coordinate;
+            state.profileMarker.setLatLng([latitude, longitude]);
+            if (!state.map.hasLayer(state.profileMarker)) state.profileMarker.addTo(state.map);
+          },
+          () => state.profileMarker.remove()
+        );
         state.map.fitBounds(routeBounds, { padding: [28, 28] });
         status.hidden = true;
       } catch (error) {
@@ -1238,7 +1252,15 @@
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
       }).addTo(map);
       const layer = L.layerGroup().addTo(map);
-      routeMapStates.set(section, { map, layer, request: 0 });
+      const profileMarker = L.circleMarker([0, 0], {
+        radius: 7,
+        color: "#fffaf0",
+        weight: 3,
+        fillColor: "#17201c",
+        fillOpacity: 1,
+        interactive: false
+      });
+      routeMapStates.set(section, { map, layer, profileMarker, request: 0 });
 
       section.querySelectorAll("[data-route]").forEach((button) => {
         button.addEventListener("click", () => selectRouteMap(section, button.dataset.route));
