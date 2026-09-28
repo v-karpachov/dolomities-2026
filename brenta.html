@@ -440,10 +440,43 @@
       line-height: 1.05;
     }
 
-    .start-logistics-option p:last-child {
+    .start-logistics-legs {
+      display: grid;
+      gap: 7px;
+    }
+
+    .start-logistics-legs p {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 10px;
       margin: 0;
       color: var(--muted);
-      font-size: .9rem;
+      font-size: .86rem;
+    }
+
+    .start-logistics-legs strong {
+      color: var(--ink);
+    }
+
+    .start-logistics-legs .start-logistics-transfer {
+      grid-template-columns: 1fr;
+      gap: 2px;
+      padding: 7px 0;
+      border-top: 1px solid rgba(184, 88, 50, .2);
+      border-bottom: 1px solid rgba(184, 88, 50, .2);
+    }
+
+    .start-logistics-transfer strong {
+      color: var(--rust);
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-direct {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .86rem;
     }
 
     .start-logistics-departure {
@@ -479,19 +512,6 @@
 
     .start-logistics-reserve {
       margin-top: 12px;
-    }
-
-    .start-logistics-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .start-logistics-links .maps-link {
-      border-color: rgba(184, 88, 50, .22);
-      color: var(--rust);
-      background: rgba(255, 250, 240, .62);
     }
 
     .route-map {
@@ -833,12 +853,19 @@
             <article class="start-logistics-option is-primary">
               <span class="start-logistics-label">Рекомендований рейс</span>
               <p class="start-logistics-time">08:48 → 10:56</p>
-              <p>Trento Autostazione → Tione о 09:56, узгоджена пересадка на B231 о 09:59 → M.Campiglio Laghetto о 10:56.</p>
+              <div class="start-logistics-legs">
+                <p><strong>B201</strong><span>Trento Autostazione 08:48 → Tione 09:56</span></p>
+                <p class="start-logistics-transfer"><strong>Пересадка у Tione · 3 хв</strong><span>Рейси узгоджені за розкладом</span></p>
+                <p><strong>B231</strong><span>Tione 09:59 → M.Campiglio Laghetto 10:56</span></p>
+              </div>
             </article>
             <article class="start-logistics-option">
               <span class="start-logistics-label">Ранній прямий</span>
               <p class="start-logistics-time">07:48 → 09:56</p>
-              <p>Прямий автобус у напрямку Campo Carlo Magno без пересадки. Залишає додаткову годину запасу на погоду й повільний темп.</p>
+              <div class="start-logistics-legs">
+                <p><strong>B201</strong><span>Trento Autostazione 07:48 → M.Campiglio Laghetto 09:56</span></p>
+              </div>
+              <p class="start-logistics-direct">Без пересадки; автобус продовжує рух у напрямку Campo Carlo Magno. Залишає додаткову годину запасу.</p>
             </article>
           </div>
           <div class="start-logistics-departure">
@@ -847,11 +874,6 @@
             <span>Tuckett орієнтовно о 15:10–16:10</span>
           </div>
           <p class="start-logistics-intro start-logistics-reserve">Виїзд із Trento о 09:48 із прибуттям о 11:54 залишає менше запасу й розглядається лише як резерв.</p>
-          <div class="start-logistics-links">
-            <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Trento+Autostazione+Italy">Trento Autostazione</a>
-            <a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Madonna+di+Campiglio+Laghetto+bus+stop">M.Campiglio Laghetto</a>
-            <a class="maps-link" href="https://www.trentinotrasporti.it/it/opendata-it">Trentino Trasporti</a>
-          </div>
         </section>
         <h2 class="section-title" id="days-title">Дні маршруту</h2>
         <p class="route-draft-note">Лінії на мапах і GPX — планувальні чернетки. Перед походом їх потрібно звірити з актуальним станом ферат, снігу та закриттів.</p>
