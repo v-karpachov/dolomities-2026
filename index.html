@@ -6,6 +6,7 @@
   <title>Доломіти 2026 · три варіанти маршруту</title>
   <meta name="description" content="Три шестиденні маршрути в Доломітах: Dolomiti di Brenta, Pale di San Martino та Seceda — Marmolada — Costabella.">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%2322372d'/%3E%3Cpath d='M8 49 25 18l8 15 7-11 16 27Z' fill='%23fffaf0'/%3E%3Cpath d='M19 49 33 33l7-11 16 27Z' fill='%23d89a3d'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="vendor/leaflet.css">
   <style>
     :root {
       --ink: #17201c;
@@ -116,6 +117,126 @@
 
     main {
       padding: 28px 0 44px;
+    }
+
+    .overview-section {
+      margin-bottom: 28px;
+    }
+
+    .overview-heading {
+      display: flex;
+      margin-bottom: 14px;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .overview-heading h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      line-height: 1.05;
+    }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .map-route-button {
+      --route-color: var(--rust);
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .map-route-button[data-map-route="pale"] {
+      --route-color: var(--green);
+    }
+
+    .map-route-button[data-map-route="seceda"] {
+      --route-color: var(--gold);
+    }
+
+    .map-route-button::before {
+      content: "";
+      width: 11px;
+      height: 11px;
+      flex: 0 0 auto;
+      background: var(--route-color);
+      border-radius: 50%;
+    }
+
+    .map-route-button:hover,
+    .map-route-button:focus-visible,
+    .map-route-button[aria-pressed="true"] {
+      color: #fff;
+      background: var(--forest);
+      border-color: var(--forest);
+      outline: none;
+    }
+
+    .map-route-button:focus-visible {
+      outline: 2px solid var(--route-color);
+      outline-offset: 2px;
+    }
+
+    .overview-map-frame {
+      position: relative;
+      overflow: hidden;
+      background: #dfe5de;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+    }
+
+    .overview-map {
+      width: 100%;
+      height: 500px;
+    }
+
+    .overview-map img {
+      width: auto;
+      max-width: none;
+    }
+
+    .overview-map-status {
+      position: absolute;
+      inset: 0;
+      z-index: 500;
+      display: grid;
+      margin: 0;
+      place-items: center;
+      padding: 24px;
+      color: var(--muted);
+      background: rgba(243, 241, 235, .9);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .overview-map-status[hidden] {
+      display: none;
+    }
+
+    .overview-map .leaflet-tooltip {
+      color: var(--ink);
+      background: var(--surface);
+      border: 0;
+      border-radius: 3px;
+      box-shadow: 0 5px 18px rgba(18, 30, 24, .2);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: .76rem;
+      font-weight: 800;
     }
 
     .mobile-cue {
@@ -358,6 +479,17 @@
         gap: 22px;
       }
 
+      .overview-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .map-legend {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
       .route-grid {
         display: flex;
         gap: 14px;
@@ -393,6 +525,16 @@
 
       main {
         padding-top: 18px;
+      }
+
+      .overview-map {
+        height: 360px;
+      }
+
+      .map-route-button {
+        min-height: 42px;
+        flex: 1 1 auto;
+        justify-content: center;
       }
 
       .route-content {
@@ -436,6 +578,25 @@
 
   <main>
     <div class="shell">
+      <section class="overview-section" aria-labelledby="overview-map-title">
+        <div class="overview-heading">
+          <div>
+            <p class="route-index">Загальна картина</p>
+            <h2 id="overview-map-title">Три маршрути на мапі</h2>
+          </div>
+          <div class="map-legend" role="group" aria-label="Виділити маршрут">
+            <button class="map-route-button" type="button" data-map-route="brenta" aria-pressed="false">Brenta</button>
+            <button class="map-route-button" type="button" data-map-route="pale" aria-pressed="false">Pale di San Martino</button>
+            <button class="map-route-button" type="button" data-map-route="seceda" aria-pressed="false">Seceda → Costabella</button>
+          </div>
+        </div>
+        <div class="overview-map-frame">
+          <div class="overview-map" data-overview-map role="img" aria-label="Інтерактивна мапа трьох маршрутів у Доломітах"></div>
+          <p class="overview-map-status" data-overview-map-status aria-live="polite">Завантажуємо маршрути…</p>
+          <noscript><p class="overview-map-status">Для інтерактивної мапи потрібен JavaScript.</p></noscript>
+        </div>
+      </section>
+
       <p class="mobile-cue" aria-label="Маршрути можна гортати горизонтально">←&nbsp;&nbsp;&nbsp;→</p>
       <section class="route-grid" aria-label="Варіанти маршрутів">
         <article class="route-card" data-route="brenta">
@@ -562,8 +723,159 @@
     </div>
   </footer>
 
+  <script src="vendor/leaflet.js"></script>
   <script>
+    const OVERVIEW_ROUTES = {
+      brenta: {
+        label: "Dolomiti di Brenta",
+        color: "#b85832",
+        files: [
+          "routes/brenta-day-1.geojson?v=overview-1",
+          "routes/brenta-day-2.geojson?v=overview-1",
+          "routes/brenta-day-3.geojson?v=overview-1",
+          "routes/brenta-day-4.geojson?v=overview-1",
+          "routes/brenta-day-5.geojson?v=overview-1",
+          "routes/brenta-day-6.geojson?v=overview-1"
+        ]
+      },
+      pale: {
+        label: "Pale di San Martino",
+        color: "#2f6b52",
+        files: [
+          "routes/pale-day-1.geojson?v=overview-1",
+          "routes/pale-day-2.geojson?v=overview-1",
+          "routes/pale-day-3.geojson?v=overview-1",
+          "routes/pale-day-4.geojson?v=overview-1",
+          "routes/pale-day-5-reali.geojson?v=overview-1",
+          "routes/pale-day-6.geojson?v=overview-1"
+        ]
+      },
+      seceda: {
+        label: "Seceda → Marmolada → Costabella",
+        color: "#d89a3d",
+        files: [
+          "routes/day-1-col-raiser.geojson?v=overview-1",
+          "routes/day-2.geojson?v=overview-1",
+          "routes/day-3.geojson?v=overview-1",
+          "routes/day-4.geojson?v=overview-1",
+          "routes/day-5.geojson?v=overview-1",
+          "routes/day-6.geojson?v=overview-1"
+        ]
+      }
+    };
+
+    const overviewMapState = {
+      map: null,
+      routes: new Map(),
+      allBounds: null,
+      selected: null
+    };
+
+    function fitOverviewBounds(bounds) {
+      if (!overviewMapState.map || !bounds?.isValid()) return;
+      const compact = window.matchMedia("(max-width: 620px)").matches;
+      overviewMapState.map.fitBounds(bounds, { padding: compact ? [18, 18] : [34, 34] });
+    }
+
+    function selectMapRoute(routeId) {
+      const nextSelection = overviewMapState.selected === routeId ? null : routeId;
+      overviewMapState.selected = nextSelection;
+
+      document.querySelectorAll("[data-map-route]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.mapRoute === nextSelection));
+      });
+
+      overviewMapState.routes.forEach((route, id) => {
+        const highlighted = !nextSelection || id === nextSelection;
+        route.lines.forEach((line) => line.setStyle({
+          opacity: highlighted ? 1 : .13,
+          weight: nextSelection === id ? 7 : 5
+        }));
+        route.markers.forEach((marker) => marker.setStyle({
+          opacity: highlighted ? 1 : .18,
+          fillOpacity: highlighted ? 1 : .18
+        }));
+      });
+
+      fitOverviewBounds(nextSelection ? overviewMapState.routes.get(nextSelection)?.bounds : overviewMapState.allBounds);
+    }
+
+    async function initOverviewMap() {
+      const container = document.querySelector("[data-overview-map]");
+      const status = document.querySelector("[data-overview-map-status]");
+      if (!container || !status) return;
+      if (!window.L) {
+        status.textContent = "Не вдалося завантажити мапу.";
+        return;
+      }
+
+      try {
+        const map = L.map(container, { scrollWheelZoom: false, zoomControl: true });
+        overviewMapState.map = map;
+        L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+          maxZoom: 17,
+          attribution: 'Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style © <a href="https://opentopomap.org">OpenTopoMap</a>'
+        }).addTo(map);
+
+        const allBounds = L.latLngBounds([]);
+        await Promise.all(Object.entries(OVERVIEW_ROUTES).map(async ([routeId, definition]) => {
+          const responses = await Promise.all(definition.files.map((file) => fetch(file)));
+          if (responses.some((response) => !response.ok)) throw new Error(`Route request failed: ${routeId}`);
+          const collections = await Promise.all(responses.map((response) => response.json()));
+          const lines = [];
+          const routeBounds = L.latLngBounds([]);
+          let firstPoint = null;
+          let lastPoint = null;
+
+          collections.forEach((collection) => {
+            const feature = collection.features.find((item) => item.properties.kind === "route");
+            if (!feature) throw new Error(`Missing route line: ${routeId}`);
+            const latLngs = feature.geometry.coordinates.map(([longitude, latitude]) => [latitude, longitude]);
+            if (!firstPoint) firstPoint = latLngs[0];
+            lastPoint = latLngs.at(-1);
+            routeBounds.extend(latLngs);
+            allBounds.extend(latLngs);
+            lines.push(L.polyline(latLngs, {
+              color: definition.color,
+              weight: 5,
+              opacity: 1,
+              lineCap: "round",
+              lineJoin: "round",
+              interactive: false,
+              className: `overview-route-line overview-route-${routeId}`
+            }).addTo(map));
+          });
+
+          const markers = [
+            [firstPoint, `${definition.label} · старт`],
+            [lastPoint, `${definition.label} · фініш`]
+          ].map(([latLng, tooltip], index) => L.circleMarker(latLng, {
+            radius: index === 0 ? 7 : 6,
+            color: "#fffdf8",
+            weight: 2,
+            fillColor: definition.color,
+            fillOpacity: 1,
+            className: `overview-route-marker overview-route-${routeId}`
+          }).bindTooltip(tooltip, { direction: "top", offset: [0, -6] }).addTo(map));
+
+          overviewMapState.routes.set(routeId, { lines, markers, bounds: routeBounds });
+        }));
+
+        overviewMapState.allBounds = allBounds;
+        fitOverviewBounds(allBounds);
+        document.querySelectorAll("[data-map-route]").forEach((button) => {
+          button.addEventListener("click", () => selectMapRoute(button.dataset.mapRoute));
+        });
+        status.hidden = true;
+      } catch (error) {
+        status.hidden = false;
+        status.textContent = "Не вдалося завантажити маршрути. Детальні мапи залишаються доступними на сторінках маршрутів.";
+      }
+    }
+
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    initOverviewMap();
 
     document.querySelectorAll("[data-gallery]").forEach((gallery) => {
       const slides = [...gallery.querySelectorAll(".gallery-slide")];
