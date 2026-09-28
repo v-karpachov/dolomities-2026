@@ -11,21 +11,45 @@ if (!fs.existsSync(comparisonPath)) throw new Error("Missing preserved compariso
 const html = fs.readFileSync(indexPath, "utf8");
 const comparison = fs.readFileSync(comparisonPath, "utf8");
 const count = (pattern) => (html.match(pattern) ?? []).length;
-const overviewTracks = [
-  ...Array.from({ length: 6 }, (_, index) => `routes/brenta-day-${index + 1}.geojson`),
-  "routes/pale-day-1.geojson",
-  "routes/pale-day-2.geojson",
-  "routes/pale-day-3.geojson",
-  "routes/pale-day-4.geojson",
-  "routes/pale-day-5-reali.geojson",
-  "routes/pale-day-6.geojson",
-  "routes/day-1-col-raiser.geojson",
-  "routes/day-2.geojson",
-  "routes/day-3.geojson",
-  "routes/day-4.geojson",
-  "routes/day-5.geojson",
-  "routes/day-6.geojson"
-];
+const overviewRouteGroups = {
+  brenta: Array.from({ length: 6 }, (_, index) => `routes/brenta-day-${index + 1}.geojson`),
+  pale: [
+    "routes/pale-day-1.geojson",
+    "routes/pale-day-2.geojson",
+    "routes/pale-day-3.geojson",
+    "routes/pale-day-4.geojson",
+    "routes/pale-day-5-menegazzi.geojson",
+    "routes/pale-day-6.geojson"
+  ],
+  seceda: [
+    "routes/day-1-col-raiser.geojson",
+    "routes/day-2.geojson",
+    "routes/day-3.geojson",
+    "routes/day-4.geojson",
+    "routes/day-5.geojson",
+    "routes/day-6.geojson"
+  ]
+};
+const overviewTracks = Object.values(overviewRouteGroups).flat();
+
+const routeEndpoints = (file) => {
+  const collection = JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
+  const coordinates = collection.features.find((feature) => feature.properties.kind === "route").geometry.coordinates;
+  return [coordinates[0], coordinates.at(-1)];
+};
+
+const endpointDistance = ([longitudeA, latitudeA], [longitudeB, latitudeB]) => {
+  const radians = Math.PI / 180;
+  const latitudeDelta = (latitudeB - latitudeA) * radians;
+  const longitudeDelta = (longitudeB - longitudeA) * radians;
+  const value = Math.sin(latitudeDelta / 2) ** 2
+    + Math.cos(latitudeA * radians) * Math.cos(latitudeB * radians) * Math.sin(longitudeDelta / 2) ** 2;
+  return 6371000 * 2 * Math.asin(Math.sqrt(value));
+};
+
+const overviewContinuity = Object.values(overviewRouteGroups).every((files) => files
+  .map(routeEndpoints)
+  .every((endpoints, index, routes) => index === 0 || endpointDistance(routes[index - 1][1], endpoints[0]) < 5));
 
 const checks = {
   routeCards: count(/<article class="route-card/g),
@@ -50,6 +74,7 @@ const checks = {
   leafletCss: html.includes('href="vendor/leaflet.css"'),
   leafletJs: html.includes('src="vendor/leaflet.js"'),
   overviewTracks: overviewTracks.every((track) => html.includes(track)),
+  overviewContinuity,
   mapFiltering: html.includes("function selectMapRoute"),
   mapMarkers: html.includes("L.circleMarker"),
   mapStatus: html.includes("data-overview-map-status"),
@@ -75,6 +100,7 @@ for (const key of [
   "leafletCss",
   "leafletJs",
   "overviewTracks",
+  "overviewContinuity",
   "mapFiltering",
   "mapMarkers",
   "mapStatus",
