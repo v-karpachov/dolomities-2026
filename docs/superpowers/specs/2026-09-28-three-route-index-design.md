@@ -13,6 +13,7 @@ Preserve the old Brenta versus Alta Via 2 comparison as `comparison.html`.
 ## Page structure
 
 - A compact opening section introduces the three route choices without a large marketing hero.
+- A full-width interactive overview map appears between the introduction and route columns.
 - The main comparison area uses three equal columns on desktop and a single stacked column on mobile.
 - Each route column contains its name, working route parameters, a short description, and a clear link to its detailed page.
 - A gallery section follows the summaries. Each route has an independent single-image carousel with previous/next controls and automatic rotation every three seconds.
@@ -24,6 +25,16 @@ Preserve the old Brenta versus Alta Via 2 comparison as `comparison.html`.
 - Pale di San Martino → `pale-bivacco.html`
 - Seceda → Marmolada → Costabella → `seceda-marmolada-costabella.html`
 - Previous comparison → `comparison.html`
+
+## Overview map
+
+- Reuse the Leaflet and OpenTopoMap setup already used by the detailed route pages.
+- Assemble each complete route from its existing daily GeoJSON files.
+- Show all three lines by default, using the same rust, green, and gold accents as the route columns.
+- Mark the start and finish of each route with compact labelled points.
+- Place three route buttons above the map. Selecting one route dims the other lines and fits the map to the selected route; selecting it again restores the combined view.
+- Use the primary Day 1 option for Seceda (`day-1-col-raiser.geojson`) and the primary Day 5 option for Pale (`pale-day-5-reali.geojson`). Alternatives remain on their detailed pages.
+- Display a concise inline error state if route data or the map library cannot load.
 
 ## Visual direction
 
@@ -46,6 +57,8 @@ Detailed route pages continue linking back to `index.html`, which now opens the 
 
 ## Verification
 
+- Confirm the overview map loads all three route groups and eighteen primary daily tracks.
+- Verify route buttons select, dim, fit, and restore the combined view.
 - Confirm all four navigation targets load.
 - Verify three route summaries and three galleries render on desktop and mobile.
 - Check carousel arrows, automatic rotation, keyboard controls, and swipe behavior.
