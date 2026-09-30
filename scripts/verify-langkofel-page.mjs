@@ -12,6 +12,8 @@ const routeFiles = [
   "routes/langkofel-day-1.gpx",
   "routes/langkofel-day-2.geojson",
   "routes/langkofel-day-2.gpx",
+  "routes/langkofel-day-2-bypass.geojson",
+  "routes/langkofel-day-2-bypass.gpx",
   ...Array.from({ length: 4 }, (_, index) => `routes/day-${index + 3}.geojson`),
   ...Array.from({ length: 4 }, (_, index) => `routes/day-${index + 3}.gpx`)
 ];
@@ -29,6 +31,21 @@ const distanceMeters = ([longitudeA, latitudeA], [longitudeB, latitudeB]) => {
     + Math.cos(latitudeA * radians) * Math.cos(latitudeB * radians) * Math.sin(longitudeDelta / 2) ** 2;
   return 6371000 * 2 * Math.asin(Math.sqrt(value));
 };
+
+const comesWithin = (coordinates, target, maximumDistance) =>
+  coordinates.some((coordinate) => distanceMeters(coordinate, target) <= maximumDistance);
+
+const primaryDayTwoCoordinates = routeCoordinates("routes/langkofel-day-2.geojson");
+const bypassGeoJsonPath = path.join(root, "routes/langkofel-day-2-bypass.geojson");
+const bypassCollection = fs.existsSync(bypassGeoJsonPath)
+  ? JSON.parse(fs.readFileSync(bypassGeoJsonPath, "utf8"))
+  : null;
+const bypassLine = bypassCollection?.features.find((feature) => feature.properties.kind === "route");
+const bypassWaypointNames = new Set(
+  bypassCollection?.features
+    .filter((feature) => feature.properties.kind === "waypoint")
+    .map((feature) => feature.properties.name) ?? []
+);
 
 const dayFiles = [
   "routes/langkofel-day-1.geojson",
@@ -51,12 +68,25 @@ const checks = {
   sixDays: (html.match(/class="day-card"/g) ?? []).length === 6,
   logistics: html.includes("Trento → Santa Cristina") && html.includes("07:32 → 10:36"),
   dayOne: html.includes("Santa Cristina → Monte Pana → Langkofelhütte"),
-  dayTwo: html.includes("Langkofelhütte → Comici → Passo Sella → Mesules → Boè"),
+  primaryUsesMesulesWestWall: comesWithin(primaryDayTwoCoordinates, [11.79007, 46.51394], 100),
+  dayTwo: html.includes("Langkofelhütte → Passo Sella → Boè"),
+  dayTwoVariants: html.includes('data-route="langkofel-day-2"')
+    && html.includes('data-route="langkofel-day-2-bypass"')
+    && html.includes("Toni-Demetz + обхід"),
+  bypassUsesToniDemetz: bypassWaypointNames.has("Toni-Demetz-Hütte"),
+  bypassUsesOrdinaryAntersassRoute: bypassWaypointNames.has("l'Antersass")
+    && comesWithin(bypassLine?.geometry.coordinates ?? [], [11.8238256, 46.5194079], 60),
+  bypassEndsAtBoe: distanceMeters(
+    bypassLine?.geometry.coordinates.at(-1) ?? [0, 0],
+    [11.8232815, 46.5146145]
+  ) < 60,
   weatherCondition: html.includes("тільки по сухій скелі"),
   mesulesDifficultyAndBypass: html.includes("Складність Mesules:")
     && html.includes("C/D")
-    && html.includes("стежкою 656 у Val Lasties")
-    && html.includes("по 647 через Forcella d'Antersass"),
+    && html.includes("стежкою 525")
+    && html.includes("Val Lasties")
+    && html.includes("звичайною верхньою лінією 647")
+    && html.includes("647A не використовуємо"),
   routeReferences: routeFiles.every((file) => html.includes(file)),
   routeFiles: routeFiles.every((file) => fs.existsSync(path.join(root, file))),
   continuity,

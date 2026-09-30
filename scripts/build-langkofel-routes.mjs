@@ -10,10 +10,12 @@ const points = {
   santaCristina: [11.7210192, 46.5581421],
   montePana: [11.7180154, 46.5506489],
   langkofel: [11.7236498, 46.5199011],
+  toniDemetz: [11.7395743, 46.514639],
   comici: [11.7480649, 46.528653],
   passoSella: [11.7673265, 46.5080689],
   boe: [11.8232815, 46.5146145],
-  mesulesExit: [11.82062, 46.5232]
+  forcellaAntersass: [11.8216768, 46.5215007],
+  antersass: [11.8238256, 46.5194079]
 };
 
 function brouterUrl(waypoints) {
@@ -66,6 +68,11 @@ function nearestIndex(coordinates, target) {
     const distance = distanceMeters(coordinate, target);
     return distance < best.distance ? { index, distance } : best;
   }, { index: 0, distance: Number.POSITIVE_INFINITY }).index;
+}
+
+function nearestIndexInRange(coordinates, target, startIndex, endIndex) {
+  const relativeIndex = nearestIndex(coordinates.slice(startIndex, endIndex), target);
+  return startIndex + relativeIndex;
 }
 
 function mergeCoordinates(...segments) {
@@ -166,21 +173,34 @@ const dayOneStats = writeGeoJson(
 writeGpx("langkofel-day-1.gpx", dayOneName, dayOneCoordinates, dayOneWaypoints);
 
 const mesulesCoordinates = parseGpxTrack(await fetchText(mesulesGpxUrl));
-const mesulesStartIndex = nearestIndex(mesulesCoordinates, points.passoSella);
-const mesulesExitIndex = nearestIndex(mesulesCoordinates, points.mesulesExit);
-const mesulesTraverse = mesulesStartIndex <= mesulesExitIndex
-  ? mesulesCoordinates.slice(mesulesStartIndex, mesulesExitIndex + 1)
-  : mesulesCoordinates.slice(mesulesExitIndex, mesulesStartIndex + 1).reverse();
+const mesulesHighPointIndex = mesulesCoordinates.reduce(
+  (highestIndex, coordinate, index, coordinates) => coordinate[2] > coordinates[highestIndex][2] ? index : highestIndex,
+  0
+);
+const mesulesStartIndex = nearestIndexInRange(
+  mesulesCoordinates,
+  points.passoSella,
+  0,
+  mesulesHighPointIndex + 1
+);
+const mesulesExitIndex = nearestIndexInRange(
+  mesulesCoordinates,
+  points.forcellaAntersass,
+  mesulesHighPointIndex,
+  mesulesCoordinates.length
+);
+const mesulesTraverse = mesulesCoordinates.slice(mesulesStartIndex, mesulesExitIndex + 1);
 const dayTwoApproach = await fetchRoute([points.langkofel, points.comici, mesulesTraverse[0]]);
-const dayTwoExit = await fetchRoute([mesulesTraverse.at(-1), points.boe]);
+const dayTwoExit = await fetchRoute([mesulesTraverse.at(-1), points.antersass, points.boe]);
 const dayTwoCoordinates = mergeCoordinates(dayTwoApproach, mesulesTraverse, dayTwoExit);
 const mesulesHighPoint = mesulesTraverse.reduce((highest, coordinate) => coordinate[2] > highest[2] ? coordinate : highest);
 const dayTwoWaypoints = [
   waypoint("Langkofelhütte", points.langkofel, dayTwoCoordinates),
   waypoint("Rifugio Comici", points.comici, dayTwoCoordinates),
   waypoint("Passo Sella", points.passoSella, dayTwoCoordinates),
-  waypoint("Ferrata Mesules", [11.78101, 46.51526], dayTwoCoordinates, false),
+  waypoint("Ferrata Mesules", [11.79007, 46.51394], dayTwoCoordinates, false),
   waypoint("Altopiano delle Mesules", mesulesHighPoint, dayTwoCoordinates, false),
+  waypoint("l'Antersass", points.antersass, dayTwoCoordinates, false),
   waypoint("Rifugio Boè", points.boe, dayTwoCoordinates)
 ];
 const dayTwoName = "День 2 · Langkofelhütte → Mesules → Boè";
@@ -193,4 +213,55 @@ const dayTwoStats = writeGeoJson(
 );
 writeGpx("langkofel-day-2.gpx", dayTwoName, dayTwoCoordinates, dayTwoWaypoints);
 
-console.log(JSON.stringify({ dayOne: dayOneStats, dayTwo: dayTwoStats }, null, 2));
+const mesulesReturnIndex = nearestIndexInRange(
+  mesulesCoordinates,
+  points.passoSella,
+  mesulesExitIndex,
+  mesulesCoordinates.length
+);
+const valLastiesTraverse = mesulesCoordinates
+  .slice(mesulesExitIndex, mesulesReturnIndex + 1)
+  .reverse();
+const dayTwoBypassApproach = await fetchRoute([
+  points.langkofel,
+  points.toniDemetz,
+  valLastiesTraverse[0]
+]);
+const dayTwoBypassExit = await fetchRoute([
+  valLastiesTraverse.at(-1),
+  points.antersass,
+  points.boe
+]);
+const dayTwoBypassCoordinates = mergeCoordinates(
+  dayTwoBypassApproach,
+  valLastiesTraverse,
+  dayTwoBypassExit
+);
+const valLastiesLowPoint = valLastiesTraverse.reduce(
+  (lowest, coordinate) => coordinate[2] < lowest[2] ? coordinate : lowest
+);
+const dayTwoBypassWaypoints = [
+  waypoint("Langkofelhütte", points.langkofel, dayTwoBypassCoordinates),
+  waypoint("Toni-Demetz-Hütte", points.toniDemetz, dayTwoBypassCoordinates),
+  waypoint("Passo Sella", points.passoSella, dayTwoBypassCoordinates),
+  waypoint("Val Lasties", valLastiesLowPoint, dayTwoBypassCoordinates, false),
+  waypoint("Forcella d'Antersass", points.forcellaAntersass, dayTwoBypassCoordinates, false),
+  waypoint("l'Antersass", points.antersass, dayTwoBypassCoordinates, false),
+  waypoint("Rifugio Boè", points.boe, dayTwoBypassCoordinates)
+];
+const dayTwoBypassName = "День 2 · Toni-Demetz → Val Lasties → Boè";
+const dayTwoBypassStats = writeGeoJson(
+  "langkofel-day-2-bypass.geojson",
+  dayTwoBypassName,
+  "BRouter / OpenStreetMap + official Val Gardena Mesules GPX",
+  dayTwoBypassCoordinates,
+  dayTwoBypassWaypoints
+);
+writeGpx(
+  "langkofel-day-2-bypass.gpx",
+  dayTwoBypassName,
+  dayTwoBypassCoordinates,
+  dayTwoBypassWaypoints
+);
+
+console.log(JSON.stringify({ dayOne: dayOneStats, dayTwoMesules: dayTwoStats, dayTwoBypass: dayTwoBypassStats }, null, 2));
