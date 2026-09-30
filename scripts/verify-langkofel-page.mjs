@@ -53,6 +53,10 @@ const checks = {
   dayOne: html.includes("Santa Cristina → Monte Pana → Langkofelhütte"),
   dayTwo: html.includes("Langkofelhütte → Comici → Passo Sella → Mesules → Boè"),
   weatherCondition: html.includes("тільки по сухій скелі"),
+  mesulesDifficultyAndBypass: html.includes("Складність Mesules:")
+    && html.includes("C/D")
+    && html.includes("стежкою 656 у Val Lasties")
+    && html.includes("по 647 через Forcella d'Antersass"),
   routeReferences: routeFiles.every((file) => html.includes(file)),
   routeFiles: routeFiles.every((file) => fs.existsSync(path.join(root, file))),
   continuity,
