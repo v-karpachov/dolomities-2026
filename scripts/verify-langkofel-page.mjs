@@ -49,7 +49,7 @@ const maximumSegment = Math.max(...dayCoordinates.flatMap((coordinates) =>
 const checks = {
   title: html.includes("Sassolungo → Marmolada → Costabella"),
   sixDays: (html.match(/class="day-card"/g) ?? []).length === 6,
-  logistics: html.includes("Trento → Santa Cristina") && html.includes("07:05 → 09:36"),
+  logistics: html.includes("Trento → Santa Cristina") && html.includes("07:32 → 10:36"),
   dayOne: html.includes("Santa Cristina → Monte Pana → Langkofelhütte"),
   dayTwo: html.includes("Langkofelhütte → Comici → Passo Sella → Mesules → Boè"),
   weatherCondition: html.includes("тільки по сухій скелі"),
