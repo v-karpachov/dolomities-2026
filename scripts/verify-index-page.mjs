@@ -21,9 +21,9 @@ const overviewRouteGroups = {
     "routes/pale-day-5-menegazzi.geojson",
     "routes/pale-day-6.geojson"
   ],
-  seceda: [
-    "routes/day-1-col-raiser.geojson",
-    "routes/day-2.geojson",
+  sassolungo: [
+    "routes/langkofel-day-1.geojson",
+    "routes/langkofel-day-2.geojson",
     "routes/day-3.geojson",
     "routes/day-4.geojson",
     "routes/day-5.geojson",
@@ -60,7 +60,7 @@ const checks = {
   detailLinks: [
     "brenta.html",
     "pale-bivacco.html",
-    "seceda-marmolada-costabella.html"
+    "sassolungo-marmolada-costabella.html"
   ].every((href) => html.includes(`href="${href}"`)),
   comparisonLink: html.includes('href="comparison.html"'),
   mobileSnap: html.includes("scroll-snap-type: x mandatory") && html.includes("scroll-snap-align: start"),
