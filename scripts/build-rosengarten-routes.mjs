@@ -6,6 +6,7 @@ const routesDirectory = path.join(root, "routes");
 const brouterEndpoint = "https://brouter.de/brouter";
 const santnerGpxUrl = "https://www.outdooractive.com/en/download.tour.gpx?i=16082696&project=api-carezza";
 const molignonOsmUrl = "https://api.openstreetmap.org/api/0.6/map?bbox=11.62,46.46,11.68,46.51";
+const fedaiaOsmUrl = "https://api.openstreetmap.org/api/0.6/map?bbox=11.835,46.426,11.895,46.469";
 
 const points = {
   fronza: [11.6120696, 46.4426625],
@@ -23,7 +24,12 @@ const points = {
   sassoPiatto: [11.7008981, 46.5044281],
   langkofel: [11.7236498, 46.5199011],
   boe: [11.8232815, 46.5146145],
-  bontadini: [11.88244, 46.47988],
+  bontadini: [11.888313, 46.463584],
+  fedaiaNorthShore: [11.876, 46.464],
+  passoFedaia: [11.86259, 46.464024],
+  fedaiaSouthJunction: [11.8625, 46.4595],
+  forcellaMarmolada: [11.840182, 46.438764],
+  passoOmbretta: [11.84642, 46.430449],
   dalBianco: [11.8452751, 46.4291801],
   contrin: [11.8158915, 46.4297615],
   alba: [11.7805769, 46.4676647]
@@ -159,6 +165,72 @@ function connectedPath(nodes, ways, startTarget, endTarget) {
   const pathIds = [];
   for (let current = end; current; current = previous.get(current)) pathIds.push(current);
   return pathIds.reverse().map((id) => nodes.get(id));
+}
+
+function parseWalkableGraph(xml) {
+  const nodes = new Map(
+    [...xml.matchAll(/<node id="(\d+)"[^>]* lat="([^"]+)" lon="([^"]+)"[^>]*>/g)]
+      .map((match) => [match[1], [Number(match[3]), Number(match[2])]])
+  );
+  const adjacency = new Map();
+  const connect = (from, to, length) => {
+    if (!adjacency.has(from)) adjacency.set(from, []);
+    adjacency.get(from).push({ id: to, length });
+  };
+  for (const match of xml.matchAll(/<way id="(\d+)"[\s\S]*?<\/way>/g)) {
+    const way = match[0];
+    if (!/<tag k="highway" v="[^"]+"\/>/.test(way)) continue;
+    if (/<tag k="access" v="(?:no|private)"\/>/.test(way)) continue;
+    const ids = [...way.matchAll(/<nd ref="(\d+)"\/>/g)].map((node) => node[1]);
+    for (let index = 1; index < ids.length; index += 1) {
+      const from = ids[index - 1];
+      const to = ids[index];
+      if (!nodes.has(from) || !nodes.has(to)) continue;
+      const length = distanceMeters(nodes.get(from), nodes.get(to));
+      connect(from, to, length);
+      connect(to, from, length);
+    }
+  }
+  return { nodes, adjacency };
+}
+
+function shortestMappedPath(graph, startTarget, endTarget) {
+  const graphIds = [...graph.adjacency.keys()];
+  const closestId = (target) => graphIds.reduce((best, id) => {
+    const distance = distanceMeters(graph.nodes.get(id), target);
+    return distance < best.distance ? { id, distance } : best;
+  }, { id: graphIds[0], distance: Number.POSITIVE_INFINITY }).id;
+  const start = closestId(startTarget);
+  const end = closestId(endTarget);
+  const queue = [{ id: start, distance: 0 }];
+  const distances = new Map([[start, 0]]);
+  const previous = new Map();
+  while (queue.length) {
+    queue.sort((left, right) => left.distance - right.distance);
+    const current = queue.shift();
+    if (current.distance !== distances.get(current.id)) continue;
+    if (current.id === end) break;
+    for (const edge of graph.adjacency.get(current.id) ?? []) {
+      const nextDistance = current.distance + edge.length;
+      if (nextDistance >= (distances.get(edge.id) ?? Number.POSITIVE_INFINITY)) continue;
+      distances.set(edge.id, nextDistance);
+      previous.set(edge.id, current.id);
+      queue.push({ id: edge.id, distance: nextDistance });
+    }
+  }
+  if (!previous.has(end)) throw new Error("Could not join the mapped Fedaia trail segments");
+  const ids = [];
+  for (let current = end; current; current = previous.get(current)) {
+    ids.push(current);
+    if (current === start) break;
+  }
+  return ids.reverse().map((id) => graph.nodes.get(id));
+}
+
+function mappedPathThrough(graph, targets) {
+  return mergeCoordinates(...targets.slice(1).map((target, index) =>
+    shortestMappedPath(graph, targets[index], target)
+  ));
 }
 
 async function addElevations(coordinates) {
@@ -344,14 +416,56 @@ const dayTwoBypassStats = writeRoute(
 const reusedRoutes = [
   ["langkofel-day-2.geojson", "rosengarten-day-3", "День 3 · Langkofelhütte → Mesules → Boè"],
   ["langkofel-day-2-bypass.geojson", "rosengarten-day-3-bypass", "День 3 · Langkofelhütte → Toni-Demetz → Val Lasties → Boè"],
-  ["day-3.geojson", "rosengarten-day-4", "День 4 · Boè → Trincee → Bontadini"],
-  ["day-4.geojson", "rosengarten-day-5", "День 5 · Bontadini → Forcella Marmolada → Dal Bianco"]
+  ["day-3.geojson", "rosengarten-day-4", "День 4 · Boè → Trincee → Bontadini"]
 ];
 const reusedStats = {};
 for (const [sourceFilename, prefix, name] of reusedRoutes) {
   const route = routeFromExisting(sourceFilename, name);
   reusedStats[prefix] = writeRoute(prefix, route.name, route.source, route.coordinates, route.waypoints);
 }
+
+const fedaiaGraph = parseWalkableGraph(await fetchText(fedaiaOsmUrl));
+const dayFiveApproachFlat = mappedPathThrough(fedaiaGraph, [
+  points.bontadini,
+  points.fedaiaNorthShore,
+  points.passoFedaia,
+  points.fedaiaSouthJunction,
+  points.forcellaMarmolada
+]);
+const dayFiveApproach = applyElevationAnchors(
+  dayFiveApproachFlat.map((coordinate) => normalizeCoordinate([...coordinate, 0])),
+  [
+    [points.bontadini, 2546],
+    [points.fedaiaNorthShore, 2240],
+    [points.passoFedaia, 2057],
+    [points.fedaiaSouthJunction, 2050],
+    [points.forcellaMarmolada, 2885]
+  ]
+);
+const originalDayFive = routeFromExisting(
+  "day-4.geojson",
+  "День 5 · Bontadini → Forcella Marmolada → Dal Bianco"
+);
+const originalForcellaIndex = nearestIndex(originalDayFive.coordinates, points.forcellaMarmolada);
+const dayFiveCoordinates = mergeCoordinates(
+  dayFiveApproach,
+  originalDayFive.coordinates.slice(originalForcellaIndex)
+);
+const dayFiveWaypoints = [
+  waypoint("Bivacco Bontadini", points.bontadini, dayFiveCoordinates),
+  waypoint("Lago di Fedaia · північний бік", points.fedaiaNorthShore, dayFiveCoordinates, false),
+  waypoint("Passo Fedaia", points.passoFedaia, dayFiveCoordinates),
+  waypoint("Forcella Marmolada", points.forcellaMarmolada, dayFiveCoordinates),
+  waypoint("Passo Ombretta", points.passoOmbretta, dayFiveCoordinates),
+  waypoint("Bivacco Dal Bianco", points.dalBianco, dayFiveCoordinates)
+];
+const dayFiveStats = writeRoute(
+  "rosengarten-day-5",
+  "День 5 · Bontadini → Forcella Marmolada → Dal Bianco",
+  "OpenStreetMap mapped paths + planning elevation anchors",
+  dayFiveCoordinates,
+  dayFiveWaypoints
+);
 
 const daySixRaw = await fetchRoute([points.dalBianco, points.contrin, points.alba]);
 const daySixCoordinates = applyElevationAnchors(daySixRaw, [
@@ -379,6 +493,6 @@ console.log(JSON.stringify({
   dayThree: reusedStats["rosengarten-day-3"],
   dayThreeBypass: reusedStats["rosengarten-day-3-bypass"],
   dayFour: reusedStats["rosengarten-day-4"],
-  dayFive: reusedStats["rosengarten-day-5"],
+  dayFive: dayFiveStats,
   daySix: daySixStats
 }, null, 2));

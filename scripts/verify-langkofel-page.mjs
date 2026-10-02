@@ -61,13 +61,27 @@ const dayThreeBypassWaypoints = fs.existsSync(path.join(root, "routes/rosengarte
   : new Set();
 const laurenziCoordinates = routeCoordinates("rosengarten-day-2-laurenzi");
 const molignonCoordinates = routeCoordinates("rosengarten-day-2-molignon");
+const dayFiveCoordinates = routeCoordinates("rosengarten-day-5");
+const dayFiveWaypoints = waypointNames("rosengarten-day-5");
 const lagoAntermoia = [11.6602803, 46.4778661];
 const alpeTires = [11.632844, 46.4972051];
+const fedaiaNorthShore = [11.876, 46.464];
+const fedaiaSouthShore = [11.879953, 46.456811];
+const capannaAlGhiacciaio = [11.8613317, 46.4446096];
 const minimumLagoDistance = Math.min(...laurenziCoordinates.map((coordinate) =>
   distanceMeters(coordinate, lagoAntermoia)
 ));
 const minimumAlpeTiresDistance = Math.min(...molignonCoordinates.map((coordinate) =>
   distanceMeters(coordinate, alpeTires)
+));
+const minimumNorthShoreDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, fedaiaNorthShore)
+));
+const minimumSouthShoreDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, fedaiaSouthShore)
+));
+const minimumCapannaDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, capannaAlGhiacciaio)
 ));
 
 const checks = {
@@ -96,6 +110,12 @@ const checks = {
   lagoAntermoiaAvoided: !laurenziWaypoints.has("Lago d'Antermoia")
     && minimumLagoDistance > 300
     && html.includes("без заходу до Lago d'Antermoia"),
+  dayFiveNorthShore: minimumNorthShoreDistance < 100
+    && minimumSouthShoreDistance > 400
+    && html.includes("північним боком"),
+  dayFiveSkipsCapanna: !dayFiveWaypoints.has("Pian dei Fiacconi")
+    && minimumCapannaDistance > 300
+    && !html.includes("Pian dei Fiacconi"),
   laurenziCondition: html.includes("Laurenzi лише за сухих умов")
     && html.includes("нестраховані відрізки"),
   routeReferences: routeFiles.every((file) => html.includes(file)),
@@ -114,5 +134,8 @@ console.log(JSON.stringify({
   ...checks,
   maximumSegment: Math.round(maximumSegment),
   minimumLagoDistance: Math.round(minimumLagoDistance),
-  minimumAlpeTiresDistance: Math.round(minimumAlpeTiresDistance)
+  minimumAlpeTiresDistance: Math.round(minimumAlpeTiresDistance),
+  minimumNorthShoreDistance: Math.round(minimumNorthShoreDistance),
+  minimumSouthShoreDistance: Math.round(minimumSouthShoreDistance),
+  minimumCapannaDistance: Math.round(minimumCapannaDistance)
 }, null, 2));
