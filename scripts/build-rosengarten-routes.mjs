@@ -286,7 +286,6 @@ const laurenziCoordinates = applyElevationAnchors(laurenziElevated, [
 const laurenziApproach = await fetchRoute([
   points.vajolet,
   points.passoPrincipe,
-  points.lagoAntermoia,
   laurenziCoordinates[0]
 ]);
 const laurenziExit = await fetchRoute([
@@ -309,7 +308,6 @@ const dayTwoLaurenziCoordinates = mergeCoordinates(
 const dayTwoLaurenziWaypoints = [
   waypoint("Rifugio Vajolet", points.vajolet, dayTwoLaurenziCoordinates),
   waypoint("Passo Principe", points.passoPrincipe, dayTwoLaurenziCoordinates, false),
-  waypoint("Lago d'Antermoia", points.lagoAntermoia, dayTwoLaurenziCoordinates),
   waypoint("Ferrata Laurenzi", points.molignonDentro, dayTwoLaurenziCoordinates),
   waypoint("Rifugio Alpe di Tires", points.alpeTires, dayTwoLaurenziCoordinates, false),
   waypoint("Passo Duron", points.passoDuron, dayTwoLaurenziCoordinates, false),

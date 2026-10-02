@@ -3,7 +3,6 @@
   <metadata><name>День 2 · Vajolet → Laurenzi → Langkofelhütte</name></metadata>
   <wpt lat="46.458607" lon="11.63288"><ele>2241.5</ele><name>Rifugio Vajolet</name></wpt>
   <wpt lat="46.474082" lon="11.638945"><ele>2598.3</ele><name>Passo Principe</name></wpt>
-  <wpt lat="46.477381" lon="11.660733"><ele>2501</ele><name>Lago d'Antermoia</name></wpt>
   <wpt lat="46.483058" lon="11.650581"><ele>2850</ele><name>Ferrata Laurenzi</name></wpt>
   <wpt lat="46.49709" lon="11.632802"><ele>2439.3</ele><name>Rifugio Alpe di Tires</name></wpt>
   <wpt lat="46.497511" lon="11.653599"><ele>2185.3</ele><name>Passo Duron</name></wpt>
@@ -305,72 +304,6 @@
       <trkpt lat="46.478487" lon="11.654667"><ele>2510.5</ele></trkpt>
       <trkpt lat="46.478519" lon="11.654987"><ele>2509.3</ele></trkpt>
       <trkpt lat="46.478539" lon="11.655125"><ele>2509</ele></trkpt>
-      <trkpt lat="46.478632" lon="11.65542"><ele>2508.3</ele></trkpt>
-      <trkpt lat="46.478636" lon="11.655991"><ele>2506.3</ele></trkpt>
-      <trkpt lat="46.478631" lon="11.656388"><ele>2505.3</ele></trkpt>
-      <trkpt lat="46.478619" lon="11.656612"><ele>2504.3</ele></trkpt>
-      <trkpt lat="46.478474" lon="11.65676"><ele>2503.5</ele></trkpt>
-      <trkpt lat="46.478357" lon="11.656947"><ele>2502.8</ele></trkpt>
-      <trkpt lat="46.478324" lon="11.657092"><ele>2502.3</ele></trkpt>
-      <trkpt lat="46.478258" lon="11.657288"><ele>2501.5</ele></trkpt>
-      <trkpt lat="46.478165" lon="11.657452"><ele>2501</ele></trkpt>
-      <trkpt lat="46.478067" lon="11.657562"><ele>2500.8</ele></trkpt>
-      <trkpt lat="46.477995" lon="11.657674"><ele>2500.3</ele></trkpt>
-      <trkpt lat="46.477899" lon="11.657698"><ele>2500</ele></trkpt>
-      <trkpt lat="46.477838" lon="11.657798"><ele>2499</ele></trkpt>
-      <trkpt lat="46.477785" lon="11.657924"><ele>2498.3</ele></trkpt>
-      <trkpt lat="46.477746" lon="11.657977"><ele>2498.5</ele></trkpt>
-      <trkpt lat="46.477646" lon="11.657988"><ele>2499.3</ele></trkpt>
-      <trkpt lat="46.477578" lon="11.658085"><ele>2498.5</ele></trkpt>
-      <trkpt lat="46.477502" lon="11.658283"><ele>2497.3</ele></trkpt>
-      <trkpt lat="46.477414" lon="11.658458"><ele>2497.5</ele></trkpt>
-      <trkpt lat="46.477321" lon="11.658509"><ele>2497.5</ele></trkpt>
-      <trkpt lat="46.47719" lon="11.658659"><ele>2498.8</ele></trkpt>
-      <trkpt lat="46.477101" lon="11.658857"><ele>2502.3</ele></trkpt>
-      <trkpt lat="46.47704" lon="11.659021"><ele>2502</ele></trkpt>
-      <trkpt lat="46.477033" lon="11.659206"><ele>2500.5</ele></trkpt>
-      <trkpt lat="46.477101" lon="11.659364"><ele>2499.3</ele></trkpt>
-      <trkpt lat="46.477122" lon="11.65949"><ele>2499.5</ele></trkpt>
-      <trkpt lat="46.477111" lon="11.659729"><ele>2503.3</ele></trkpt>
-      <trkpt lat="46.477116" lon="11.659855"><ele>2507.3</ele></trkpt>
-      <trkpt lat="46.477186" lon="11.659949"><ele>2505.3</ele></trkpt>
-      <trkpt lat="46.477214" lon="11.660056"><ele>2504.3</ele></trkpt>
-      <trkpt lat="46.477194" lon="11.660222"><ele>2504.5</ele></trkpt>
-      <trkpt lat="46.477185" lon="11.660351"><ele>2505.8</ele></trkpt>
-      <trkpt lat="46.477307" lon="11.660566"><ele>2502.8</ele></trkpt>
-      <trkpt lat="46.477381" lon="11.660733"><ele>2501</ele></trkpt>
-      <trkpt lat="46.477307" lon="11.660566"><ele>2502.8</ele></trkpt>
-      <trkpt lat="46.477185" lon="11.660351"><ele>2505.8</ele></trkpt>
-      <trkpt lat="46.477194" lon="11.660222"><ele>2504.5</ele></trkpt>
-      <trkpt lat="46.477214" lon="11.660056"><ele>2504.3</ele></trkpt>
-      <trkpt lat="46.477186" lon="11.659949"><ele>2505.3</ele></trkpt>
-      <trkpt lat="46.477116" lon="11.659855"><ele>2507.3</ele></trkpt>
-      <trkpt lat="46.477111" lon="11.659729"><ele>2503.3</ele></trkpt>
-      <trkpt lat="46.477122" lon="11.65949"><ele>2499.5</ele></trkpt>
-      <trkpt lat="46.477101" lon="11.659364"><ele>2499.3</ele></trkpt>
-      <trkpt lat="46.477033" lon="11.659206"><ele>2500.5</ele></trkpt>
-      <trkpt lat="46.47704" lon="11.659021"><ele>2502</ele></trkpt>
-      <trkpt lat="46.477101" lon="11.658857"><ele>2502.3</ele></trkpt>
-      <trkpt lat="46.47719" lon="11.658659"><ele>2498.8</ele></trkpt>
-      <trkpt lat="46.477321" lon="11.658509"><ele>2497.5</ele></trkpt>
-      <trkpt lat="46.477414" lon="11.658458"><ele>2497.5</ele></trkpt>
-      <trkpt lat="46.477502" lon="11.658283"><ele>2497.3</ele></trkpt>
-      <trkpt lat="46.477578" lon="11.658085"><ele>2498.5</ele></trkpt>
-      <trkpt lat="46.477646" lon="11.657988"><ele>2499.3</ele></trkpt>
-      <trkpt lat="46.477746" lon="11.657977"><ele>2498.5</ele></trkpt>
-      <trkpt lat="46.477785" lon="11.657924"><ele>2498.3</ele></trkpt>
-      <trkpt lat="46.477838" lon="11.657798"><ele>2499</ele></trkpt>
-      <trkpt lat="46.477899" lon="11.657698"><ele>2500</ele></trkpt>
-      <trkpt lat="46.477995" lon="11.657674"><ele>2500.3</ele></trkpt>
-      <trkpt lat="46.478067" lon="11.657562"><ele>2500.8</ele></trkpt>
-      <trkpt lat="46.478165" lon="11.657452"><ele>2501</ele></trkpt>
-      <trkpt lat="46.478258" lon="11.657288"><ele>2501.5</ele></trkpt>
-      <trkpt lat="46.478324" lon="11.657092"><ele>2502.3</ele></trkpt>
-      <trkpt lat="46.478357" lon="11.656947"><ele>2502.8</ele></trkpt>
-      <trkpt lat="46.478474" lon="11.65676"><ele>2503.5</ele></trkpt>
-      <trkpt lat="46.478619" lon="11.656612"><ele>2504.3</ele></trkpt>
-      <trkpt lat="46.478631" lon="11.656388"><ele>2505.3</ele></trkpt>
-      <trkpt lat="46.478636" lon="11.655991"><ele>2506.3</ele></trkpt>
       <trkpt lat="46.478632" lon="11.65542"><ele>2508.3</ele></trkpt>
       <trkpt lat="46.478723" lon="11.655114"><ele>2509</ele></trkpt>
       <trkpt lat="46.478749" lon="11.654943"><ele>2509.8</ele></trkpt>

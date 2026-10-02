@@ -53,6 +53,11 @@ const maximumSegment = Math.max(...dayCoordinates.flatMap((coordinates) =>
 const dayOneWaypoints = waypointNames("rosengarten-day-1");
 const laurenziWaypoints = waypointNames("rosengarten-day-2-laurenzi");
 const bypassWaypoints = waypointNames("rosengarten-day-2-molignon");
+const laurenziCoordinates = routeCoordinates("rosengarten-day-2-laurenzi");
+const lagoAntermoia = [11.6602803, 46.4778661];
+const minimumLagoDistance = Math.min(...laurenziCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, lagoAntermoia)
+));
 
 const checks = {
   title: html.includes("Rosengarten → Sassolungo → Marmolada"),
@@ -67,6 +72,9 @@ const checks = {
     && html.includes('data-route="rosengarten-day-2-molignon"')
     && laurenziWaypoints.has("Ferrata Laurenzi")
     && bypassWaypoints.has("Passo Molignon"),
+  lagoAntermoiaAvoided: !laurenziWaypoints.has("Lago d'Antermoia")
+    && minimumLagoDistance > 300
+    && html.includes("без заходу до Lago d'Antermoia"),
   laurenziCondition: html.includes("Laurenzi лише за сухих умов")
     && html.includes("нестраховані відрізки"),
   routeReferences: routeFiles.every((file) => html.includes(file)),
@@ -81,4 +89,8 @@ for (const [key, value] of Object.entries(checks)) {
   if (!value) throw new Error(`Missing Rosengarten page capability: ${key}`);
 }
 
-console.log(JSON.stringify({ ...checks, maximumSegment: Math.round(maximumSegment) }, null, 2));
+console.log(JSON.stringify({
+  ...checks,
+  maximumSegment: Math.round(maximumSegment),
+  minimumLagoDistance: Math.round(minimumLagoDistance)
+}, null, 2));
