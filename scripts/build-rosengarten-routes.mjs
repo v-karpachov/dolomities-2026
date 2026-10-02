@@ -18,6 +18,8 @@ const points = {
   molignonDentro: [11.6505064, 46.4830443],
   molignonFuori: [11.6436026, 46.4876807],
   laurenziWest: [11.6398679, 46.4908381],
+  passoMolignon: [11.6397326, 46.4891968],
+  alpeTires: [11.632844, 46.4972051],
   passoDuron: [11.6535989, 46.4975112],
   sassoPiatto: [11.7008981, 46.5044281],
   langkofel: [11.7236498, 46.5199011],
@@ -317,8 +319,34 @@ const dayTwoLaurenziStats = writeRoute(
   dayTwoLaurenziWaypoints
 );
 
+const molignonApproach = await fetchRoute([
+  points.vajolet,
+  points.passoPrincipe,
+  points.passoMolignon,
+  points.alpeTires,
+  points.passoDuron
+]);
+const dayTwoBypassCoordinates = mergeCoordinates(molignonApproach, commonFinish);
+const dayTwoBypassWaypoints = [
+  waypoint("Rifugio Vajolet", points.vajolet, dayTwoBypassCoordinates),
+  waypoint("Passo Principe", points.passoPrincipe, dayTwoBypassCoordinates, false),
+  waypoint("Passo Molignon", points.passoMolignon, dayTwoBypassCoordinates),
+  waypoint("Rifugio Alpe di Tires", points.alpeTires, dayTwoBypassCoordinates, false),
+  waypoint("Passo Duron", points.passoDuron, dayTwoBypassCoordinates, false),
+  waypoint("Rifugio Sasso Piatto", points.sassoPiatto, dayTwoBypassCoordinates, false),
+  waypoint("Langkofelhütte", points.langkofel, dayTwoBypassCoordinates)
+];
+const dayTwoBypassStats = writeRoute(
+  "rosengarten-day-2-molignon",
+  "День 2 · Vajolet → Passo Molignon → Langkofelhütte",
+  "BRouter / OpenStreetMap",
+  dayTwoBypassCoordinates,
+  dayTwoBypassWaypoints
+);
+
 const reusedRoutes = [
   ["langkofel-day-2.geojson", "rosengarten-day-3", "День 3 · Langkofelhütte → Mesules → Boè"],
+  ["langkofel-day-2-bypass.geojson", "rosengarten-day-3-bypass", "День 3 · Langkofelhütte → Toni-Demetz → Val Lasties → Boè"],
   ["day-3.geojson", "rosengarten-day-4", "День 4 · Boè → Trincee → Bontadini"],
   ["day-4.geojson", "rosengarten-day-5", "День 5 · Bontadini → Forcella Marmolada → Dal Bianco"]
 ];
@@ -350,7 +378,9 @@ const daySixStats = writeRoute(
 console.log(JSON.stringify({
   dayOne: dayOneStats,
   dayTwoLaurenzi: dayTwoLaurenziStats,
+  dayTwoMolignon: dayTwoBypassStats,
   dayThree: reusedStats["rosengarten-day-3"],
+  dayThreeBypass: reusedStats["rosengarten-day-3-bypass"],
   dayFour: reusedStats["rosengarten-day-4"],
   dayFive: reusedStats["rosengarten-day-5"],
   daySix: daySixStats
