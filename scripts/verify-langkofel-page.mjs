@@ -67,6 +67,7 @@ const lagoAntermoia = [11.6602803, 46.4778661];
 const alpeTires = [11.632844, 46.4972051];
 const fedaiaNorthShore = [11.876, 46.464];
 const fedaiaSouthShore = [11.879953, 46.456811];
+const passoFedaia = [11.86259, 46.464024];
 const capannaAlGhiacciaio = [11.8613317, 46.4446096];
 const minimumLagoDistance = Math.min(...laurenziCoordinates.map((coordinate) =>
   distanceMeters(coordinate, lagoAntermoia)
@@ -79,6 +80,9 @@ const minimumNorthShoreDistance = Math.min(...dayFiveCoordinates.map((coordinate
 ));
 const minimumSouthShoreDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
   distanceMeters(coordinate, fedaiaSouthShore)
+));
+const minimumPassoFedaiaDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, passoFedaia)
 ));
 const minimumCapannaDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
   distanceMeters(coordinate, capannaAlGhiacciaio)
@@ -113,6 +117,9 @@ const checks = {
   dayFiveSouthShore: minimumSouthShoreDistance < 100
     && minimumNorthShoreDistance > 300
     && html.includes("південним боком"),
+  dayFiveSkipsPassoFedaia: !dayFiveWaypoints.has("Passo Fedaia")
+    && minimumPassoFedaiaDistance > 250
+    && !html.includes("Passo Fedaia"),
   dayFiveSkipsCapanna: !dayFiveWaypoints.has("Pian dei Fiacconi")
     && minimumCapannaDistance > 300
     && !html.includes("Pian dei Fiacconi"),
@@ -137,5 +144,6 @@ console.log(JSON.stringify({
   minimumAlpeTiresDistance: Math.round(minimumAlpeTiresDistance),
   minimumNorthShoreDistance: Math.round(minimumNorthShoreDistance),
   minimumSouthShoreDistance: Math.round(minimumSouthShoreDistance),
+  minimumPassoFedaiaDistance: Math.round(minimumPassoFedaiaDistance),
   minimumCapannaDistance: Math.round(minimumCapannaDistance)
 }, null, 2));

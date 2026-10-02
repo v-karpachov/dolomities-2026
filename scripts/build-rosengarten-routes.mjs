@@ -26,7 +26,6 @@ const points = {
   boe: [11.8232815, 46.5146145],
   bontadini: [11.888313, 46.463584],
   fedaiaSouthShore: [11.879953, 46.456811],
-  passoFedaia: [11.86259, 46.464024],
   fedaiaSouthJunction: [11.8625, 46.4595],
   forcellaMarmolada: [11.840182, 46.438764],
   passoOmbretta: [11.84642, 46.430449],
@@ -428,7 +427,6 @@ const fedaiaGraph = parseWalkableGraph(await fetchText(fedaiaOsmUrl));
 const dayFiveApproachFlat = mappedPathThrough(fedaiaGraph, [
   points.bontadini,
   points.fedaiaSouthShore,
-  points.passoFedaia,
   points.fedaiaSouthJunction,
   points.forcellaMarmolada
 ]);
@@ -437,7 +435,6 @@ const dayFiveApproach = applyElevationAnchors(
   [
     [points.bontadini, 2546],
     [points.fedaiaSouthShore, 2057],
-    [points.passoFedaia, 2057],
     [points.fedaiaSouthJunction, 2050],
     [points.forcellaMarmolada, 2885]
   ]
@@ -454,7 +451,6 @@ const dayFiveCoordinates = mergeCoordinates(
 const dayFiveWaypoints = [
   waypoint("Bivacco Bontadini", points.bontadini, dayFiveCoordinates),
   waypoint("Lago di Fedaia · південний бік", points.fedaiaSouthShore, dayFiveCoordinates, false),
-  waypoint("Passo Fedaia", points.passoFedaia, dayFiveCoordinates),
   waypoint("Forcella Marmolada", points.forcellaMarmolada, dayFiveCoordinates),
   waypoint("Passo Ombretta", points.passoOmbretta, dayFiveCoordinates),
   waypoint("Bivacco Dal Bianco", points.dalBianco, dayFiveCoordinates)
