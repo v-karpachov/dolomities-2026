@@ -110,9 +110,9 @@ const checks = {
   lagoAntermoiaAvoided: !laurenziWaypoints.has("Lago d'Antermoia")
     && minimumLagoDistance > 300
     && html.includes("без заходу до Lago d'Antermoia"),
-  dayFiveNorthShore: minimumNorthShoreDistance < 100
-    && minimumSouthShoreDistance > 400
-    && html.includes("північним боком"),
+  dayFiveSouthShore: minimumSouthShoreDistance < 100
+    && minimumNorthShoreDistance > 300
+    && html.includes("південним боком"),
   dayFiveSkipsCapanna: !dayFiveWaypoints.has("Pian dei Fiacconi")
     && minimumCapannaDistance > 300
     && !html.includes("Pian dei Fiacconi"),

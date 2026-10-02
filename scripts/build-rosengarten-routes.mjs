@@ -25,7 +25,7 @@ const points = {
   langkofel: [11.7236498, 46.5199011],
   boe: [11.8232815, 46.5146145],
   bontadini: [11.888313, 46.463584],
-  fedaiaNorthShore: [11.876, 46.464],
+  fedaiaSouthShore: [11.879953, 46.456811],
   passoFedaia: [11.86259, 46.464024],
   fedaiaSouthJunction: [11.8625, 46.4595],
   forcellaMarmolada: [11.840182, 46.438764],
@@ -427,7 +427,7 @@ for (const [sourceFilename, prefix, name] of reusedRoutes) {
 const fedaiaGraph = parseWalkableGraph(await fetchText(fedaiaOsmUrl));
 const dayFiveApproachFlat = mappedPathThrough(fedaiaGraph, [
   points.bontadini,
-  points.fedaiaNorthShore,
+  points.fedaiaSouthShore,
   points.passoFedaia,
   points.fedaiaSouthJunction,
   points.forcellaMarmolada
@@ -436,7 +436,7 @@ const dayFiveApproach = applyElevationAnchors(
   dayFiveApproachFlat.map((coordinate) => normalizeCoordinate([...coordinate, 0])),
   [
     [points.bontadini, 2546],
-    [points.fedaiaNorthShore, 2240],
+    [points.fedaiaSouthShore, 2057],
     [points.passoFedaia, 2057],
     [points.fedaiaSouthJunction, 2050],
     [points.forcellaMarmolada, 2885]
@@ -453,7 +453,7 @@ const dayFiveCoordinates = mergeCoordinates(
 );
 const dayFiveWaypoints = [
   waypoint("Bivacco Bontadini", points.bontadini, dayFiveCoordinates),
-  waypoint("Lago di Fedaia · північний бік", points.fedaiaNorthShore, dayFiveCoordinates, false),
+  waypoint("Lago di Fedaia · південний бік", points.fedaiaSouthShore, dayFiveCoordinates, false),
   waypoint("Passo Fedaia", points.passoFedaia, dayFiveCoordinates),
   waypoint("Forcella Marmolada", points.forcellaMarmolada, dayFiveCoordinates),
   waypoint("Passo Ombretta", points.passoOmbretta, dayFiveCoordinates),
