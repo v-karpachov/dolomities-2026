@@ -10,7 +10,6 @@ const archivedHtml = fs.readFileSync(archivedPagePath, "utf8");
 const routeIds = [
   "rosengarten-day-1",
   "rosengarten-day-2-laurenzi",
-  "rosengarten-day-2-molignon",
   "rosengarten-day-3",
   "rosengarten-day-4",
   "rosengarten-day-5",
@@ -52,7 +51,6 @@ const maximumSegment = Math.max(...dayCoordinates.flatMap((coordinates) =>
 
 const dayOneWaypoints = waypointNames("rosengarten-day-1");
 const laurenziWaypoints = waypointNames("rosengarten-day-2-laurenzi");
-const bypassWaypoints = waypointNames("rosengarten-day-2-molignon");
 const laurenziCoordinates = routeCoordinates("rosengarten-day-2-laurenzi");
 const lagoAntermoia = [11.6602803, 46.4778661];
 const minimumLagoDistance = Math.min(...laurenziCoordinates.map((coordinate) =>
@@ -68,10 +66,13 @@ const checks = {
   dayOne: dayOneWaypoints.has("Passo Santner")
     && dayOneWaypoints.has("Rifugio Re Alberto")
     && dayOneWaypoints.has("Rifugio Vajolet"),
-  dayTwoVariants: html.includes('data-route="rosengarten-day-2-laurenzi"')
-    && html.includes('data-route="rosengarten-day-2-molignon"')
-    && laurenziWaypoints.has("Ferrata Laurenzi")
-    && bypassWaypoints.has("Passo Molignon"),
+  dayTwo: html.includes('data-default-route="rosengarten-day-2-laurenzi"')
+    && laurenziWaypoints.has("Ferrata Laurenzi"),
+  removedDayTwoStops: !laurenziWaypoints.has("Passo Molignon")
+    && !laurenziWaypoints.has("Rifugio Alpe di Tires")
+    && !html.includes("Passo Molignon")
+    && !html.includes("Alpe di Tires")
+    && !html.includes("rosengarten-day-2-molignon"),
   lagoAntermoiaAvoided: !laurenziWaypoints.has("Lago d'Antermoia")
     && minimumLagoDistance > 300
     && html.includes("без заходу до Lago d'Antermoia"),
