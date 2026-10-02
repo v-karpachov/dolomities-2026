@@ -7,6 +7,7 @@ const brouterEndpoint = "https://brouter.de/brouter";
 const santnerGpxUrl = "https://www.outdooractive.com/en/download.tour.gpx?i=16082696&project=api-carezza";
 const molignonOsmUrl = "https://api.openstreetmap.org/api/0.6/map?bbox=11.62,46.46,11.68,46.51";
 const fedaiaOsmUrl = "https://api.openstreetmap.org/api/0.6/map?bbox=11.835,46.426,11.895,46.469";
+const valRosaliaOsmUrl = "https://api.openstreetmap.org/api/0.6/map?bbox=11.775,46.425,11.85,46.472";
 
 const points = {
   fronza: [11.6120696, 46.4426625],
@@ -30,6 +31,7 @@ const points = {
   forcellaMarmolada: [11.840182, 46.438764],
   passoOmbretta: [11.84642, 46.430449],
   dalBianco: [11.8452751, 46.4291801],
+  valRosalia: [11.8352, 46.432],
   contrin: [11.8158915, 46.4297615],
   alba: [11.7805769, 46.4676647]
 };
@@ -463,21 +465,31 @@ const dayFiveStats = writeRoute(
   dayFiveWaypoints
 );
 
-const daySixRaw = await fetchRoute([points.dalBianco, points.contrin, points.alba]);
-const daySixCoordinates = applyElevationAnchors(daySixRaw, [
-  [points.dalBianco, 2730],
-  [points.contrin, 2016],
-  [points.alba, 1460]
+const valRosaliaGraph = parseWalkableGraph(await fetchText(valRosaliaOsmUrl));
+const daySixFlat = mappedPathThrough(valRosaliaGraph, [
+  points.dalBianco,
+  points.valRosalia,
+  points.alba
 ]);
+const daySixCoordinates = applyElevationAnchors(
+  daySixFlat.map((coordinate) => normalizeCoordinate([...coordinate, 0])),
+  [
+    [points.dalBianco, 2730],
+    [points.valRosalia, 2449],
+    [points.contrin, 2016],
+    [points.alba, 1460]
+  ]
+);
 const daySixWaypoints = [
   waypoint("Bivacco Dal Bianco", points.dalBianco, daySixCoordinates),
+  waypoint("Val Rosalia", points.valRosalia, daySixCoordinates),
   waypoint("Rifugio Contrin", points.contrin, daySixCoordinates, false),
   waypoint("Alba di Canazei", points.alba, daySixCoordinates)
 ];
 const daySixStats = writeRoute(
   "rosengarten-day-6",
-  "День 6 · Dal Bianco → Val Contrin → Alba di Canazei",
-  "BRouter / OpenStreetMap",
+  "День 6 · Dal Bianco → Val Rosalia → Alba di Canazei",
+  "OpenStreetMap shortest mapped paths + planning elevation anchors",
   daySixCoordinates,
   daySixWaypoints
 );

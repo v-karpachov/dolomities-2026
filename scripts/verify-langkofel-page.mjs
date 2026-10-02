@@ -63,12 +63,16 @@ const laurenziCoordinates = routeCoordinates("rosengarten-day-2-laurenzi");
 const molignonCoordinates = routeCoordinates("rosengarten-day-2-molignon");
 const dayFiveCoordinates = routeCoordinates("rosengarten-day-5");
 const dayFiveWaypoints = waypointNames("rosengarten-day-5");
+const daySixCollection = routeCollection("rosengarten-day-6");
+const daySixCoordinates = routeCoordinates("rosengarten-day-6");
+const daySixWaypoints = waypointNames("rosengarten-day-6");
 const lagoAntermoia = [11.6602803, 46.4778661];
 const alpeTires = [11.632844, 46.4972051];
 const fedaiaNorthShore = [11.876, 46.464];
 const fedaiaSouthShore = [11.879953, 46.456811];
 const passoFedaia = [11.86259, 46.464024];
 const capannaAlGhiacciaio = [11.8613317, 46.4446096];
+const valRosalia = [11.8352, 46.432];
 const minimumLagoDistance = Math.min(...laurenziCoordinates.map((coordinate) =>
   distanceMeters(coordinate, lagoAntermoia)
 ));
@@ -87,6 +91,11 @@ const minimumPassoFedaiaDistance = Math.min(...dayFiveCoordinates.map((coordinat
 const minimumCapannaDistance = Math.min(...dayFiveCoordinates.map((coordinate) =>
   distanceMeters(coordinate, capannaAlGhiacciaio)
 ));
+const minimumValRosaliaDistance = Math.min(...daySixCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, valRosalia)
+));
+const daySixDistance = daySixCollection.features
+  .find((feature) => feature.properties.kind === "route").properties.distance_km;
 
 const checks = {
   title: html.includes("Rosengarten → Sassolungo → Marmolada"),
@@ -123,6 +132,10 @@ const checks = {
   dayFiveSkipsCapanna: !dayFiveWaypoints.has("Pian dei Fiacconi")
     && minimumCapannaDistance > 300
     && !html.includes("Pian dei Fiacconi"),
+  daySixUsesShortestValRosaliaExit: daySixWaypoints.has("Val Rosalia")
+    && minimumValRosaliaDistance < 100
+    && daySixDistance < 10
+    && html.includes("Dal Bianco → Val Rosalia → Alba di Canazei"),
   laurenziCondition: html.includes("Laurenzi лише за сухих умов")
     && html.includes("нестраховані відрізки"),
   routeReferences: routeFiles.every((file) => html.includes(file)),
@@ -145,5 +158,7 @@ console.log(JSON.stringify({
   minimumNorthShoreDistance: Math.round(minimumNorthShoreDistance),
   minimumSouthShoreDistance: Math.round(minimumSouthShoreDistance),
   minimumPassoFedaiaDistance: Math.round(minimumPassoFedaiaDistance),
-  minimumCapannaDistance: Math.round(minimumCapannaDistance)
+  minimumCapannaDistance: Math.round(minimumCapannaDistance),
+  minimumValRosaliaDistance: Math.round(minimumValRosaliaDistance),
+  daySixDistance
 }, null, 2));
