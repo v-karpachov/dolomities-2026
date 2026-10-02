@@ -4,7 +4,7 @@
 
 **Goal:** Replace the detail page hero with the existing Torri del Vajolet photograph.
 
-**Architecture:** Keep the current full-bleed hero and overlays. Change only the background image URL, then protect the selection with the existing page verification script.
+**Architecture:** Keep the current hero and overlays. Use the selected image at full container width over the existing dark background, then protect the image and sizing with the existing page verification script.
 
 **Tech Stack:** Standalone HTML/CSS, Node.js verification scripts, GitHub Pages.
 
@@ -12,7 +12,8 @@
 
 - Reuse the Torri del Vajolet image already present in `index.html`.
 - Do not change the gallery, route content, maps, or other pages.
-- Preserve the current overlay, hero dimensions, and responsive behavior.
+- Preserve the current overlay and hero dimensions.
+- Avoid `cover` cropping that makes the towers look excessively enlarged.
 
 ---
 
@@ -28,7 +29,7 @@
 
 - [ ] **Step 1: Add a failing verification check**
 
-Add a check that the detail page contains the Torri del Vajolet image URL in `.hero::before` and no longer contains the Wix background URL.
+Add a check that the detail page contains the Torri del Vajolet image URL in `.hero::before`, no longer contains the Wix background URL, and uses full-width background sizing instead of `cover`.
 
 - [ ] **Step 2: Run the focused verification**
 
@@ -41,7 +42,7 @@ Expected: FAIL for the hero background capability.
 In `.hero::before`, replace the Wix image URL with:
 
 ```css
-url("https://upload.wikimedia.org/wikipedia/commons/3/30/Vajolett%C3%BCrme_und_Gartlh%C3%BCtte_SW.JPG") center / cover no-repeat
+url("https://upload.wikimedia.org/wikipedia/commons/3/30/Vajolett%C3%BCrme_und_Gartlh%C3%BCtte_SW.JPG") center top / 100% auto no-repeat
 ```
 
 - [ ] **Step 4: Verify behavior and presentation**
