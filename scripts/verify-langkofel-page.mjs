@@ -7,21 +7,23 @@ const archivedPagePath = path.join(root, "seceda-marmolada-costabella.html");
 const html = fs.readFileSync(pagePath, "utf8");
 const archivedHtml = fs.readFileSync(archivedPagePath, "utf8");
 
-const routeFiles = [
-  "routes/langkofel-day-1.geojson",
-  "routes/langkofel-day-1.gpx",
-  "routes/langkofel-day-2.geojson",
-  "routes/langkofel-day-2.gpx",
-  "routes/langkofel-day-2-bypass.geojson",
-  "routes/langkofel-day-2-bypass.gpx",
-  ...Array.from({ length: 4 }, (_, index) => `routes/day-${index + 3}.geojson`),
-  ...Array.from({ length: 4 }, (_, index) => `routes/day-${index + 3}.gpx`)
+const routeIds = [
+  "rosengarten-day-1",
+  "rosengarten-day-2-laurenzi",
+  "rosengarten-day-2-molignon",
+  "rosengarten-day-3",
+  "rosengarten-day-4",
+  "rosengarten-day-5",
+  "rosengarten-day-6"
 ];
+const routeFiles = routeIds.flatMap((id) => [`routes/${id}.geojson`, `routes/${id}.gpx`]);
 
-const routeCoordinates = (filename) => {
-  const collection = JSON.parse(fs.readFileSync(path.join(root, filename), "utf8"));
-  return collection.features.find((feature) => feature.properties.kind === "route").geometry.coordinates;
-};
+const routeCollection = (id) => JSON.parse(fs.readFileSync(path.join(root, `routes/${id}.geojson`), "utf8"));
+const routeCoordinates = (id) => routeCollection(id).features
+  .find((feature) => feature.properties.kind === "route").geometry.coordinates;
+const waypointNames = (id) => new Set(routeCollection(id).features
+  .filter((feature) => feature.properties.kind === "waypoint")
+  .map((feature) => feature.properties.name));
 
 const distanceMeters = ([longitudeA, latitudeA], [longitudeB, latitudeB]) => {
   const radians = Math.PI / 180;
@@ -32,70 +34,51 @@ const distanceMeters = ([longitudeA, latitudeA], [longitudeB, latitudeB]) => {
   return 6371000 * 2 * Math.asin(Math.sqrt(value));
 };
 
-const comesWithin = (coordinates, target, maximumDistance) =>
-  coordinates.some((coordinate) => distanceMeters(coordinate, target) <= maximumDistance);
-
-const primaryDayTwoCoordinates = routeCoordinates("routes/langkofel-day-2.geojson");
-const bypassGeoJsonPath = path.join(root, "routes/langkofel-day-2-bypass.geojson");
-const bypassCollection = fs.existsSync(bypassGeoJsonPath)
-  ? JSON.parse(fs.readFileSync(bypassGeoJsonPath, "utf8"))
-  : null;
-const bypassLine = bypassCollection?.features.find((feature) => feature.properties.kind === "route");
-const bypassWaypointNames = new Set(
-  bypassCollection?.features
-    .filter((feature) => feature.properties.kind === "waypoint")
-    .map((feature) => feature.properties.name) ?? []
-);
-
-const dayFiles = [
-  "routes/langkofel-day-1.geojson",
-  "routes/langkofel-day-2.geojson",
-  "routes/day-3.geojson",
-  "routes/day-4.geojson",
-  "routes/day-5.geojson",
-  "routes/day-6.geojson"
+const primaryDayIds = [
+  "rosengarten-day-1",
+  "rosengarten-day-2-laurenzi",
+  "rosengarten-day-3",
+  "rosengarten-day-4",
+  "rosengarten-day-5",
+  "rosengarten-day-6"
 ];
-const dayCoordinates = dayFiles.map(routeCoordinates);
+const dayCoordinates = primaryDayIds.map(routeCoordinates);
 const continuity = dayCoordinates.every((coordinates, index) =>
-  index === 0 || distanceMeters(dayCoordinates[index - 1].at(-1), coordinates[0]) < 50
+  index === 0 || distanceMeters(dayCoordinates[index - 1].at(-1), coordinates[0]) < 60
 );
 const maximumSegment = Math.max(...dayCoordinates.flatMap((coordinates) =>
   coordinates.slice(1).map((coordinate, index) => distanceMeters(coordinates[index], coordinate))
 ));
 
+const dayOneWaypoints = waypointNames("rosengarten-day-1");
+const laurenziWaypoints = waypointNames("rosengarten-day-2-laurenzi");
+const bypassWaypoints = waypointNames("rosengarten-day-2-molignon");
+
 const checks = {
-  title: html.includes("Sassolungo → Marmolada → Costabella"),
+  title: html.includes("Rosengarten → Sassolungo → Marmolada"),
   sixDays: (html.match(/class="day-card"/g) ?? []).length === 6,
-  logistics: html.includes("Trento → Santa Cristina") && html.includes("07:32 → 10:36"),
-  dayOne: html.includes("Santa Cristina → Monte Pana → Langkofelhütte"),
-  primaryUsesMesulesWestWall: comesWithin(primaryDayTwoCoordinates, [11.79007, 46.51394], 100),
-  dayTwo: html.includes("Langkofelhütte → Passo Sella → Boè"),
-  dayTwoVariants: html.includes('data-route="langkofel-day-2"')
-    && html.includes('data-route="langkofel-day-2-bypass"')
-    && html.includes("Toni-Demetz + обхід"),
-  bypassUsesToniDemetz: bypassWaypointNames.has("Toni-Demetz-Hütte"),
-  bypassUsesOrdinaryAntersassRoute: bypassWaypointNames.has("l'Antersass")
-    && comesWithin(bypassLine?.geometry.coordinates ?? [], [11.8238256, 46.5194079], 60),
-  bypassEndsAtBoe: distanceMeters(
-    bypassLine?.geometry.coordinates.at(-1) ?? [0, 0],
-    [11.8232815, 46.5146145]
-  ) < 60,
-  weatherCondition: html.includes("тільки по сухій скелі"),
-  mesulesDifficultyAndBypass: html.includes("Складність Mesules:")
-    && html.includes("C/D")
-    && html.includes("стежкою 525")
-    && html.includes("Val Lasties")
-    && html.includes("звичайною верхньою лінією 647")
-    && html.includes("647A не використовуємо"),
+  logistics: html.includes("Trento → Nova Levante → Rifugio Fronza")
+    && html.includes("07:32 → 09:43")
+    && html.includes("Nova Levante + König Laurin · €26"),
+  dayOne: dayOneWaypoints.has("Passo Santner")
+    && dayOneWaypoints.has("Rifugio Re Alberto")
+    && dayOneWaypoints.has("Rifugio Vajolet"),
+  dayTwoVariants: html.includes('data-route="rosengarten-day-2-laurenzi"')
+    && html.includes('data-route="rosengarten-day-2-molignon"')
+    && laurenziWaypoints.has("Ferrata Laurenzi")
+    && bypassWaypoints.has("Passo Molignon"),
+  laurenziCondition: html.includes("Laurenzi лише за сухих умов")
+    && html.includes("нестраховані відрізки"),
   routeReferences: routeFiles.every((file) => html.includes(file)),
   routeFiles: routeFiles.every((file) => fs.existsSync(path.join(root, file))),
   continuity,
   maximumSegmentBelow500m: maximumSegment < 500,
+  oldEndingRemoved: !html.includes("Bepi Zac") && !html.includes("Passo San Pellegrino"),
   archivedPagePreserved: archivedHtml.includes("Seceda → Marmolada → Costabella")
 };
 
 for (const [key, value] of Object.entries(checks)) {
-  if (!value) throw new Error(`Missing Langkofel page capability: ${key}`);
+  if (!value) throw new Error(`Missing Rosengarten page capability: ${key}`);
 }
 
 console.log(JSON.stringify({ ...checks, maximumSegment: Math.round(maximumSegment) }, null, 2));

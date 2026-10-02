@@ -22,12 +22,12 @@ const overviewRouteGroups = {
     "routes/pale-day-6.geojson"
   ],
   sassolungo: [
-    "routes/langkofel-day-1.geojson",
-    "routes/langkofel-day-2.geojson",
-    "routes/day-3.geojson",
-    "routes/day-4.geojson",
-    "routes/day-5.geojson",
-    "routes/day-6.geojson"
+    "routes/rosengarten-day-1.geojson",
+    "routes/rosengarten-day-2-laurenzi.geojson",
+    "routes/rosengarten-day-3.geojson",
+    "routes/rosengarten-day-4.geojson",
+    "routes/rosengarten-day-5.geojson",
+    "routes/rosengarten-day-6.geojson"
   ]
 };
 const overviewTracks = Object.values(overviewRouteGroups).flat();
