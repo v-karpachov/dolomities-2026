@@ -4,7 +4,6 @@
   <wpt lat="46.458607" lon="11.63288"><ele>2241.5</ele><name>Rifugio Vajolet</name></wpt>
   <wpt lat="46.474082" lon="11.638945"><ele>2598.3</ele><name>Passo Principe</name></wpt>
   <wpt lat="46.489197" lon="11.639733"><ele>2596.8</ele><name>Passo Molignon</name></wpt>
-  <wpt lat="46.49709" lon="11.632802"><ele>2439.3</ele><name>Rifugio Alpe di Tires</name></wpt>
   <wpt lat="46.497511" lon="11.653599"><ele>2185.3</ele><name>Passo Duron</name></wpt>
   <wpt lat="46.504683" lon="11.700915"><ele>2304.5</ele><name>Rifugio Sasso Piatto</name></wpt>
   <wpt lat="46.519898" lon="11.723838"><ele>2257.5</ele><name>Langkofelhütte</name></wpt>
@@ -378,26 +377,6 @@
       <trkpt lat="46.495951" lon="11.633798"><ele>2437.3</ele></trkpt>
       <trkpt lat="46.496256" lon="11.633858"><ele>2439</ele></trkpt>
       <trkpt lat="46.496365" lon="11.633902"><ele>2439.8</ele></trkpt>
-      <trkpt lat="46.496522" lon="11.633927"><ele>2441.8</ele></trkpt>
-      <trkpt lat="46.496847" lon="11.633659"><ele>2440.8</ele></trkpt>
-      <trkpt lat="46.497" lon="11.633611"><ele>2441.5</ele></trkpt>
-      <trkpt lat="46.497129" lon="11.6334"><ele>2441</ele></trkpt>
-      <trkpt lat="46.497143" lon="11.633322"><ele>2441</ele></trkpt>
-      <trkpt lat="46.497135" lon="11.633206"><ele>2440.8</ele></trkpt>
-      <trkpt lat="46.497163" lon="11.633171"><ele>2441.5</ele></trkpt>
-      <trkpt lat="46.497108" lon="11.633092"><ele>2439.8</ele></trkpt>
-      <trkpt lat="46.497084" lon="11.632987"><ele>2439</ele></trkpt>
-      <trkpt lat="46.497079" lon="11.632868"><ele>2438.8</ele></trkpt>
-      <trkpt lat="46.49709" lon="11.632802"><ele>2439.3</ele></trkpt>
-      <trkpt lat="46.497079" lon="11.632868"><ele>2438.8</ele></trkpt>
-      <trkpt lat="46.497084" lon="11.632987"><ele>2439</ele></trkpt>
-      <trkpt lat="46.497108" lon="11.633092"><ele>2439.8</ele></trkpt>
-      <trkpt lat="46.497163" lon="11.633171"><ele>2441.5</ele></trkpt>
-      <trkpt lat="46.497135" lon="11.633206"><ele>2440.8</ele></trkpt>
-      <trkpt lat="46.497143" lon="11.633322"><ele>2441</ele></trkpt>
-      <trkpt lat="46.497129" lon="11.6334"><ele>2441</ele></trkpt>
-      <trkpt lat="46.497" lon="11.633611"><ele>2441.5</ele></trkpt>
-      <trkpt lat="46.496847" lon="11.633659"><ele>2440.8</ele></trkpt>
       <trkpt lat="46.496522" lon="11.633927"><ele>2441.8</ele></trkpt>
       <trkpt lat="46.496511" lon="11.634187"><ele>2440.8</ele></trkpt>
       <trkpt lat="46.496422" lon="11.63431"><ele>2439</ele></trkpt>

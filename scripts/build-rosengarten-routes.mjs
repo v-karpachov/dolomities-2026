@@ -19,7 +19,6 @@ const points = {
   molignonFuori: [11.6436026, 46.4876807],
   laurenziWest: [11.6398679, 46.4908381],
   passoMolignon: [11.6397326, 46.4891968],
-  alpeTires: [11.632844, 46.4972051],
   passoDuron: [11.6535989, 46.4975112],
   sassoPiatto: [11.7008981, 46.5044281],
   langkofel: [11.7236498, 46.5199011],
@@ -323,7 +322,6 @@ const molignonApproach = await fetchRoute([
   points.vajolet,
   points.passoPrincipe,
   points.passoMolignon,
-  points.alpeTires,
   points.passoDuron
 ]);
 const dayTwoBypassCoordinates = mergeCoordinates(molignonApproach, commonFinish);
@@ -331,7 +329,6 @@ const dayTwoBypassWaypoints = [
   waypoint("Rifugio Vajolet", points.vajolet, dayTwoBypassCoordinates),
   waypoint("Passo Principe", points.passoPrincipe, dayTwoBypassCoordinates, false),
   waypoint("Passo Molignon", points.passoMolignon, dayTwoBypassCoordinates),
-  waypoint("Rifugio Alpe di Tires", points.alpeTires, dayTwoBypassCoordinates, false),
   waypoint("Passo Duron", points.passoDuron, dayTwoBypassCoordinates, false),
   waypoint("Rifugio Sasso Piatto", points.sassoPiatto, dayTwoBypassCoordinates, false),
   waypoint("Langkofelhütte", points.langkofel, dayTwoBypassCoordinates)

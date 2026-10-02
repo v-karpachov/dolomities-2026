@@ -60,9 +60,14 @@ const dayThreeBypassWaypoints = fs.existsSync(path.join(root, "routes/rosengarte
   ? waypointNames("rosengarten-day-3-bypass")
   : new Set();
 const laurenziCoordinates = routeCoordinates("rosengarten-day-2-laurenzi");
+const molignonCoordinates = routeCoordinates("rosengarten-day-2-molignon");
 const lagoAntermoia = [11.6602803, 46.4778661];
+const alpeTires = [11.632844, 46.4972051];
 const minimumLagoDistance = Math.min(...laurenziCoordinates.map((coordinate) =>
   distanceMeters(coordinate, lagoAntermoia)
+));
+const minimumAlpeTiresDistance = Math.min(...molignonCoordinates.map((coordinate) =>
+  distanceMeters(coordinate, alpeTires)
 ));
 
 const checks = {
@@ -77,8 +82,10 @@ const checks = {
   dayTwoVariants: html.includes('data-route="rosengarten-day-2-laurenzi"')
     && html.includes('data-route="rosengarten-day-2-molignon"')
     && laurenziWaypoints.has("Ferrata Laurenzi")
-    && molignonWaypoints.has("Passo Molignon")
-    && molignonWaypoints.has("Rifugio Alpe di Tires"),
+    && molignonWaypoints.has("Passo Molignon"),
+  molignonBypassesAlpeTires: !molignonWaypoints.has("Rifugio Alpe di Tires")
+    && minimumAlpeTiresDistance > 100
+    && !html.includes("Rifugio Alpe di Tires"),
   primaryDayTwoStopsRemoved: !laurenziWaypoints.has("Passo Molignon")
     && !laurenziWaypoints.has("Rifugio Alpe di Tires")
     && !laurenziWaypoints.has("Lago d'Antermoia"),
@@ -106,5 +113,6 @@ for (const [key, value] of Object.entries(checks)) {
 console.log(JSON.stringify({
   ...checks,
   maximumSegment: Math.round(maximumSegment),
-  minimumLagoDistance: Math.round(minimumLagoDistance)
+  minimumLagoDistance: Math.round(minimumLagoDistance),
+  minimumAlpeTiresDistance: Math.round(minimumAlpeTiresDistance)
 }, null, 2));
