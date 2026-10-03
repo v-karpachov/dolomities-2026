@@ -99,8 +99,10 @@ const daySixDistance = daySixCollection.features
 
 const checks = {
   title: html.includes("Rosengarten → Sassolungo → Marmolada"),
-  rosengartenHero: html.includes("https://upload.wikimedia.org/wikipedia/commons/3/30/Vajolett%C3%BCrme_und_Gartlh%C3%BCtte_SW.JPG")
-    && html.includes("center top / 100% auto no-repeat")
+  rosengartenHero: html.includes("https://img3.oastatic.com/img2/76425499/2500x950r/variant.jpg")
+    && html.includes("center center / cover no-repeat")
+    && html.includes("background-position: 64% center;")
+    && !html.includes("https://upload.wikimedia.org/wikipedia/commons/3/30/Vajolett%C3%BCrme_und_Gartlh%C3%BCtte_SW.JPG")
     && !html.includes("https://static.wixstatic.com/media/09b168_d39418f30c7b4e26a840402478dcf053~mv2.jpg"),
   sixDays: (html.match(/class="day-card"/g) ?? []).length === 6,
   logistics: html.includes("Trento → Nova Levante → Rifugio Fronza")

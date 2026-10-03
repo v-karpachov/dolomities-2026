@@ -8,18 +8,20 @@ Rosengarten to Marmolada route.
 
 ## Design
 
-Use the Torri del Vajolet photo that already appears as the first image in the
-route's gallery on `index.html`. Show the full image width instead of cropping
-it with `cover`; the existing dark hero background fills any remaining height.
-Keep the existing dark overlay and hero dimensions.
+Use the selected wide Rosengarten panorama from Outdooractive. Its distant
+view, open sky, and layered terrain give the heading more visual space than the
+close Torri del Vajolet photograph. Fill the hero with `cover`, retain the
+existing dark overlay and hero dimensions, and set a separate mobile background
+position so the mountain group remains visible behind the title.
 
 Do not change the gallery, route content, map data, or other pages.
 
 ## Verification
 
-- Confirm that the hero uses the Torri del Vajolet image URL.
-- Confirm that the previous Seceda image URL is absent from the detail page.
+- Confirm that the hero uses the selected Outdooractive panorama URL.
+- Confirm that the previous Seceda and Torri del Vajolet image URLs are absent
+  from the detail-page hero.
 - Inspect the hero at desktop and mobile widths to ensure that the heading
-  remains readable, the main subject is visible, and the photo does not look
-  excessively enlarged.
+  remains readable, the main subject is visible, and the wide landscape does
+  not appear excessively enlarged.
 - Run the existing page verification scripts.
