@@ -60,7 +60,7 @@ const checks = {
   detailLinks: [
     "brenta.html",
     "pale-bivacco.html",
-    "sassolungo-marmolada-costabella.html"
+    "rosengarten-sassolungo-marmolada.html"
   ].every((href) => html.includes(`href="${href}"`)),
   comparisonLink: html.includes('href="comparison.html"'),
   mobileSnap: html.includes("scroll-snap-type: x mandatory") && html.includes("scroll-snap-align: start"),

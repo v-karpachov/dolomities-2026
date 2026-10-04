@@ -2,9 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(import.meta.dirname, "..");
-const pagePath = path.join(root, "sassolungo-marmolada-costabella.html");
+const pagePath = path.join(root, "rosengarten-sassolungo-marmolada.html");
+const legacyPagePath = path.join(root, "sassolungo-marmolada-costabella.html");
 const archivedPagePath = path.join(root, "seceda-marmolada-costabella.html");
+
+if (!fs.existsSync(pagePath)) throw new Error("Missing canonical Rosengarten route page");
+if (!fs.existsSync(legacyPagePath)) throw new Error("Missing legacy Rosengarten redirect page");
+
 const html = fs.readFileSync(pagePath, "utf8");
+const legacyHtml = fs.readFileSync(legacyPagePath, "utf8");
 const archivedHtml = fs.readFileSync(archivedPagePath, "utf8");
 
 const routeIds = [
@@ -99,6 +105,10 @@ const daySixDistance = daySixCollection.features
 
 const checks = {
   title: html.includes("Rosengarten → Sassolungo → Marmolada"),
+  canonicalUrl: html.includes('<link rel="canonical" href="https://v-karpachov.github.io/dolomities-2026/rosengarten-sassolungo-marmolada.html">'),
+  legacyRedirect: legacyHtml.includes('http-equiv="refresh" content="0; url=rosengarten-sassolungo-marmolada.html"')
+    && legacyHtml.includes('location.replace("rosengarten-sassolungo-marmolada.html" + window.location.search + window.location.hash)')
+    && legacyHtml.includes('href="rosengarten-sassolungo-marmolada.html"'),
   rosengartenHero: html.includes("https://img3.oastatic.com/img2/76425499/2500x950r/variant.jpg")
     && html.includes("center center / cover no-repeat")
     && html.includes("background-position: 64% center;")

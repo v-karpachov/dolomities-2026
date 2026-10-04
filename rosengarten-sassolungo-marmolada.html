@@ -1,0 +1,1416 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rosengarten → Sassolungo → Marmolada: чернетка 6-денного маршруту</title>
+  <meta name="description" content="Чернетковий 6-денний траверс Доломітами через Rosengarten, Sassolungo, Sella, Padon і Marmolada з фінішем в Alba di Canazei.">
+  <link rel="canonical" href="https://v-karpachov.github.io/dolomities-2026/rosengarten-sassolungo-marmolada.html">
+  <link rel="stylesheet" href="vendor/leaflet.css">
+  <style>
+    :root {
+      --ink: #17201c;
+      --muted: #5d675f;
+      --paper: #f6f1e8;
+      --paper-strong: #fffaf0;
+      --line: rgba(23, 32, 28, .14);
+      --forest: #22372d;
+      --rust: #b85832;
+      --gold: #d89a3d;
+      --shadow: 0 22px 70px rgba(16, 24, 21, .18);
+      --radius: 8px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(216, 154, 61, .14), transparent 30rem),
+        linear-gradient(180deg, #fbf7ef 0%, var(--paper) 54%, #eee5d7 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 86vh;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-items: end;
+      color: #fffaf0;
+      background: #17201c;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(10, 15, 13, .88) 0%, rgba(10, 15, 13, .52) 48%, rgba(10, 15, 13, .16) 100%),
+        url("https://img3.oastatic.com/img2/76425499/2500x950r/variant.jpg") center center / cover no-repeat;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 28%;
+      background: linear-gradient(180deg, transparent, var(--paper));
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 22px;
+      padding: 42px 0 96px;
+    }
+
+    .back-link,
+    .maps-link {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      border: 1px solid rgba(255, 250, 240, .26);
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: rgba(255, 250, 240, .86);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(23, 32, 28, .32);
+    }
+
+    .back-link:hover,
+    .maps-link:hover {
+      background: rgba(255, 250, 240, .14);
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: rgba(255, 250, 240, .76);
+      font-size: .82rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      line-height: .98;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 1080px;
+      margin-bottom: 0;
+      font-size: clamp(2.9rem, 7vw, 7.5rem);
+      font-weight: 760;
+    }
+
+    .hero-lede {
+      max-width: 860px;
+      margin-bottom: 0;
+      color: rgba(255, 250, 240, .86);
+      font-size: clamp(1.05rem, 1.7vw, 1.34rem);
+    }
+
+    .hero-tags,
+    .day-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag,
+    .day-stat {
+      border: 1px solid rgba(255, 250, 240, .24);
+      border-radius: 999px;
+      padding: 8px 11px;
+      color: rgba(255, 250, 240, .84);
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .03em;
+      background: rgba(23, 32, 28, .32);
+    }
+
+    .section {
+      padding: 76px 0;
+    }
+
+    .section-title {
+      margin-bottom: 16px;
+      color: var(--rust);
+      font-size: .86rem;
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-weight: 900;
+      letter-spacing: .1em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .summary-card,
+    .day-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 250, 240, .74);
+      box-shadow: 0 14px 44px rgba(23, 32, 28, .08);
+    }
+
+    .summary-card {
+      padding: 22px;
+    }
+
+    .summary-card h2 {
+      margin-bottom: 18px;
+      color: var(--rust);
+      font-size: clamp(1.8rem, 3.4vw, 3.2rem);
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+    }
+
+    .summary-list div {
+      display: grid;
+      grid-template-columns: minmax(150px, .75fr) minmax(0, 1.25fr);
+      gap: 10px;
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(23, 32, 28, .1);
+    }
+
+    .summary-list div:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .summary-list dt {
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .summary-list dd {
+      margin: 0;
+      font-weight: 750;
+      text-align: left;
+    }
+
+    .summary-map-link {
+      color: var(--rust);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+    }
+
+    .day-card {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 22px;
+      padding: 24px;
+    }
+
+    .day-number {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      color: #fffaf0;
+      background: var(--forest);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.9rem;
+      font-weight: 800;
+    }
+
+    .day-card h2 {
+      max-width: 900px;
+      margin-bottom: 13px;
+      font-size: clamp(1.55rem, 3vw, 2.65rem);
+    }
+
+    .day-card p {
+      max-width: 920px;
+      color: #334039;
+    }
+
+    .day-stats {
+      margin-bottom: 16px;
+    }
+
+    .day-stat {
+      border-color: rgba(184, 88, 50, .2);
+      color: var(--rust);
+      background: rgba(184, 88, 50, .07);
+    }
+
+    .day-option {
+      margin-top: 24px;
+      border-top: 1px solid rgba(23, 32, 28, .12);
+      padding-top: 22px;
+    }
+
+    .day-option h3 {
+      margin-bottom: 12px;
+      color: var(--forest);
+      font-size: clamp(1.3rem, 2.2vw, 2rem);
+    }
+
+    .day-option .day-stats {
+      margin-bottom: 14px;
+    }
+
+    .day-choice {
+      display: grid;
+      gap: 6px;
+      max-width: 920px;
+      margin-top: 20px;
+      border-left: 3px solid var(--rust);
+      padding: 13px 15px;
+      background: rgba(184, 88, 50, .07);
+    }
+
+    .day-choice p {
+      margin-bottom: 0;
+    }
+
+    .route-note {
+      max-width: 920px;
+      margin: 16px 0;
+      border-left: 3px solid var(--gold);
+      padding: 12px 14px;
+      color: #465149;
+      background: rgba(216, 154, 61, .09);
+      font-size: .92rem;
+    }
+
+    .start-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(23, 32, 28, .1);
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .start-row .maps-link {
+      border-color: rgba(23, 32, 28, .18);
+      color: var(--ink);
+      background: rgba(255, 250, 240, .66);
+    }
+
+    .start-row .maps-link:hover {
+      background: rgba(184, 88, 50, .09);
+    }
+
+    .start-logistics {
+      position: relative;
+      width: 100%;
+      margin: 0 0 28px;
+      padding: 28px 30px 24px;
+      overflow: hidden;
+      background: rgba(255, 250, 240, .72);
+      border: 1px solid rgba(23, 32, 28, .13);
+      border-left: 5px solid var(--rust);
+      border-radius: 6px;
+      box-shadow: 0 16px 42px rgba(23, 32, 28, .06);
+    }
+
+    .start-logistics-header {
+      max-width: 820px;
+      margin-bottom: 22px;
+    }
+
+    .start-logistics-kicker {
+      margin: 0 0 6px;
+      color: var(--rust);
+      font-size: .73rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-title {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.4vw, 2.05rem);
+    }
+
+    .start-logistics-route {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      align-items: center;
+      margin: 14px 0 8px;
+    }
+
+    .start-logistics-route strong {
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.15rem;
+    }
+
+    .start-logistics-route span {
+      padding: 5px 9px;
+      color: var(--rust);
+      background: rgba(184, 88, 50, .1);
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 850;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .start-logistics-options {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(270px, .75fr);
+      gap: 12px;
+    }
+
+    .start-logistics-option {
+      padding: 16px 18px;
+      background: rgba(255, 255, 255, .5);
+      border: 1px solid rgba(23, 32, 28, .12);
+      border-radius: 6px;
+    }
+
+    .start-logistics-option.is-primary {
+      background: rgba(184, 88, 50, .08);
+      border-color: rgba(184, 88, 50, .32);
+      box-shadow: inset 4px 0 0 var(--rust);
+    }
+
+    .start-logistics-label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--rust);
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-time {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.75rem;
+      font-weight: 780;
+      line-height: 1.05;
+    }
+
+    .start-logistics-legs {
+      display: grid;
+      gap: 7px;
+    }
+
+    .start-logistics-legs p {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 10px;
+      margin: 0;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .start-logistics-legs strong {
+      color: var(--ink);
+    }
+
+    .start-logistics-legs .start-logistics-transfer {
+      grid-template-columns: 1fr;
+      gap: 2px;
+      padding: 7px 0;
+      border-top: 1px solid rgba(184, 88, 50, .2);
+      border-bottom: 1px solid rgba(184, 88, 50, .2);
+    }
+
+    .start-logistics-transfer strong {
+      color: var(--rust);
+      font-size: .72rem;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-warning strong {
+      display: block;
+      margin: 8px 0;
+      color: var(--ink);
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.28rem;
+      line-height: 1.08;
+    }
+
+    .start-logistics-warning p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .start-logistics-warning p:last-child {
+      margin-bottom: 0;
+    }
+
+    .start-logistics-departure {
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
+      gap: 10px 20px;
+      align-items: center;
+      margin-top: 18px;
+      padding: 14px 16px;
+      color: rgba(255, 255, 255, .76);
+      background: var(--ink);
+      border-radius: 6px;
+      font-size: .86rem;
+    }
+
+    .start-logistics-departure-label {
+      color: #efd6c8;
+      font-size: .7rem;
+      font-weight: 900;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .start-logistics-departure strong {
+      color: #fff;
+      font-family: ui-serif, Georgia, "Times New Roman", serif;
+      font-size: 1.05rem;
+    }
+
+    .start-logistics-departure span:last-child {
+      text-align: right;
+    }
+
+    .route-map {
+      max-width: 920px;
+      margin: 28px 0 32px;
+      border-top: 1px solid rgba(23, 32, 28, .14);
+      border-bottom: 1px solid rgba(23, 32, 28, .14);
+      padding: 22px 0;
+    }
+
+    .route-map-toolbar,
+    .route-map-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .route-map-toolbar {
+      margin-bottom: 14px;
+    }
+
+    .route-map-kicker {
+      margin-bottom: 4px;
+      color: var(--rust) !important;
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .route-map h3 {
+      margin-bottom: 0;
+      color: var(--forest);
+      font-size: clamp(1.35rem, 2.2vw, 2rem);
+    }
+
+    .route-map-toggle {
+      display: inline-grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .2);
+      border-radius: 6px;
+      background: rgba(255, 250, 240, .66);
+    }
+
+    .route-map-toggle button,
+    .route-map-download {
+      min-height: 42px;
+      border: 0;
+      padding: 9px 13px;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .route-map-toggle button {
+      color: var(--muted);
+      background: transparent;
+    }
+
+    .route-map-toggle button + button {
+      border-left: 1px solid rgba(23, 32, 28, .14);
+    }
+
+    .route-map-toggle button[aria-pressed="true"] {
+      color: #fffaf0;
+      background: var(--forest);
+    }
+
+    .route-map-toggle button:focus-visible,
+    .route-map-download:focus-visible {
+      outline: 3px solid rgba(216, 154, 61, .5);
+      outline-offset: 2px;
+    }
+
+    .route-map-download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      color: #fffaf0;
+      background: var(--rust);
+      white-space: nowrap;
+    }
+
+    .route-map-download:hover {
+      background: #9e4729;
+    }
+
+    .route-map-canvas {
+      width: 100%;
+      height: 460px;
+      overflow: hidden;
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: var(--radius);
+      background: #dde2d8;
+      box-shadow: 0 14px 34px rgba(23, 32, 28, .12);
+    }
+
+    .route-map-status {
+      margin: 10px 0 0;
+      color: var(--muted) !important;
+      font-size: .86rem;
+    }
+
+    .route-map-status[hidden] {
+      display: none;
+    }
+
+    .elevation-profile {
+      margin-top: 18px;
+    }
+
+    .elevation-profile-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .elevation-profile h4 {
+      margin: 0;
+      color: var(--forest);
+      font-size: .9rem;
+      letter-spacing: 0;
+    }
+
+    .elevation-profile-readout {
+      color: var(--muted);
+      font-size: .82rem;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .elevation-profile-chart {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      border-top: 1px solid rgba(23, 32, 28, .12);
+      border-bottom: 1px solid rgba(23, 32, 28, .12);
+      background: rgba(255, 250, 240, .36);
+      touch-action: pan-y;
+    }
+
+    .elevation-profile-chart:focus-visible {
+      outline: 3px solid rgba(216, 154, 61, .5);
+      outline-offset: 2px;
+    }
+
+    .elevation-profile-chart svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .elevation-profile-chart text {
+      fill: var(--muted);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0;
+    }
+
+    .elevation-profile-chart .profile-waypoint-label {
+      fill: var(--ink);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .route-map .leaflet-control-attribution {
+      font-size: .68rem;
+    }
+
+    .route-map .leaflet-tooltip {
+      border: 1px solid rgba(23, 32, 28, .16);
+      border-radius: 4px;
+      color: var(--ink);
+      background: rgba(255, 250, 240, .94);
+      box-shadow: 0 6px 18px rgba(23, 32, 28, .14);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    .footer {
+      padding: 28px 0 44px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .footer a {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    @media (max-width: 740px) {
+      .summary-list div {
+        grid-template-columns: 1fr;
+        gap: 3px;
+      }
+
+      .hero::before {
+        background-position: 64% center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .shell {
+        width: min(100% - 24px, var(--max));
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-inner {
+        padding: 34px 0 76px;
+      }
+
+      .section {
+        padding: 52px 0;
+      }
+
+      .start-logistics {
+        padding: 24px 18px 20px;
+      }
+
+      .start-logistics-options,
+      .start-logistics-departure {
+        grid-template-columns: 1fr;
+      }
+
+      .start-logistics-departure {
+        gap: 4px;
+      }
+
+      .start-logistics-departure span:last-child {
+        margin-top: 4px;
+        text-align: left;
+      }
+
+      .day-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 17px;
+      }
+
+      .day-number {
+        width: 48px;
+        height: 48px;
+        font-size: 1.45rem;
+      }
+
+      .route-map-toolbar,
+      .route-map-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .route-map-toggle,
+      .route-map-download {
+        width: 100%;
+      }
+
+      .route-map-toggle button {
+        min-width: 0;
+        padding-inline: 8px;
+      }
+
+      .route-map-canvas {
+        height: 360px;
+      }
+
+      .elevation-profile-chart {
+        height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="shell hero-inner">
+        <a class="back-link" href="index.html">← До трьох маршрутів</a>
+        <p class="eyebrow">Чернетка маршруту · 6 днів / 5 ночей</p>
+        <h1 id="page-title">Rosengarten → Sassolungo → Marmolada</h1>
+        <p class="hero-lede">Лінійна подорож через три дуже різні масиви: рожеві башти Rosengarten, кам'яний амфітеатр Sassolungo, високе плато Sella, темний Padon і льодовиковий рельєф Marmolada. Ферати тут не окремі радіалки, а частини самого переходу.</p>
+        <div class="hero-tags" aria-label="Ключові параметри маршруту">
+          <span class="tag">~69–74 км</span>
+          <span class="tag">↑ ~5700–5950 м</span>
+          <span class="tag">4 обов'язкові ферати + Laurenzi</span>
+          <span class="tag">~2950 м · плато Sella</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="summary-title">
+      <div class="shell">
+        <aside class="summary-card" aria-label="Загальні параметри">
+          <h2 id="summary-title">Основні параметри</h2>
+          <dl class="summary-list">
+            <div><dt>Старт</dt><dd><a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Nova+Levante+Welschnofen+Cabinovia">Nova Levante · підйомники до Rifugio Fronza</a></dd></div>
+            <div><dt>Фініш</dt><dd><a class="summary-map-link" href="https://www.google.com/maps/search/?api=1&amp;query=Alba+di+Canazei">Alba di Canazei</a></dd></div>
+            <div><dt>Тривалість</dt><dd>6 днів / 5 ночей</dd></div>
+            <div><dt>Дистанція</dt><dd>~69–74 км · залежно від варіантів D2–D3</dd></div>
+            <div><dt>Сумарний набір</dt><dd>↑ ~5700–5950 м · залежно від варіантів D2–D3</dd></div>
+            <div><dt>Технічні ділянки</dt><dd>Santner → Laurenzi за умовами → Mesules → Trincee → 606 / Forcella Marmolada</dd></div>
+            <div><dt>Максимальна висота</dt><dd>~2950 м · Altopiano delle Mesules</dd></div>
+            <div><dt>Ночівлі</dt><dd>Vajolet → Langkofelhütte → Boè → Bontadini → Dal Bianco</dd></div>
+          </dl>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="days-title">
+      <div class="shell">
+        <section class="start-logistics" data-start-logistics aria-labelledby="start-logistics-title">
+          <div class="start-logistics-header">
+            <p class="start-logistics-kicker">Логістика до старту</p>
+            <h2 class="start-logistics-title" id="start-logistics-title">Як дістатися до старту</h2>
+            <div class="start-logistics-route"><strong>Trento → Nova Levante → Rifugio Fronza</strong><span>Субота, 10 жовтня 2026</span></div>
+            <p class="start-logistics-intro">Поїзд довозить до Bolzano, автобус 180 — до Nova Levante, а дві послідовні канатки одразу піднімають під стіни Rosengarten. Завдяки цьому Santner нормально поміщається в перший день.</p>
+          </div>
+          <div class="start-logistics-options">
+            <article class="start-logistics-option is-primary">
+              <span class="start-logistics-label">Рекомендований виїзд</span>
+              <p class="start-logistics-time">07:32 → 09:43</p>
+              <div class="start-logistics-legs">
+                <p><strong>R16664</strong><span>Trento 07:32 → Bolzano 08:25</span></p>
+                <p class="start-logistics-transfer"><strong>Пересадка у Bolzano · 42 хв</strong><span>Від залізничної станції до автостанції близько 5 хв пішки</span></p>
+                <p><strong>180</strong><span>Bolzano Autostazione 09:07 → Nova Levante Centro 09:43</span></p>
+              </div>
+            </article>
+            <article class="start-logistics-option start-logistics-warning">
+              <span class="start-logistics-label">Підйомники 10 жовтня</span>
+              <strong>Nova Levante + König Laurin · €26 в один бік</strong>
+              <p>Cabinovia Nova Levante працює 08:00–18:00, König Laurin I/II — 08:15–17:45. Від зупинки до нижньої станції йдемо пішки, далі піднімаємося до 2339 м біля Rifugio Fronza.</p>
+              <p>Розклад і роботу підйомників потрібно ще раз перевірити безпосередньо перед виїздом.</p>
+            </article>
+          </div>
+          <div class="start-logistics-departure"><span class="start-logistics-departure-label">Початок ходової частини</span><strong>Rifugio Fronza близько 10:15–10:30</strong><span>До Vajolet через Santner залишається компактний, але технічний день</span></div>
+        </section>
+
+        <h2 class="section-title" id="days-title">Дні маршруту</h2>
+        <div class="timeline">
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">1</div>
+            <div>
+              <h2>День 1 — Rifugio Fronza → Ferrata Santner → Re Alberto → Vajolet</h2>
+              <div class="day-stats" aria-label="Параметри дня 1"><span class="day-stat">~3.5 км</span><span class="day-stat">↑ ~520 м</span><span class="day-stat">↓ ~620 м</span><span class="day-stat">~4–5 год</span></div>
+              <section class="route-map" data-route-map data-default-route="rosengarten-day-1" aria-labelledby="day-1-map-title">
+                <div class="route-map-toolbar"><h3 id="day-1-map-title">Мапа дня 1</h3><a class="route-map-download" href="routes/rosengarten-day-1.gpx" download>Завантажити GPX</a></div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 1"></div>
+                <div class="elevation-profile" data-elevation-profile><div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div><div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 1"></div></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status"><a href="routes/rosengarten-day-1.gpx" download>Завантажити GPX дня 1</a>.</p></noscript>
+              </section>
+              <p>Від Rifugio Fronza траверсуємо під західними стінами Catinaccio і виходимо на Ferrata Santner. Вона веде через вузькі кулуари та полиці до Passo Santner, звідки одразу відкривається класичний вид на Torri del Vajolet.</p>
+              <p>Після Re Alberto спускаємося до Rifugio Vajolet. Це короткий за кілометражем день, але не прогулянковий: ферата починається майже одразу після дороги й потребує нормального запасу часу на страховку та можливий лід у затінених місцях.</p>
+              <div class="start-row"><span><strong>Ніч:</strong> Rifugio Vajolet · locale invernale; стан і доступ перевірити перед походом</span><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Rifugio+Fronza+alle+Coronelle">Старт на мапі</a></div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">2</div>
+            <div>
+              <h2>День 2 — Vajolet → Passo Principe → Laurenzi / обхід → Passo Duron → Langkofelhütte</h2>
+              <div class="day-stats" aria-label="Параметри основного варіанта дня 2"><span class="day-stat">Laurenzi: ~18.8 км</span><span class="day-stat">↑ ~1540 м</span><span class="day-stat">↓ ~1520 м</span><span class="day-stat">~9–11 год</span></div>
+              <section class="route-map" data-route-map data-default-route="rosengarten-day-2-laurenzi" aria-labelledby="day-2-map-title">
+                <div class="route-map-toolbar"><div><p class="route-map-kicker">Мапа дня 2</p><h3 id="day-2-map-title">Laurenzi або обхід</h3></div><div class="route-map-actions"><div class="route-map-toggle" role="group" aria-label="Варіант маршруту дня 2"><button type="button" data-route="rosengarten-day-2-laurenzi" aria-pressed="true">Laurenzi</button><button type="button" data-route="rosengarten-day-2-molignon" aria-pressed="false">Без Laurenzi</button></div><a class="route-map-download" href="routes/rosengarten-day-2-laurenzi.gpx" download>Завантажити GPX</a></div></div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа варіантів маршруту дня 2"></div>
+                <div class="elevation-profile" data-elevation-profile><div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div><div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот варіантів маршруту дня 2"></div></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status"><a href="routes/rosengarten-day-2-laurenzi.gpx" download>GPX Laurenzi</a> · <a href="routes/rosengarten-day-2-molignon.gpx" download>GPX обходу</a></p></noscript>
+              </section>
+              <h3>Основний задум — Ferrata Laurenzi</h3>
+              <p>Від Vajolet піднімаємося до Passo Principe, а звідти без заходу до Lago d'Antermoia виходимо прямо до східного початку Ferrata Laurenzi. Після зубчастого гребеня спускаємося до основної стежки й продовжуємо в напрямку Passo Duron. Далі через Rifugio Sasso Piatto довго траверсуємо до Langkofelhütte.</p>
+              <div class="route-note"><strong>Laurenzi лише за сухих умов:</strong> це не просто тросова ферата. На гребені є довгі експоновані та нестраховані відрізки, просте лазіння I–II і складна орієнтація. Сніг, лід або мокра скеля автоматично переводять день на обхід.</div>
+              <div class="day-option"><h3>Обхід — без Laurenzi</h3><div class="day-stats" aria-label="Параметри обходу дня 2"><span class="day-stat">~16.8 км</span><span class="day-stat">↑ ~1310 м</span><span class="day-stat">↓ ~1300 м</span><span class="day-stat">~8–10 год</span></div><p>Від Passo Principe тримаємося звичайної високої стежки через Passo Molignon і далі без заходу до притулку виходимо прямо в напрямку Passo Duron. Тут обидва варіанти збігаються: через Sasso Piatto траверсуємо до Langkofelhütte. Обхід коротший і прибирає технічний гребінь Laurenzi, але день усе одно залишається довгим.</p></div>
+              <div class="start-row"><span><strong>Ніч:</strong> Langkofelhütte / Rifugio Vicenza · аварійне приміщення / тент</span><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Rifugio+Vajolet">Старт на мапі</a></div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">3</div>
+            <div>
+              <h2>День 3 — Langkofelhütte → Mesules / Toni-Demetz → Boè</h2>
+              <div class="day-stats" aria-label="Параметри основного варіанта дня 3"><span class="day-stat">Mesules: ~15.3 км</span><span class="day-stat">↑ ~1500 м</span><span class="day-stat">↓ ~890 м</span><span class="day-stat">~8–10 год</span></div>
+              <section class="route-map" data-route-map data-default-route="rosengarten-day-3" aria-labelledby="day-3-map-title">
+                <div class="route-map-toolbar"><div><p class="route-map-kicker">Мапа дня 3</p><h3 id="day-3-map-title">Mesules або Toni-Demetz</h3></div><div class="route-map-actions"><div class="route-map-toggle" role="group" aria-label="Варіант маршруту дня 3"><button type="button" data-route="rosengarten-day-3" aria-pressed="true">Mesules</button><button type="button" data-route="rosengarten-day-3-bypass" aria-pressed="false">Toni-Demetz + обхід</button></div><a class="route-map-download" href="routes/rosengarten-day-3.gpx" download>Завантажити GPX</a></div></div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа варіантів маршруту дня 3"></div>
+                <div class="elevation-profile" data-elevation-profile><div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div><div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот варіантів маршруту дня 3"></div></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+                <noscript><p class="route-map-status"><a href="routes/rosengarten-day-3.gpx" download>GPX Mesules</a> · <a href="routes/rosengarten-day-3-bypass.gpx" download>GPX обходу</a></p></noscript>
+              </section>
+              <p>Через Forcella Ciaulong, Rifugio Comici та Città dei Sassi виходимо на Passo Sella. Далі Ferrata Mesules майже прямою лінією піднімає на плато Sella, після чого довгий високогірний перехід через Altopiano delle Mesules приводить до Rifugio Boè.</p>
+              <div class="route-note"><strong>Складність Mesules:</strong> C/D, круто й дуже експоновано. Найсиловіші вертикальні відрізки починаються майже відразу, а верхня частина проходить близько 3000 м. У жовтні ця лінія можлива тільки по сухій скелі, без свіжого снігу та льоду.</div>
+              <div class="day-option"><h3>Обхід — Toni-Demetz + Val Lasties</h3><div class="day-stats" aria-label="Параметри обходу дня 3"><span class="day-stat">~12.1 км</span><span class="day-stat">↑ ~1610 м</span><span class="day-stat">↓ ~1000 м</span><span class="day-stat">~7–9 год</span></div><p>Від Langkofelhütte піднімаємося стежкою 525 через внутрішній амфітеатр Sassolungo до Toni-Demetz-Hütte, а потім круто спускаємося до Passo Sella. Хатина в жовтні закрита, тому це лише проміжна точка.</p><p>Із Passo Sella замість Mesules спускаємося у Val Lasties і піднімаємося стежкою 647 до Forcella d'Antersass. Далі лінія проходить через l'Antersass до Boè; відгалуження 647A не використовуємо.</p><div class="route-note"><strong>Це обхід ферати, але не простий день:</strong> підйом до Toni-Demetz і спуск через вузьку осипну ущелину Sassolungo круті. Варіант також потребує відсутності снігу та льоду.</div></div>
+              <div class="start-row"><span><strong>Ніч:</strong> Rifugio Boè · locale invernale</span><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Langkofelhutte+Rifugio+Vicenza">Старт на мапі</a></div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">4</div>
+            <div>
+              <h2>День 4 — Boè → Forcella Pordoi → Viel dal Pan → Trincee → Bontadini</h2>
+              <div class="day-stats" aria-label="Параметри дня 4"><span class="day-stat">~14.9 км</span><span class="day-stat">↑ ~950 м</span><span class="day-stat">↓ ~1280 м</span><span class="day-stat">~8–9 год</span></div>
+              <section class="route-map" data-route-map data-default-route="rosengarten-day-4" aria-labelledby="day-4-map-title">
+                <div class="route-map-toolbar"><h3 id="day-4-map-title">Мапа дня 4</h3><a class="route-map-download" href="routes/rosengarten-day-4.gpx" download>Завантажити GPX</a></div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 4"></div>
+                <div class="elevation-profile" data-elevation-profile><div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div><div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 4"></div></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+              </section>
+              <p>Через Forcella Pordoi спускаємося до Passo Pordoi, після чого панорамний Viel dal Pan веде просто навпроти Marmolada. Біля Porta Vescovo входимо на Ferrata delle Trincee: спочатку спортивна скельна ділянка, далі довгий траверс темним вулканічним гребенем Padon.</p>
+              <div class="route-note"><strong>Спорядження:</strong> потрібен налобник для військових тунелів і галерей.</div>
+              <div class="start-row"><span><strong>Ніч:</strong> Bivacco Ernesto Bontadini</span><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Rifugio+Boe">Старт на мапі</a></div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">5</div>
+            <div>
+              <h2>День 5 — Bontadini → Fedaia → 606 → Forcella Marmolada → Dal Bianco</h2>
+              <div class="day-stats" aria-label="Параметри дня 5"><span class="day-stat">~12 км</span><span class="day-stat">↑ ~1320 м</span><span class="day-stat">↓ ~1140 м</span><span class="day-stat">~7–9 год</span></div>
+              <section class="route-map" data-route-map data-default-route="rosengarten-day-5" aria-labelledby="day-5-map-title">
+                <div class="route-map-toolbar"><h3 id="day-5-map-title">Мапа дня 5</h3><a class="route-map-download" href="routes/rosengarten-day-5.gpx" download>Завантажити GPX</a></div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 5"></div>
+                <div class="elevation-profile" data-elevation-profile><div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div><div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 5"></div></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+              </section>
+              <p>З Bontadini спускаємося до Lago di Fedaia і проходимо його південним боком, не піднімаючись до перевалу. Із західного краю озера виходимо прямо до початку 606 та без заходу до Capanna al Ghiacciaio набираємо Forcella Marmolada. Далі маршрут спускається на південний бік масиву й знову набирає висоту до Passo Ombretta та Dal Bianco.</p>
+              <div class="route-note"><strong>Ключова умова:</strong> стан Vernel визначає можливість проходження. Це не місце для фіксованого рішення заздалегідь: спорядження і варіант дня вибираємо за снігом, льодом та фактичним станом 606.</div>
+              <div class="start-row"><span><strong>Ніч:</strong> Bivacco Marco Dal Bianco · 2730 м</span><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Bivacco+Bontadini">Старт на мапі</a></div>
+            </div>
+          </article>
+
+          <article class="day-card">
+            <div class="day-number" aria-hidden="true">6</div>
+            <div>
+              <h2>День 6 — Dal Bianco → Val Rosalia → Alba di Canazei</h2>
+              <div class="day-stats" aria-label="Параметри дня 6"><span class="day-stat">~9.4 км</span><span class="day-stat">↑ ~0 м</span><span class="day-stat">↓ ~1270 м</span><span class="day-stat">~3.5–4.5 год</span></div>
+              <section class="route-map" data-route-map data-default-route="rosengarten-day-6" aria-labelledby="day-6-map-title">
+                <div class="route-map-toolbar"><h3 id="day-6-map-title">Мапа дня 6</h3><a class="route-map-download" href="routes/rosengarten-day-6.gpx" download>Завантажити GPX</a></div>
+                <div class="route-map-canvas" aria-label="Інтерактивна мапа маршруту дня 6"></div>
+                <div class="elevation-profile" data-elevation-profile><div class="elevation-profile-header"><h4>Профіль висот</h4><output class="elevation-profile-readout" aria-live="polite">Завантажуємо…</output></div><div class="elevation-profile-chart" tabindex="0" role="img" aria-label="Інтерактивний профіль висот маршруту дня 6"></div></div>
+                <p class="route-map-status" aria-live="polite">Завантажуємо маршрут…</p>
+              </section>
+              <p>Після п'яти насичених днів залишаємо максимально короткий резервний вихід. Від Dal Bianco спускаємося стежкою 610 через Val Rosalia, далі без зайвих відгалужень виходимо до Contrin і продовжуємо вниз до Alba di Canazei.</p>
+              <p>Ферат і обов'язкових технічних ділянок немає. Профіль майже весь час іде вниз, тому це нормальний резервний день на вихід і дорогу додому.</p>
+              <div class="start-row"><span><strong>Фініш:</strong> Alba di Canazei</span><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Bivacco+Marco+Dal+Bianco">Старт на мапі</a><a class="maps-link" href="https://www.google.com/maps/search/?api=1&amp;query=Alba+di+Canazei">Фініш на мапі</a></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="shell"><a href="index.html">← Повернутися до трьох маршрутів</a></div></footer>
+  <script src="vendor/leaflet.js"></script>
+  <script>
+    const ROUTE_MAPS = {
+      "rosengarten-day-1": {
+        geojson: "routes/rosengarten-day-1.geojson",
+        gpx: "routes/rosengarten-day-1.gpx",
+        color: "#b85832",
+        profileLabels: [["Passo Santner", "Santner"], ["Rifugio Re Alberto", "Re Alberto"]]
+      },
+      "rosengarten-day-2-laurenzi": {
+        geojson: "routes/rosengarten-day-2-laurenzi.geojson?v=variants-1",
+        gpx: "routes/rosengarten-day-2-laurenzi.gpx?v=variants-1",
+        color: "#2f6b52",
+        profileLabels: [["Passo Principe", "Principe"], ["Ferrata Laurenzi", "Laurenzi"], ["Passo Duron", "Duron"]]
+      },
+      "rosengarten-day-2-molignon": {
+        geojson: "routes/rosengarten-day-2-molignon.geojson?v=variants-2",
+        gpx: "routes/rosengarten-day-2-molignon.gpx?v=variants-2",
+        color: "#b85832",
+        profileLabels: [["Passo Principe", "Principe"], ["Passo Molignon", "Molignon"], ["Passo Duron", "Duron"]]
+      },
+      "rosengarten-day-3": {
+        geojson: "routes/rosengarten-day-3.geojson?v=variants-1",
+        gpx: "routes/rosengarten-day-3.gpx?v=variants-1",
+        color: "#2f6b52",
+        profileLabels: [["Passo Sella", "Passo Sella"], ["Altopiano delle Mesules", "Mesules"]]
+      },
+      "rosengarten-day-3-bypass": {
+        geojson: "routes/rosengarten-day-3-bypass.geojson?v=variants-1",
+        gpx: "routes/rosengarten-day-3-bypass.gpx?v=variants-1",
+        color: "#b85832",
+        profileLabels: [["Toni-Demetz-Hütte", "Toni-Demetz"], ["Val Lasties", "Val Lasties"], ["l'Antersass", "l'Antersass"]]
+      },
+      "rosengarten-day-4": {
+        geojson: "routes/rosengarten-day-4.geojson",
+        gpx: "routes/rosengarten-day-4.gpx",
+        color: "#b85832",
+        profileLabels: [["Passo Pordoi", "Pordoi"], ["Rifugio Viel dal Pan", "Viel dal Pan"], ["Ferrata Trincee", "Trincee"]]
+      },
+      "rosengarten-day-5": {
+        geojson: "routes/rosengarten-day-5.geojson?v=fedaia-south-2",
+        gpx: "routes/rosengarten-day-5.gpx",
+        color: "#2f6b52",
+        profileLabels: [["Forcella Marmolada", "Forcella Marmolada"], ["Passo Ombretta", "Ombretta"]]
+      },
+      "rosengarten-day-6": {
+        geojson: "routes/rosengarten-day-6.geojson?v=val-rosalia-1",
+        gpx: "routes/rosengarten-day-6.gpx",
+        color: "#b85832",
+        profileLabels: [["Val Rosalia", "Val Rosalia"], ["Rifugio Contrin", "Contrin"]]
+      }
+    };
+
+    const routeMapStates = new WeakMap();
+    const elevationProfileStates = new WeakMap();
+    const SVG_NS = "http://www.w3.org/2000/svg";
+
+    function createSvgElement(tag, attributes = {}, text = "") {
+      const element = document.createElementNS(SVG_NS, tag);
+      Object.entries(attributes).forEach(([name, value]) => element.setAttribute(name, value));
+      if (text) element.textContent = text;
+      return element;
+    }
+
+    function distanceKm([longitudeA, latitudeA], [longitudeB, latitudeB]) {
+      const toRadians = (degrees) => degrees * Math.PI / 180;
+      const latitudeDelta = toRadians(latitudeB - latitudeA);
+      const longitudeDelta = toRadians(longitudeB - longitudeA);
+      const a = Math.sin(latitudeDelta / 2) ** 2
+        + Math.cos(toRadians(latitudeA)) * Math.cos(toRadians(latitudeB))
+        * Math.sin(longitudeDelta / 2) ** 2;
+      return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function formatDecimal(value, digits = 1) {
+      return value.toLocaleString("uk-UA", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      });
+    }
+
+    function prepareElevationPoints(line) {
+      let travelled = 0;
+      return line.geometry.coordinates.map((coordinate, index, coordinates) => {
+        if (index > 0) travelled += distanceKm(coordinates[index - 1], coordinate);
+        return {
+          coordinate,
+          distance: travelled,
+          elevation: Number(coordinate[2])
+        };
+      }).filter((point) => Number.isFinite(point.elevation));
+    }
+
+    function nearestProfilePoint(points, [longitude, latitude]) {
+      return points.reduce((nearest, point) => {
+        const [pointLongitude, pointLatitude] = point.coordinate;
+        const separation = (pointLongitude - longitude) ** 2 + (pointLatitude - latitude) ** 2;
+        return separation < nearest.separation ? { point, separation } : nearest;
+      }, { point: points[0], separation: Number.POSITIVE_INFINITY }).point;
+    }
+
+    function drawElevationProfile(container) {
+      const state = elevationProfileStates.get(container);
+      if (!state?.points.length) return;
+
+      const chart = container.querySelector(".elevation-profile-chart");
+      const readout = container.querySelector(".elevation-profile-readout");
+      const width = Math.max(Math.round(chart.clientWidth), 280);
+      const height = Math.max(Math.round(chart.clientHeight), 150);
+      const compact = width < 520;
+      const margin = { top: 25, right: 14, bottom: 28, left: compact ? 38 : 44 };
+      const plotWidth = width - margin.left - margin.right;
+      const plotHeight = height - margin.top - margin.bottom;
+      const elevations = state.points.map((point) => point.elevation);
+      const rawMinimum = Math.min(...elevations);
+      const rawMaximum = Math.max(...elevations);
+      const elevationRange = rawMaximum - rawMinimum;
+      const elevationStep = elevationRange <= 400 ? 100 : elevationRange <= 800 ? 200 : 250;
+      const minimum = Math.floor(rawMinimum / elevationStep) * elevationStep;
+      const maximum = Math.ceil(rawMaximum / elevationStep) * elevationStep;
+      const totalDistance = state.points[state.points.length - 1].distance;
+      const x = (distance) => margin.left + distance / totalDistance * plotWidth;
+      const y = (elevation) => margin.top + (maximum - elevation) / Math.max(maximum - minimum, 1) * plotHeight;
+      const overview = `${formatDecimal(totalDistance)} км · ${Math.round(rawMinimum)}–${Math.round(rawMaximum)} м`;
+      const svg = createSvgElement("svg", {
+        viewBox: `0 0 ${width} ${height}`,
+        "aria-hidden": "true"
+      });
+
+      for (let elevation = minimum; elevation <= maximum; elevation += elevationStep) {
+        const position = y(elevation);
+        svg.append(
+          createSvgElement("line", {
+            x1: margin.left,
+            y1: position,
+            x2: width - margin.right,
+            y2: position,
+            stroke: "rgba(23, 32, 28, .12)",
+            "stroke-width": "1"
+          }),
+          createSvgElement("text", {
+            x: margin.left - 7,
+            y: position + 4,
+            "text-anchor": "end"
+          }, String(elevation))
+        );
+      }
+
+      const distanceTickCount = compact ? 2 : 4;
+      for (let index = 0; index <= distanceTickCount; index += 1) {
+        const distance = totalDistance * index / distanceTickCount;
+        const position = x(distance);
+        svg.append(
+          createSvgElement("line", {
+            x1: position,
+            y1: margin.top,
+            x2: position,
+            y2: height - margin.bottom,
+            stroke: "rgba(23, 32, 28, .08)",
+            "stroke-width": "1"
+          }),
+          createSvgElement("text", {
+            x: position,
+            y: height - 8,
+            "text-anchor": index === 0 ? "start" : index === distanceTickCount ? "end" : "middle"
+          }, `${formatDecimal(distance)} км`)
+        );
+      }
+
+      const linePath = state.points.map((point, index) => `${index === 0 ? "M" : "L"}${x(point.distance).toFixed(2)},${y(point.elevation).toFixed(2)}`).join(" ");
+      const areaPath = `${linePath} L${x(totalDistance).toFixed(2)},${height - margin.bottom} L${margin.left},${height - margin.bottom} Z`;
+      svg.append(
+        createSvgElement("path", {
+          d: areaPath,
+          fill: state.color,
+          "fill-opacity": ".14"
+        }),
+        createSvgElement("path", {
+          d: linePath,
+          fill: "none",
+          stroke: state.color,
+          "stroke-width": "2.5",
+          "stroke-linejoin": "round",
+          "stroke-linecap": "round"
+        })
+      );
+
+      const profileLabels = new Map(state.profileLabels);
+      state.waypoints.filter((waypoint) => profileLabels.has(waypoint.properties.name)).forEach((waypoint) => {
+        const point = nearestProfilePoint(state.points, waypoint.geometry.coordinates);
+        const positionX = x(point.distance);
+        const positionY = y(point.elevation);
+        svg.append(
+          createSvgElement("line", {
+            x1: positionX,
+            y1: margin.top,
+            x2: positionX,
+            y2: height - margin.bottom,
+            stroke: state.color,
+            "stroke-opacity": ".42",
+            "stroke-width": "1",
+            "stroke-dasharray": "3 4"
+          }),
+          createSvgElement("circle", {
+            cx: positionX,
+            cy: positionY,
+            r: "4",
+            fill: "#fffaf0",
+            stroke: state.color,
+            "stroke-width": "2"
+          }),
+          createSvgElement("text", {
+            x: positionX,
+            y: margin.top - 9,
+            "text-anchor": "middle",
+            class: "profile-waypoint-label"
+          }, profileLabels.get(waypoint.properties.name))
+        );
+      });
+
+      const cursor = createSvgElement("g", { opacity: "0" });
+      const cursorLine = createSvgElement("line", {
+        y1: margin.top,
+        y2: height - margin.bottom,
+        stroke: "#17201c",
+        "stroke-width": "1"
+      });
+      const cursorPoint = createSvgElement("circle", {
+        r: "5",
+        fill: "#fffaf0",
+        stroke: "#17201c",
+        "stroke-width": "2"
+      });
+      cursor.append(cursorLine, cursorPoint);
+      svg.append(cursor);
+
+      function selectPoint(clientX) {
+        const bounds = svg.getBoundingClientRect();
+        const localX = Math.min(Math.max(clientX - bounds.left, margin.left), width - margin.right);
+        const selectedDistance = (localX - margin.left) / plotWidth * totalDistance;
+        const point = state.points.reduce((nearest, candidate) => (
+          Math.abs(candidate.distance - selectedDistance) < Math.abs(nearest.distance - selectedDistance) ? candidate : nearest
+        ), state.points[0]);
+        const positionX = x(point.distance);
+        const positionY = y(point.elevation);
+        cursor.setAttribute("opacity", "1");
+        cursorLine.setAttribute("x1", positionX);
+        cursorLine.setAttribute("x2", positionX);
+        cursorPoint.setAttribute("cx", positionX);
+        cursorPoint.setAttribute("cy", positionY);
+        readout.textContent = `${formatDecimal(point.distance)} км · ${Math.round(point.elevation)} м`;
+        chart.dataset.selectedIndex = String(state.points.indexOf(point));
+        state.onSelect(point);
+      }
+
+      function clearSelection() {
+        cursor.setAttribute("opacity", "0");
+        readout.textContent = overview;
+        delete chart.dataset.selectedIndex;
+        state.onClear();
+      }
+
+      svg.addEventListener("pointermove", (event) => selectPoint(event.clientX));
+      svg.addEventListener("pointerdown", (event) => selectPoint(event.clientX));
+      chart.onpointerleave = clearSelection;
+      chart.onpointercancel = clearSelection;
+      chart.onblur = clearSelection;
+      chart.onkeydown = (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        const current = Number(chart.dataset.selectedIndex ?? (event.key === "ArrowRight" ? -1 : state.points.length));
+        const next = Math.min(Math.max(current + (event.key === "ArrowRight" ? 1 : -1), 0), state.points.length - 1);
+        const point = state.points[next];
+        const bounds = svg.getBoundingClientRect();
+        selectPoint(bounds.left + x(point.distance));
+      };
+
+      chart.replaceChildren(svg);
+      chart.setAttribute("aria-label", `Профіль висот: ${state.routeName}. Дистанція ${formatDecimal(totalDistance)} км, висота від ${Math.round(rawMinimum)} до ${Math.round(rawMaximum)} метрів. Для перегляду значень використовуйте дотик, мишу або клавіші зі стрілками.`);
+      readout.textContent = overview;
+    }
+
+    function renderElevationProfile(container, line, waypoints, color, profileLabels, onSelect, onClear) {
+      if (!container) return;
+      const points = prepareElevationPoints(line);
+      if (points.length < 2) {
+        container.hidden = true;
+        return;
+      }
+
+      let state = elevationProfileStates.get(container);
+      if (!state) {
+        state = { points, waypoints, color, profileLabels, routeName: line.properties.name, onSelect, onClear, resizeFrame: 0 };
+        state.observer = new ResizeObserver(() => {
+          cancelAnimationFrame(state.resizeFrame);
+          state.resizeFrame = requestAnimationFrame(() => drawElevationProfile(container));
+        });
+        state.observer.observe(container.querySelector(".elevation-profile-chart"));
+        elevationProfileStates.set(container, state);
+      } else {
+        Object.assign(state, { points, waypoints, color, profileLabels, routeName: line.properties.name, onSelect, onClear });
+      }
+      container.hidden = false;
+      drawElevationProfile(container);
+    }
+
+    async function selectRouteMap(section, routeId) {
+      const route = ROUTE_MAPS[routeId];
+      const state = routeMapStates.get(section);
+      const status = section.querySelector(".route-map-status");
+      const download = section.querySelector(".route-map-download");
+      const request = ++state.request;
+
+      section.querySelectorAll("[data-route]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.route === routeId));
+      });
+      download.href = route.gpx;
+      status.hidden = false;
+      status.textContent = "Завантажуємо маршрут…";
+
+      try {
+        const response = await fetch(route.geojson);
+        if (!response.ok) throw new Error(`Route request failed: ${response.status}`);
+        const data = await response.json();
+        if (request !== state.request) return;
+
+        const line = data.features.find((feature) => feature.properties.kind === "route");
+        const waypoints = data.features.filter((feature) => feature.properties.kind === "waypoint");
+        const latLngs = line.geometry.coordinates.map(([longitude, latitude]) => [latitude, longitude]);
+        const compactMap = window.matchMedia("(max-width: 640px)").matches;
+
+        state.layer.clearLayers();
+        L.polyline(latLngs, { color: "#fffaf0", weight: 9, opacity: .9 }).addTo(state.layer);
+        L.polyline(latLngs, { color: route.color, weight: 5, opacity: 1 }).addTo(state.layer);
+
+        waypoints.forEach((waypoint, index) => {
+          const [longitude, latitude] = waypoint.geometry.coordinates;
+          const showLabel = waypoint.properties.show_label !== false;
+          L.circleMarker([latitude, longitude], {
+            radius: index === 0 ? 7 : 6,
+            color: "#fffaf0",
+            weight: 2,
+            fillColor: index === 0 ? "#d89a3d" : route.color,
+            fillOpacity: 1
+          })
+            .bindTooltip(waypoint.properties.name, {
+              direction: "top",
+              offset: [0, -6],
+              permanent: compactMap ? index === 0 || index === waypoints.length - 1 : showLabel
+            })
+            .addTo(state.layer);
+        });
+
+        renderElevationProfile(
+          section.querySelector("[data-elevation-profile]"),
+          line,
+          waypoints,
+          route.color,
+          route.profileLabels,
+          (point) => {
+            const [longitude, latitude] = point.coordinate;
+            state.profileMarker.setLatLng([latitude, longitude]);
+            if (!state.map.hasLayer(state.profileMarker)) state.profileMarker.addTo(state.map);
+          },
+          () => state.profileMarker.remove()
+        );
+        state.map.fitBounds(L.latLngBounds(latLngs), { padding: [28, 28] });
+        status.hidden = true;
+      } catch (error) {
+        if (request !== state.request) return;
+        state.layer.clearLayers();
+        const profile = section.querySelector("[data-elevation-profile]");
+        if (profile) profile.hidden = true;
+        status.hidden = false;
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+      }
+    }
+
+    function initRouteMap(section) {
+      if (routeMapStates.has(section)) return;
+
+      const status = section.querySelector(".route-map-status");
+      if (!window.L) {
+        status.textContent = "Не вдалося завантажити мапу. GPX-файл доступний за посиланням вище.";
+        return;
+      }
+
+      const map = L.map(section.querySelector(".route-map-canvas"), { scrollWheelZoom: false });
+      L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+        maxZoom: 17,
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors · Map style &copy; <a href="https://opentopomap.org">OpenTopoMap</a>'
+      }).addTo(map);
+      const layer = L.layerGroup().addTo(map);
+      const profileMarker = L.circleMarker([0, 0], {
+        radius: 7,
+        color: "#fffaf0",
+        weight: 3,
+        fillColor: "#17201c",
+        fillOpacity: 1,
+        interactive: false
+      });
+      routeMapStates.set(section, { map, layer, profileMarker, request: 0 });
+
+      section.querySelectorAll("[data-route]").forEach((button) => {
+        button.addEventListener("click", () => selectRouteMap(section, button.dataset.route));
+      });
+
+      selectRouteMap(section, section.dataset.defaultRoute);
+    }
+
+    const routeMapSections = document.querySelectorAll("[data-route-map]");
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          initRouteMap(entry.target);
+          observer.unobserve(entry.target);
+        });
+      }, { rootMargin: "400px 0px" });
+      routeMapSections.forEach((section) => observer.observe(section));
+    } else {
+      routeMapSections.forEach(initRouteMap);
+    }
+  </script>
+</body>
+</html>

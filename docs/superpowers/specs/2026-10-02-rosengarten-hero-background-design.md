@@ -3,7 +3,7 @@
 ## Goal
 
 Replace the outdated Seceda image in the hero of
-`sassolungo-marmolada-costabella.html` with a photo that represents the current
+`rosengarten-sassolungo-marmolada.html` with a photo that represents the current
 Rosengarten to Marmolada route.
 
 ## Design

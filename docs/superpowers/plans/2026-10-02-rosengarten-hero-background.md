@@ -20,7 +20,7 @@
 ### Task 1: Replace and verify the hero image
 
 **Files:**
-- Modify: `sassolungo-marmolada-costabella.html`
+- Modify: `rosengarten-sassolungo-marmolada.html`
 - Modify: `scripts/verify-langkofel-page.mjs`
 
 **Interfaces:**
